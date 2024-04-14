@@ -10,6 +10,7 @@ export default defineConfig({
                 'resources/css/app.css',
                 'resources/js/app.js',
                 'resources/scss/auth/style.scss',
+                'resources/js/auth.js',
             ],
             refresh: true,
         }),

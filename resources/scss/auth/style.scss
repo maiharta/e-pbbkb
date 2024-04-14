@@ -45,10 +45,30 @@ body {
         color: rgba(173, 181, 189, 1) !important;
     }
 
-    button {
+    input {
+        font-size: 0.9rem !important;
+        font-weight: 400;
+        color: rgb(97, 99, 101) !important;
+    }
+
+    .btn-toggle-password {
+        background-color: white;
+        border: 1px solid #dee2e6
+    }
+
+    button[type="submit"] {
         background-color: rgba(67, 94, 190, 1) !important;
         color: white !important;
     }
+
+    .message {
+        font-size: 12px;
+        font-weight: bold;
+        color: rgba(168, 174, 187, 1);
+        margin-top: 5px;
+    }
+
+
 
     .footer-caption {
         font-family: Nunito;

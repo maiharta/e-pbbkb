@@ -12,6 +12,7 @@
     'placeholder' => '',
     'required' => false,
     'autofocus' => false,
+    'autocomplete' => 'on',
     'icon' => '',
 ])
 
@@ -24,11 +25,17 @@
         <input @if ($required) required @endif
                @if ($autofocus) autofocus @endif
                aria-describedby="basic-addon1"
+               autocomplete="{{ $autocomplete }}"
                class="form-control"
                id="{{ $name }}"
                name="{{ $name }}"
                placeholder="{{ $placeholder }}"
                type="{{ $type }}"
                value="{{ $value }}" />
+        @if ($type === 'password')
+            <button class="btn btn-toggle-password isax isax-eye-slash"
+                    id="button-addon2"
+                    type="button"></button>
+        @endif
     </div>
 </div>
