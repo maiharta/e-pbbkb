@@ -51,7 +51,7 @@
                             type="button"></button>
                 </div>
                 <div class="modal-body">
-                    <p class="mb-0">Masukkan kode otp yang dikirimkan ke email anda. Jangan bagikan kode OTP anda kepada siapapun.</p>
+                    <p class="mb-0">Masukkan kode otp yang dikirimkan ke email sanda. Jangan bagikan kode OTP anda kepada siapapun.</p>
                     <div class="mb-3 mt-3">
                         <x-otp-input />
                     </div>
