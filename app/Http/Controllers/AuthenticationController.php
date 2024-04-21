@@ -16,6 +16,20 @@ class AuthenticationController extends Controller
         return view('pages.auth.login');
     }
 
+    public function authenticate(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string',
+        ]);
+
+        if (auth()->attempt($request->only('email', 'password'))) {
+            return redirect()->route('dashboard');
+        } else {
+            return back()->with('error', 'Email atau password salah');
+        }
+    }
+
     public function register(Request $request)
     {
         return view('pages.auth.register');

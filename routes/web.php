@@ -41,3 +41,29 @@ Route::middleware(['guest'])->group(function () {
         });
     });
 });
+
+
+// auth
+Route::middleware(['auth'])->group(function () {
+    // Dashboard
+    Route::get('dashboard', function () {
+        return view('pages.dashboard.index');
+    })->name('dashboard');
+
+    // // Master Data
+    // Route::prefix('master-data')->name('master-data.')->group(function () {
+    //     // Samsat
+    //     Route::prefix('samsat')->name('samsat.')->group(function () {
+    //         Route::get('/create', [SamsatController::class, 'create'])->name('create');
+    //         Route::get('/{id}', [SamsatController::class, 'show'])->name('show');
+    //         Route::get('/', [SamsatController::class, 'index'])->name('index');
+    //         Route::post('/', [SamsatController::class, 'store'])->name('store');
+    //         Route::get('/{id}/edit', [SamsatController::class, 'edit'])->name('edit');
+    //         Route::delete('/{id?}', [SamsatController::class, 'destroy'])->name('destroy');
+    //     });
+    // });
+
+    // Auth
+    Route::post('logout', [AuthenticationController::class, 'logout'])
+    ->name('logout');
+});

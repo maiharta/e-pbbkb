@@ -42,4 +42,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function getPhotoProfileAttribute()
+    {
+        return 'https://ui-avatars.com/api/?name=' . $this->email . '&background=random&color=fff';
+    }
 }

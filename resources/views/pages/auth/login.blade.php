@@ -13,9 +13,9 @@
         <x-input-group :autofocus=true
                        :required=true
                        icon="user"
-                       name="username"
-                       placeholder="Username"
-                       type="username" />
+                       name="email"
+                       placeholder="Email"
+                       type="email" />
         <x-input-group :required=true
                        icon="lock"
                        name="password"
