@@ -31,7 +31,7 @@
         </button>
         <p class="text-center mt-3 footer-caption">
             Belum punya akun? <a class="footer-link"
-               href="#">Register</a>
+               href="{{ route('register.index') }}">Register</a>
         </p>
     </form>
 @endsection

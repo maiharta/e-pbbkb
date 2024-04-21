@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthenticationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,14 +14,30 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/login', function () {
-    return view('pages.auth.login');
+Route::get('/', function () {
+    return redirect()->route('login.index');
 });
 
-Route::get('/register', function () {
-    return view('pages.auth.register');
-});
+Route::middleware(['guest'])->group(function () {
+    // login
+    Route::prefix('login')->name('login.')->group(function () {
+        Route::get('/', [AuthenticationController::class, 'login'])
+            ->name('index');
+        Route::post('/', [AuthenticationController::class, 'authenticate'])
+            ->name('store');
+    });
 
-Route::get('/email-verify', function(){
-    return view('pages.auth.register-verify');
+    // register
+    Route::prefix('register')->name('register.')->group(function () {
+        Route::get('/', [AuthenticationController::class, 'register'])
+            ->name('index');
+        Route::post('/', [AuthenticationController::class, 'store'])
+            ->name('store');
+
+        // otp
+        Route::prefix('otp')->name('otp.')->group(function () {
+            Route::post('/generate', [AuthenticationController::class, 'generateOtp'])
+                ->name('generate');
+        });
+    });
 });

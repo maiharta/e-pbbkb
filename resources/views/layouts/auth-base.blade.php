@@ -16,6 +16,9 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
     {{-- VENDORS --}}
     <link rel="stylesheet" href="{{ asset('assets/vendors/iconsax/style.css') }}">
+    {{-- favicon --}}
+    <link rel="icon" href="{{ asset('assets/images/favicon.ico') }}" type="image/png">
+    {{-- custom css --}}
     @stack('styles')
     @vite(['resources/scss/auth/style.scss'])
 </head>
