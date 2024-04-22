@@ -4,10 +4,9 @@
     <div class="mb-4">
         <x-logo />
     </div>
-    <h1 class="title">Login</h1>
-    <p class="subtitle">Masukkan email dan password untuk masuk ke akun anda</p>
-    <form action="#"
-          class="needs-validation"
+    <h1 class="title">Lupa Password</h1>
+    <p class="subtitle">Masukkan email anda untuk mereset password</p>
+    <form action="{{ route('password.email') }}"
           method="POST">
         @csrf
         <x-input-group :autofocus=true
@@ -16,18 +15,9 @@
                        name="email"
                        placeholder="Email"
                        type="email" />
-        <x-input-group :required=true
-                       icon="lock"
-                       name="password"
-                       placeholder="Password"
-                       type="password" />
-        <a class="forgot-password d-block"
-           href="{{ route('password.request') }}">
-            Lupa Password?
-        </a>
         <button class="btn w-100 shadow""
                 type="submit">
-            Login
+            Send Link Reset Password
         </button>
         <p class="text-center mt-3 footer-caption">
             Belum punya akun? <a class="footer-link"

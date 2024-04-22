@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\TestController;
 
 /*
@@ -40,6 +41,14 @@ Route::middleware(['guest'])->group(function () {
             Route::post('/generate', [AuthenticationController::class, 'generateOtp'])
                 ->name('generate');
         });
+    });
+
+    // reset password
+    Route::name('password.')->group(function () {
+        Route::get('/forgot-password', [ResetPasswordController::class, 'index'])->name('request');
+        Route::post('/forgot-password', [ResetPasswordController::class, 'request'])->name('email');
+        Route::get('/reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])->name('reset');
+        Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name('update');
     });
 });
 
