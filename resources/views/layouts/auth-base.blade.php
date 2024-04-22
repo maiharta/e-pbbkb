@@ -24,7 +24,6 @@
 </head>
 
 <body>
-    @include('components.toastr')
     {{-- left 40%, right is bg with 60%, height 100vh --}}
     <div class="container-fluid h-100 px-0">
         <div class="row align-items-center justify-content-center h-100 h-md-auto">
@@ -40,8 +39,9 @@
     </script>
     {{-- Jquery --}}
     <script src="{{ asset('assets/js/jquery-3.4.1.min.js') }}"></script>
-    <script src="{{ asset('assets/vendors/sweetalert2/sweetalert2@11.js') }}"></script>
-    <script src="{{ asset('assets/js/toastr.min.js') }}"></script>
+    {{-- <script src="{{ asset('assets/vendors/sweetalert2/sweetalert2@11.js') }}"></script> --}}
+    {{-- <script src="{{ asset('assets/js/toastr.min.js') }}"></script> --}}
+    <x-toastr/>
     @vite(['resources/js/app.js', 'resources/js/auth.js'])
     @stack('scripts')
 </body>

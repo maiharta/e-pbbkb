@@ -47,10 +47,12 @@ class AuthenticationController extends Controller
         try{
             $otp_service = new OtpService();
             if ($otp_service->validate($request->email, 'register', $request->otp_code, $request->ip())) {
-                User::create([
+                $user = User::create([
                     'email' => $request->email,
                     'password' => bcrypt($request->password),
                 ]);
+
+                $user->assignRole('operator');
 
                 return response()->json([
                     'status' => 'success',
@@ -90,10 +92,16 @@ class AuthenticationController extends Controller
         return response()->json([
             'status' => 'success',
             'data' => [
-                'resend_after' => 60*5,
-                'last_otp_at' => $otp::$expired_at->setTimezone('GMT+8')->format('Y-m-d H:i:s'),
+                'resend_after' => 5,
+                'last_otp_at' => isset($otp) ? $otp::$expired_at->setTimezone('GMT+8')->format('Y-m-d H:i:s') : now()->addDay()->setTimezone('GMT+8')->format('Y-m-d H:i:s'),
             ],
             'message' => 'Kode OTP berhasil dikirim ke email',
         ]);
+    }
+
+    public function logout(Request $request)
+    {
+        auth()->logout();
+        return redirect()->route('login.index');
     }
 }

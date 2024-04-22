@@ -1,7 +1,13 @@
+var countdown;
 $('#generate_otp').click(function () {
     if (!validateInput()) {
         return;
     }
+
+    if (countdown) {
+        clearInterval(countdown);
+    }
+
     var email = $('#email').val();
 
     var route_otp = $('#route_otp').val();
@@ -29,7 +35,20 @@ $('#generate_otp').click(function () {
             if (response.status == 'success') {
                 // show modal
                 $('#last_otp_at').text(response.data.last_otp_at);
-                countdown(response.data.resend_after, '#countdown');
+                let seconds = response.data.resend_after;
+                countdown = setInterval(function () {
+                    seconds--;
+                    // minute : second
+                    let minutes = Math.floor(seconds / 60);
+                    let second = seconds % 60;
+                    $('#countdown').text(minutes + ':' + second);
+
+                    if (seconds == 0) {
+                        $('#countdown-container').addClass('d-none');
+                        $('#resend-otp-container').addClass('d-block');
+                        $('#resend-otp-container').removeClass('d-none');
+                    }
+                }, 1000);
                 $('#staticBackdrop').modal('show');
             } else {
                 Swal.fire({
@@ -57,6 +76,9 @@ $('#resend-otp').click(function () {
     if (!validateInput()) {
         return;
     }
+    if (countdown) {
+        clearInterval(countdown);
+    }
     var email = $('#email').val();
 
     var route_otp = $('#route_otp').val();
@@ -83,7 +105,21 @@ $('#resend-otp').click(function () {
             Swal.close();
             if (response.status == 'success') {
                 $('#last_otp_at').text(response.data.last_otp_at);
-                countdown(response.data.resend_after, '#countdown');
+                let seconds = response.data.resend_after;
+                countdown = setInterval(function () {
+                    console.log(seconds);
+                    seconds--;
+                    // minute : second
+                    let minutes = Math.floor(seconds / 60);
+                    let second = seconds % 60;
+                    $('#countdown').text(minutes + ':' + second);
+
+                    if (seconds == 0) {
+                        $('#countdown-container').addClass('d-none');
+                        $('#resend-otp-container').addClass('d-block');
+                        $('#resend-otp-container').removeClass('d-none');
+                    }
+                }, 1000);
                 $('#countdown-container').removeClass('d-none');
                 $('#countdown-container').addClass('d-block');
                 $('#resend-otp-container').addClass('d-none');
@@ -109,7 +145,7 @@ $('#resend-otp').click(function () {
     });
 });
 
-$('#register').click(function(){
+$('#register').click(function () {
     var route_register = $('#route_register').val();
     var csrf_token = $('#csrf_token').val();
     var email = $('#email').val();
@@ -174,30 +210,29 @@ $('#register').click(function(){
     });
 });
 
-function countdown(seconds, element) {
-    // delete previous interval
-    clearInterval(interval);
-    $('#countdown-container').removeClass('d-none');
-    $('#countdown-container').addClass('d-block');
-    $('#resend-otp-container').addClass('d-none');
-    var interval = setInterval(function () {
-        seconds--;
-        // minute : second
-        let minutes = Math.floor(seconds / 60);
-        let second = seconds % 60;
-        $(element).text(minutes + ':' + second);
+// var interval = (seconds, element) => {
+//     // delete previous interval
+//     $('#countdown-container').removeClass('d-none');
+//     $('#countdown-container').addClass('d-block');
+//     $('#resend-otp-container').addClass('d-none');
 
-        if (seconds == 0) {
-            clearInterval(interval);
-            $('#countdown-container').addClass('d-none');
-            $('#resend-otp-container').addClass('d-block');
-            $('#resend-otp-container').removeClass('d-none');
-        }
+//     return setInterval(function () {
+//         seconds--;
+//         // minute : second
+//         let minutes = Math.floor(seconds / 60);
+//         let second = seconds % 60;
+//         $(element).text(minutes + ':' + second);
 
-    }, 1000);
-}
+//         if (seconds == 0) {
+//             $('#countdown-container').addClass('d-none');
+//             $('#resend-otp-container').addClass('d-block');
+//             $('#resend-otp-container').removeClass('d-none');
+//         }
 
-function validateInput(){
+//     }, 1000);
+// }
+
+function validateInput() {
     var email = $('#email').val();
     var password = $('#password').val();
     var password_verify = $('#password_verify').val();
@@ -241,3 +276,9 @@ function validateInput(){
 
     return true;
 }
+
+// if modal closed, clear interval
+$('#staticBackdrop').on('hidden.bs.modal', function () {
+    // clearInterval(interval);
+    console.log('hai');
+});

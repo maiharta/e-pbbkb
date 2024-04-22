@@ -8,7 +8,7 @@ $('.btn-toggle-password').on('click', function () {
 });
 
 // password change, check regex min 8 characters, 1 uppercase, 1 special char, 1 number
-$('#password').on('keyup', function () {
+$('#register-container #password').on('keyup', function () {
     var regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     var $this = $(this);
     // clear message

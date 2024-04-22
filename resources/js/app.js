@@ -6,6 +6,7 @@ import '@fontsource/nunito/400.css';
 import '@fontsource/nunito/600.css';
 import '@fontsource/nunito/700.css';
 import '@fontsource/nunito/800.css';
+import Swal from 'sweetalert2';
 // import select2 from 'select2';
 import flatpickr from "flatpickr";
 import '/node_modules/flatpickr/dist/flatpickr.min.css';
@@ -43,5 +44,4 @@ window.setLoading = function (status) {
 }
 flatpickr.localize(flatpickr.l10ns.id);
 window.flatpickr = flatpickr;
-window.Alpine = Alpine;
 window.ApexCharts = ApexCharts;
