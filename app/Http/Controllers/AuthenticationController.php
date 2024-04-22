@@ -92,7 +92,7 @@ class AuthenticationController extends Controller
         return response()->json([
             'status' => 'success',
             'data' => [
-                'resend_after' => 5,
+                'resend_after' => 60*5,
                 'last_otp_at' => isset($otp) ? $otp::$expired_at->setTimezone('GMT+8')->format('Y-m-d H:i:s') : now()->addDay()->setTimezone('GMT+8')->format('Y-m-d H:i:s'),
             ],
             'message' => 'Kode OTP berhasil dikirim ke email',

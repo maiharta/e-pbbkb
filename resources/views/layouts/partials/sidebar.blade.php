@@ -6,10 +6,6 @@
                     <img src="{{ asset('assets/images/logo.svg') }}">
                 </a>
             </div>
-            {{-- <div class="caption align-self-center"> --}}
-                {{-- <h3 class="sidebar-title mb-0">E-Samsat</h3> --}}
-                {{-- <p class="sidebar-title-caption mb-0"></p> --}}
-            {{-- </div> --}}
         </div>
     </div>
     <div class="sidebar-menu">

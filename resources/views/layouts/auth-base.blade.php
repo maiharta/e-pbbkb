@@ -17,7 +17,7 @@
     {{-- VENDORS --}}
     <link rel="stylesheet" href="{{ asset('assets/vendors/iconsax/style.css') }}">
     {{-- favicon --}}
-    <link rel="icon" href="{{ asset('assets/images/favicon.ico') }}" type="image/png">
+    <link rel="icon" href="{{ asset('assets/images/favicon.png') }}" type="image/png">
     {{-- custom css --}}
     @stack('styles')
     @vite(['resources/scss/auth/style.scss'])
