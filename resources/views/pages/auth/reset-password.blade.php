@@ -19,11 +19,13 @@
                        placeholder="Email"
                        type="email"
                        value="{{ $email }}" />
-        <x-input-group :required=true
-                       icon="lock"
-                       name="password"
-                       placeholder="Password"
-                       type="password" />
+        <div id="password-validation">
+            <x-input-group :required=true
+                           icon="lock"
+                           name="password"
+                           placeholder="Password"
+                           type="password" />
+        </div>
         <x-input-group :required=true
                        icon="lock"
                        name="password_confirmation"
