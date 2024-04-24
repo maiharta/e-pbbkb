@@ -13,6 +13,7 @@ import '/node_modules/flatpickr/dist/flatpickr.min.css';
 import '/node_modules/flatpickr/dist/l10n/id.js';
 import monthSelectPlugin from 'flatpickr/dist/plugins/monthSelect/index.js';
 import '/node_modules/flatpickr/dist/plugins/monthSelect/style.css';
+import '/node_modules/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css'
 import ApexCharts from 'apexcharts';
 
 window.monthSelectPlugin = monthSelectPlugin;
@@ -20,7 +21,7 @@ window.Toast = Swal.mixin({
     toast: true,
     position: 'top-end',
     showConfirmButton: false,
-    timer: 10000,
+    timer: 6000,
     timerProgressBar: true,
     didOpen: (toast) => {
         toast.addEventListener('mouseenter', Swal.stopTimer)

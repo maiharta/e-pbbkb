@@ -1,9 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthenticationController;
-use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\TestController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ResetPasswordController;
+use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\Operator\PenjualanController;
+use App\Http\Controllers\Admin\Verifikasi\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -56,9 +60,28 @@ Route::middleware(['guest'])->group(function () {
 // auth
 Route::middleware(['auth'])->group(function () {
     // Dashboard
-    Route::get('dashboard', function () {
-        return view('pages.dashboard.index');
-    })->name('dashboard');
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::middleware(['role:administrator'])->group(function(){
+        // Verifikasi
+        Route::prefix('verifikasi')->name('verifikasi.')->group(function(){
+            // User
+            Route::prefix('user')->name('user.')->group(function(){
+                Route::get('/', [UserController::class, 'index'])->name('index');
+                Route::get('/{ulid}/show', [UserController::class, 'show'])->name('show');
+
+                // ajax
+                Route::post('/approve', [UserController::class, 'approve'])->name('approve');
+                Route::post('/revisi', [UserController::class, 'revisi'])->name('revisi');
+            });
+        });
+    });
+    Route::middleware(['role:operator','is_berkas_persyaratan_verified'])->group(function(){
+        Route::prefix('penjualan')->name('penjualan.')->group(function(){
+            Route::get('/', [PenjualanController::class, 'index'])->name('index');
+            Route::get('/{ulid}/show', [PenjualanController::class, 'show'])->name('show');
+        });
+    });
 
     // // Master Data
     // Route::prefix('master-data')->name('master-data.')->group(function () {
@@ -73,7 +96,15 @@ Route::middleware(['auth'])->group(function () {
     //     });
     // });
 
-    // Auth
+    // Profile
+    Route::prefix('profile')->name('profile.')->group(function () {
+        Route::get('/', [ProfileController::class, 'index'])
+            ->name('index');
+        Route::post('/', [ProfileController::class, 'store'])
+            ->name('store');
+    });
+
+    // Logout
     Route::post('logout', [AuthenticationController::class, 'logout'])
     ->name('logout');
 });
