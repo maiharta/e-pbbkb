@@ -8,6 +8,8 @@ use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\Operator\PenjualanController;
 use App\Http\Controllers\Admin\Verifikasi\UserController;
+use App\Http\Controllers\Admin\MasterData\SektorController;
+use App\Http\Controllers\Admin\MasterData\JenisBbmController;
 
 /*
 |--------------------------------------------------------------------------
@@ -62,11 +64,12 @@ Route::middleware(['auth'])->group(function () {
     // Dashboard
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::middleware(['role:administrator'])->group(function(){
+    // ADMINISTRATOR
+    Route::middleware(['role:administrator'])->group(function () {
         // Verifikasi
-        Route::prefix('verifikasi')->name('verifikasi.')->group(function(){
+        Route::prefix('verifikasi')->name('verifikasi.')->group(function () {
             // User
-            Route::prefix('user')->name('user.')->group(function(){
+            Route::prefix('user')->name('user.')->group(function () {
                 Route::get('/', [UserController::class, 'index'])->name('index');
                 Route::get('/{ulid}/show', [UserController::class, 'show'])->name('show');
 
@@ -75,26 +78,38 @@ Route::middleware(['auth'])->group(function () {
                 Route::post('/revisi', [UserController::class, 'revisi'])->name('revisi');
             });
         });
+
+        // // Master Data
+        Route::prefix('master-data')->name('master-data.')->group(function () {
+            // Sektor
+            Route::prefix('sektor')->name('sektor.')->group(function () {
+                Route::get('/', [SektorController::class, 'index'])->name('index');
+                Route::get('/create', [SektorController::class, 'create'])->name('create');
+                Route::post('/', [SektorController::class, 'store'])->name('store');
+                Route::get('/{ulid}/edit', [SektorController::class, 'edit'])->name('edit');
+                Route::put('/{ulid}', [SektorController::class, 'update'])->name('update');
+                Route::delete('/{ulid}', [SektorController::class, 'destroy'])->name('destroy');
+            });
+            // Jenis BBM
+            Route::prefix('jenis-bbm')->name('jenis-bbm.')->group(function () {
+                Route::get('/', [JenisBbmController::class, 'index'])->name('index');
+                Route::get('/create', [JenisBbmController::class, 'create'])->name('create');
+                Route::post('/', [JenisBbmController::class, 'store'])->name('store');
+                Route::get('/{ulid}/edit', [JenisBbmController::class, 'edit'])->name('edit');
+                Route::put('/{ulid}', [JenisBbmController::class, 'update'])->name('update');
+                Route::delete('/{ulid}', [JenisBbmController::class, 'destroy'])->name('destroy');
+            });
+        });
     });
-    Route::middleware(['role:operator','is_berkas_persyaratan_verified'])->group(function(){
-        Route::prefix('penjualan')->name('penjualan.')->group(function(){
+
+    // OPERATOR
+    Route::middleware(['role:operator', 'is_berkas_persyaratan_verified'])->group(function () {
+        Route::prefix('penjualan')->name('penjualan.')->group(function () {
             Route::get('/', [PenjualanController::class, 'index'])->name('index');
             Route::get('/{ulid}/show', [PenjualanController::class, 'show'])->name('show');
         });
     });
 
-    // // Master Data
-    // Route::prefix('master-data')->name('master-data.')->group(function () {
-    //     // Samsat
-    //     Route::prefix('samsat')->name('samsat.')->group(function () {
-    //         Route::get('/create', [SamsatController::class, 'create'])->name('create');
-    //         Route::get('/{id}', [SamsatController::class, 'show'])->name('show');
-    //         Route::get('/', [SamsatController::class, 'index'])->name('index');
-    //         Route::post('/', [SamsatController::class, 'store'])->name('store');
-    //         Route::get('/{id}/edit', [SamsatController::class, 'edit'])->name('edit');
-    //         Route::delete('/{id?}', [SamsatController::class, 'destroy'])->name('destroy');
-    //     });
-    // });
 
     // Profile
     Route::prefix('profile')->name('profile.')->group(function () {
@@ -106,5 +121,5 @@ Route::middleware(['auth'])->group(function () {
 
     // Logout
     Route::post('logout', [AuthenticationController::class, 'logout'])
-    ->name('logout');
+        ->name('logout');
 });

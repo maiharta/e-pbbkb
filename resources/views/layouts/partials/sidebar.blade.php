@@ -32,6 +32,23 @@
                         </li>
                     </ul>
                 </li>
+                <li class="sidebar-item has-sub {{ request()->routeIs('master-data*') ? 'active' : '' }}">
+                    <a class="sidebar-link"
+                       href="#">
+                        <i class="isax isax-forward-item"></i>
+                        <span>Master Data</span>
+                    </a>
+                    <ul class="submenu">
+                        <li class="submenu-item {{ request()->routeIs('master-data.sektor*') ? 'active' : '' }}">
+                            <a class="submenu-link"
+                               href="{{ route('master-data.sektor.index') }}">Sektor</a>
+                        </li>
+                        <li class="submenu-item {{ request()->routeIs('master-data.jenis-bbm*') ? 'active' : '' }}">
+                            <a class="submenu-link"
+                               href="{{ route('master-data.jenis-bbm.index') }}">Jenis BBM</a>
+                        </li>
+                    </ul>
+                </li>
             @endrole
 
             @role('operator')
