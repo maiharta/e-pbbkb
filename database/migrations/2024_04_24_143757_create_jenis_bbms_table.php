@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('jenis_bbms', function (Blueprint $table) {
             $table->id();
+            $table->string('ulid')->unique();
             $table->string('kode');
             $table->string('nama');
             $table->boolean('is_subsidi')->default(true);

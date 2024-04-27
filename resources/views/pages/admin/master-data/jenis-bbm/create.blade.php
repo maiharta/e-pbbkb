@@ -5,14 +5,14 @@
         <div class="page-title mb-3">
             <div class="row">
                 <div class="col-12 col-md-6 order-md-1 order-last">
-                    <h3>Tambah Data Sektor</h3>
+                    <h3>Tambah Data Jenis BBM</h3>
                 </div>
                 <div class="col-12 col-md-6 order-md-2 order-first">
                     <nav aria-label="breadcrumb"
                          class="breadcrumb-header float-start float-lg-end">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ route('master-data.sektor.index') }}">Master Data
-                                    Sektor</a>
+                            <li class="breadcrumb-item"><a href="{{ route('master-data.jenis-bbm.index') }}">Master Data
+                                    Jenis BBM</a>
                             </li>
                             <li aria-current="page"
                                 class="breadcrumb-item active">Tambah Data</li>
@@ -26,7 +26,7 @@
                 <div class="col-12 col-lg-6">
                     <div class="card">
                         <div class="card-body">
-                            <form action="{{ route('master-data.sektor.store') }}"
+                            <form action="{{ route('master-data.jenis-bbm.store') }}"
                                   method="POST">
                                 @csrf
                                 <div class="form-group mb-3">
@@ -35,7 +35,7 @@
                                     <input class="form-control"
                                            id="kode"
                                            name="kode"
-                                           placeholder="Masukkan kode sektor"
+                                           placeholder="Masukkan kode jenis BBM"
                                            type="text"
                                            value="{{ old('kode') }}">
                                 </div>
@@ -45,9 +45,18 @@
                                     <input class="form-control"
                                            id="nama"
                                            name="nama"
-                                           placeholder="Masukkan nama sektor"
+                                           placeholder="Masukkan nama jenis BBM"
                                            type="text"
                                            value="{{ old('nama') }}">
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label class="col-form-label fw-bold"
+                                           for="is_subsidi">Tipe Subsidi</label>
+                                    <select name="is_subsidi" id="is_subsidi" class="form-select" required>
+                                        <option></option>
+                                        <option value="1">Subsidi</option>
+                                        <option value="0">Non Subsidi</option>
+                                    </select>
                                 </div>
                                 <div class="form-group mb-3">
                                     <label class="col-form-label fw-bold"
@@ -59,7 +68,7 @@
                                                max="100"
                                                min="0"
                                                name="persentase_tarif"
-                                               placeholder="Masukkan persentase tarif sektor"
+                                               placeholder="Masukkan persentase tarif jenis BBM"
                                                step="0.01"
                                                type="number"
                                                value="{{ old('persentase_tarif') }}">
@@ -88,5 +97,15 @@
                 this.value = 100;
             }
         });
+
+        $('#is_subsidi').select2({
+            theme: 'bootstrap-5',
+            placeholder: 'Pilih tipe subsidi',
+            allowClear: true
+        });
+
+        @if (old('is_subsidi'))
+            $('#is_subsidi').val('{{ old('is_subsidi') }}').trigger('change');
+        @endif
     </script>
 @endpush
