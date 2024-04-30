@@ -52,11 +52,11 @@
             @endrole
 
             @role('operator')
-                <li class="sidebar-item {{ request()->routeIs('penjualan*') ? 'active' : '' }}">
+                <li class="sidebar-item {{ request()->routeIs('pelaporan*') ? 'active' : '' }}">
                     <a class="sidebar-link"
-                       href="{{ route('penjualan.index') }}">
-                        <i class="isax isax-element-4"></i>
-                        <span>Penjualan</span>
+                       href="{{ route('pelaporan.index') }}">
+                        <i class="isax isax-receipt"></i>
+                        <span>Pelaporan</span>
                     </a>
                 </li>
             @endrole

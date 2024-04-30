@@ -6,10 +6,12 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\Operator\PelaporanController;
 use App\Http\Controllers\Operator\PenjualanController;
 use App\Http\Controllers\Admin\Verifikasi\UserController;
 use App\Http\Controllers\Admin\MasterData\SektorController;
 use App\Http\Controllers\Admin\MasterData\JenisBbmController;
+use App\Http\Controllers\Operator\PembelianController;
 
 /*
 |--------------------------------------------------------------------------
@@ -104,10 +106,33 @@ Route::middleware(['auth'])->group(function () {
 
     // OPERATOR
     Route::middleware(['role:operator', 'is_berkas_persyaratan_verified'])->group(function () {
-        Route::prefix('penjualan')->name('penjualan.')->group(function () {
-            Route::get('/', [PenjualanController::class, 'index'])->name('index');
-            Route::get('/{ulid}/show', [PenjualanController::class, 'show'])->name('show');
+        // Pelaporan
+        Route::prefix('pelaporan')->name('pelaporan.')->group(function () {
+            Route::get('/', [PelaporanController::class, 'index'])->name('index');
+
+            // Pembelian
+            Route::prefix('pembelian')->name('pembelian.')->group(function () {
+                Route::get('/{ulid}', [PembelianController::class, 'index'])->name('index');
+                Route::get('/{ulid}/create', [PembelianController::class, 'create'])->name('create');
+                Route::get('/{ulid}/show', [PembelianController::class, 'show'])->name('show');
+                Route::post('/{ulid}/store', [PembelianController::class, 'store'])->name('store');
+                Route::get('/{ulid}/edit/{pembelian}', [PembelianController::class, 'edit'])->name('edit');
+                Route::put('/{ulid}/{pembelian}', [PembelianController::class, 'update'])->name('update');
+                Route::delete('/{ulid}/{pembelian}', [PembelianController::class, 'destroy'])->name('destroy');
+            });
+
+            // Penjualan
+            Route::prefix('penjualan')->name('penjualan.')->group(function () {
+                Route::get('/{ulid}', [PenjualanController::class, 'index'])->name('index');
+                Route::get('/{ulid}/create', [PenjualanController::class, 'create'])->name('create');
+                Route::get('/{ulid}/show', [PenjualanController::class, 'show'])->name('show');
+                Route::post('/{ulid}/store', [PenjualanController::class, 'store'])->name('store');
+                Route::get('/{ulid}/edit/{penjualan}', [PenjualanController::class, 'edit'])->name('edit');
+                Route::put('/{ulid}/{penjualan}', [PenjualanController::class, 'update'])->name('update');
+                Route::delete('/{ulid}/{penjualan}', [PenjualanController::class, 'destroy'])->name('destroy');
+            });
         });
+
     });
 
 
