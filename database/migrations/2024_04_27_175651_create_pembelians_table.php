@@ -17,12 +17,11 @@ return new class extends Migration
             $table->foreignId('pelaporan_id')->constrained('pelaporans');
             $table->foreignId('kabupaten_id')->constrained('kabupatens');
             $table->foreignId('jenis_bbm_id')->constrained('jenis_bbms');
-            $table->foreignId('sektor_id')->constrained('sektors');
             $table->string('kode_jenis_bbm')->nullable();
             $table->string('nama_jenis_bbm')->nullable();
             $table->string('is_subsidi')->nullable();
-            $table->decimal('persentase_tarif_jenis_bbm', 5, 2)->default(0);
-
+            $table->string('penjual')->nullable();
+            $table->decimal('volume', 15, 2);
             $table->timestamps();
         });
     }

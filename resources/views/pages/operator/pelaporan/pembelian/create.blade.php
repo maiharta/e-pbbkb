@@ -5,7 +5,7 @@
         <div class="page-title mb-3">
             <div class="row">
                 <div class="col-12 col-md-6 order-md-1 order-last">
-                    <h3>Tambah Data Penjualan</h3>
+                    <h3>Tambah Data Pembelian</h3>
                 </div>
                 <div class="col-12 col-md-6 order-md-2 order-first">
                     <nav aria-label="breadcrumb"
@@ -14,8 +14,8 @@
                             <li class="breadcrumb-item"><a href="{{ route('pelaporan.index') }}">Pelaporan</a>
                             </li>
                             <li class="breadcrumb-item"><a
-                                   href="{{ route('pelaporan.penjualan.index', $pelaporan->ulid) }}">Data
-                                    Penjualan {{ $pelaporan->bulan_name }}
+                                   href="{{ route('pelaporan.pembelian.index', $pelaporan->ulid) }}">Data
+                                    Pembelian {{ $pelaporan->bulan_name }}
                                     {{ $pelaporan->tahun }}</a>
                             </li>
                             <li aria-current="page"
@@ -28,18 +28,18 @@
         <section class="section">
             <div class="card">
                 <div class="card-body">
-                    <form action="{{ route('pelaporan.penjualan.store', $pelaporan->ulid) }}"
+                    <form action="{{ route('pelaporan.pembelian.store', $pelaporan->ulid) }}"
                           method="POST">
                         @csrf
                         <div class="form-group mb-3">
                             <label class="col-form-label fw-bold"
-                                   for="pembeli">Pembeli</label>
+                                   for="penjual">Penjual</label>
                             <input class="form-control"
-                                   id="pembeli"
-                                   name="pembeli"
-                                   placeholder="Masukkan nama pembeli"
+                                   id="penjual"
+                                   name="penjual"
+                                   placeholder="Masukkan nama penjual"
                                    type="text"
-                                   value="{{ old('pembeli') }}">
+                                   value="{{ old('penjual') }}">
                         </div>
                         <div class="form-group mb-3">
                             <label class="col-form-label fw-bold"
@@ -50,18 +50,6 @@
                                 <option value=""></option>
                                 @foreach ($kabupatens as $kabupaten)
                                     <option value="{{ $kabupaten->id }}">{{ $kabupaten->nama }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label class="col-form-label fw-bold"
-                                   for="sektor">sektor/Kota</label>
-                            <select class="form-select"
-                                    id="sektor"
-                                    name="sektor_id">
-                                <option value=""></option>
-                                @foreach ($sektors as $sektor)
-                                    <option value="{{ $sektor->id }}">{{ $sektor->nama }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -90,17 +78,6 @@
                                    type="text"
                                    value="{{ old('volume') }}">
                         </div>
-                        <div class="form-group mb-3">
-                            <label class="col-form-label fw-bold"
-                                   for="dpp">Total DPP</label>
-                            <input autocomplete="off"
-                                   class="form-control"
-                                   id="dpp"
-                                   name="dpp"
-                                   placeholder="Masukkan total DPP"
-                                   type="text"
-                                   value="{{ old('dpp') }}">
-                        </div>
                         <button class="btn btn-primary d-block w-100">Tambah</button>
                     </form>
                 </div>
@@ -117,12 +94,6 @@
             allowClear: true
         });
 
-        $('#sektor').select2({
-            theme: 'bootstrap-5',
-            placeholder: 'Pilih Sektor',
-            allowClear: true
-        });
-
         $('#jenis_bbm').select2({
             theme: 'bootstrap-5',
             placeholder: 'Pilih Jenis BBM',
@@ -135,14 +106,6 @@
             decimalPlaces: 0,
             unformatOnSubmit: true,
         })
-
-        new AutoNumeric('#dpp', {
-            currencySymbol: 'Rp ',
-            decimalCharacter: ',',
-            digitGroupSeparator: '.',
-            decimalPlaces: 2,
-            unformatOnSubmit: true,
-        });
 
         @if (old('kabupaten_id'))
             $('#kabupaten').val({{ old('kabupaten_id') }}).trigger('change');

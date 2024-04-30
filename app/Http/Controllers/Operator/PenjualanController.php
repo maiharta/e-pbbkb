@@ -111,26 +111,30 @@ class PenjualanController extends Controller
             'dpp' => 'required'
         ]);
 
-        $sektor = Sektor::where('id', $request->sektor_id)->first();
-        $jenis_bbm = JenisBbm::where('id', $request->jenis_bbm_id)->first();
+        try {
+            $sektor = Sektor::where('id', $request->sektor_id)->first();
+            $jenis_bbm = JenisBbm::where('id', $request->jenis_bbm_id)->first();
 
-        $penjualan->update([
-            'kabupaten_id' => $request->kabupaten_id,
-            'sektor_id' => $request->sektor_id,
-            'jenis_bbm_id' => $request->jenis_bbm_id,
-            'kode_jenis_bbm' => $jenis_bbm->kode,
-            'nama_jenis_bbm' => $jenis_bbm->nama,
-            'is_subsidi' => $jenis_bbm->is_subsidi,
-            'persentase_tarif_jenis_bbm' => $jenis_bbm->persentase_tarif,
-            'kode_sektor' => $sektor->kode,
-            'nama_sektor' => $sektor->nama,
-            'persentase_tarif_sektor' => $sektor->persentase_tarif,
-            'pembeli' => $request->pembeli,
-            'volume' => $request->volume,
-            'dpp' => $request->dpp,
-        ]);
-
-        return redirect()->route('pelaporan.penjualan.index', $pelaporan->ulid)->with('success', 'Data berhasil diubah');
+            $penjualan->update([
+                'kabupaten_id' => $request->kabupaten_id,
+                'sektor_id' => $request->sektor_id,
+                'jenis_bbm_id' => $request->jenis_bbm_id,
+                'kode_jenis_bbm' => $jenis_bbm->kode,
+                'nama_jenis_bbm' => $jenis_bbm->nama,
+                'is_subsidi' => $jenis_bbm->is_subsidi,
+                'persentase_tarif_jenis_bbm' => $jenis_bbm->persentase_tarif,
+                'kode_sektor' => $sektor->kode,
+                'nama_sektor' => $sektor->nama,
+                'persentase_tarif_sektor' => $sektor->persentase_tarif,
+                'pembeli' => $request->pembeli,
+                'volume' => $request->volume,
+                'dpp' => $request->dpp,
+            ]);
+            return redirect()->route('pelaporan.penjualan.index', $pelaporan->ulid)->with('success', 'Data berhasil diubah');
+        } catch (\Exception $e) {
+            Log::error($e->getMessage() . ' | ' . $e->getFile() . ':' . $e->getLine());
+            return redirect()->back()->with('error', 'Terjadi kesalahan pada server. Hubungi administrator');
+        }
     }
 
     public function destroy(Request $request, $ulid, $penjualan)

@@ -22,31 +22,63 @@
             </div>
         </div>
         <section class="section">
+            <div class="d-flex gap-2 align-items-center mb-3">
+                <a class="btn btn-primary"
+                   href="{{ route('pelaporan.pembelian.create', $pelaporan->ulid) }}">+ Tambah Data</a>
+                <button class="btn btn-primary disabled"
+                        data-bs-target="#importModal"
+                        data-bs-toggle="modal"
+                        type="button">
+                    <i class="isax isax-import"></i>Import Data
+                </button>
+            </div>
             <div class="card">
-                <a class="btn btn-primary mb-3"
-                   href="{{ route('master-data.jenis-bbm.create') }}">+ Tambah Data</a>
                 <div class="card-body">
                     <table class="table table-striped table-bordered"
                            id="pembelian-table">
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Tanggal</th>
-                                <th>Nama Barang</th>
-                                <th>Jumlah</th>
-                                <th>Harga Satuan</th>
-                                <th>Total Harga</th>
+                                <th>Penjual</th>
+                                <th>Kab/Kota</th>
+                                <th>Jenis BBM</th>
+                                <th>Subsidi/Non Subsidi</th>
+                                <th>Total Volume (liter)</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($pembelians as $pembelian)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $pembelian->tanggal }}</td>
-                                    <td>{{ $pembelian->nama_barang }}</td>
-                                    <td>{{ $pembelian->jumlah }}</td>
-                                    <td>{{ $pembelian->harga_satuan }}</td>
-                                    <td>{{ $pembelian->total_harga }}</td>
+                                    <td>{{ $pembelian->penjual }}</td>
+                                    <td>{{ $pembelian->kabupaten->nama }}</td>
+                                    <td>{{ $pembelian->jenisBbm->nama }}</td>
+                                    <td>{{ $pembelian->jenisBbm->is_subsidi ? 'Subsidi' : 'Non Subsidi' }}</td>
+                                    <td class="text-start">{{ number_format($pembelian->volume, 0, ',', '.') }}</td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button aria-expanded="false"
+                                                    class="btn"
+                                                    data-bs-toggle="dropdown"
+                                                    id="dropdownMenuButton1"
+                                                    type="button">
+                                                <i class="isax isax-more"></i>
+                                            </button>
+                                            <ul aria-labelledby="dropdownMenuButton1"
+                                                class="dropdown-menu">
+                                                <li><a class="dropdown-item"
+                                                       href="{{ route('pelaporan.pembelian.edit', ['pembelian' => $pembelian->ulid, 'ulid' => $pelaporan->ulid]) }}">Edit</a>
+                                                </li>
+                                                <li>
+                                                    <button class="dropdown-item"
+                                                            onclick="hapus('{{ route('pelaporan.pembelian.destroy', ['pembelian' => $pembelian->ulid, 'ulid' => $pelaporan->ulid]) }}')">
+                                                        Hapus
+                                                    </button>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -54,6 +86,54 @@
                 </div>
             </div>
         </section>
+    </div>
+
+    <!-- Modal -->
+    <div aria-hidden="true"
+         aria-labelledby="importModalLabel"
+         class="modal fade"
+         data-bs-backdrop="static"
+         id="importModal"
+         tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"
+                        id="importModalLabel">Import data pembelian</h5>
+                    <button aria-label="Close"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            type="button"></button>
+                </div>
+                <form action="http://103.183.75.217/pegawai/kontrak/import"
+                      enctype="multipart/form-data"
+                      method="POST">
+                    <div class="modal-body">
+                        <input name="_token"
+                               type="hidden"
+                               value="29Uw4Bz45CfbDB9Kk7x2GJFeKXG6CcKzNfVp0klr">
+                        <div class="form-group">
+                            <label for="file">Pilih file</label>
+                            <input class="form-control"
+                                   id="file"
+                                   name="file"
+                                   required=""
+                                   type="file">
+                        </div>
+                        <p class="text-sm">* File wajib bertipe excel. Template struktur excel data diunduh <a
+                               class="text-decoration-underline text-primary"
+                               href="">Di Sini</a></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary"
+                                data-bs-dismiss="modal"
+                                type="button">Close</button>
+                        <button class="btn btn-primary"
+                                type="submit">Import</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 @endsection
 
@@ -65,5 +145,50 @@
                 "url": '{{ asset('assets/vendors/datatables-lang-id.json') }}'
             }
         });
+
+        function hapus(route) {
+            Swal.fire({
+                'title': 'Apakah anda yakin?',
+                'text': 'Anda akan menghapus data ini',
+                'icon': 'warning',
+                'showCancelButton': true,
+                'confirmButtonText': 'Hapus',
+                'cancelButtonText': 'Batal',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // ajax
+                    $.ajax({
+                        'url': route,
+                        'type': 'DELETE',
+                        'data': {
+                            '_token': '{{ csrf_token() }}'
+                        },
+                        'success': function(data) {
+                            if (data.status == 'success') {
+                                Swal.fire({
+                                    'title': 'Berhasil',
+                                    'text': 'Data berhasil dihapus',
+                                    'icon': 'success',
+                                    'showConfirmButton': false,
+                                    'allowOutsideClick': false,
+                                    'timer': 1500,
+                                }).then(function() {
+                                    window.location.reload();
+                                });
+                            }
+                        },
+                        'error': function(data) {
+                            Swal.fire({
+                                'title': 'Gagal',
+                                'text': 'Data gagal dihapus',
+                                'icon': 'error',
+                                'showConfirmButton': false,
+                                'timer': 1500,
+                            })
+                        }
+                    });
+                }
+            })
+        }
     </script>
 @endpush
