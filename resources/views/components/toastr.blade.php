@@ -40,5 +40,13 @@
                 });
             @endforeach
         @endif
+
+        @if (session('error-validation'))
+            Toast.fire({
+                icon: 'error',
+                html: `{{ session('error-validation')['message']}}
+                <a class="d-block mt-2 text-decoration-underline" href="{{session('error-validation')['file'] }}" target="_blank">Download pesan error</a>`
+            })
+        @endif
     });
 </script>

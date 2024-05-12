@@ -119,6 +119,8 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/{ulid}/edit/{pembelian}', [PembelianController::class, 'edit'])->name('edit');
                 Route::put('/{ulid}/{pembelian}', [PembelianController::class, 'update'])->name('update');
                 Route::delete('/{ulid}/{pembelian}', [PembelianController::class, 'destroy'])->name('destroy');
+                Route::post('/{ulid}/import', [PembelianController::class, 'import'])->name('import');
+                Route::get('/download/template-import', [PembelianController::class, 'downloadTemplateImport'])->name('download-template-import');
             });
 
             // Penjualan
@@ -130,9 +132,10 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/{ulid}/edit/{penjualan}', [PenjualanController::class, 'edit'])->name('edit');
                 Route::put('/{ulid}/{penjualan}', [PenjualanController::class, 'update'])->name('update');
                 Route::delete('/{ulid}/{penjualan}', [PenjualanController::class, 'destroy'])->name('destroy');
+                Route::post('/{ulid}/import', [PenjualanController::class, 'import'])->name('import');
+                Route::get('/download/template-import', [PenjualanController::class, 'downloadTemplateImport'])->name('download-template-import');
             });
         });
-
     });
 
 

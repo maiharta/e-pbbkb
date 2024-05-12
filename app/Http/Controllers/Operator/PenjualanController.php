@@ -7,9 +7,15 @@ use App\Models\JenisBbm;
 use App\Models\Kabupaten;
 use App\Models\Pelaporan;
 use App\Models\Penjualan;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Storage;
+use App\Imports\Operator\Pelaporan\PenjualanImport;
+use Maatwebsite\Excel\Validators\ValidationException;
+use App\Exports\Operator\Pelaporan\TemplateImportPenjualanExport;
 
 class PenjualanController extends Controller
 {
@@ -152,5 +158,63 @@ class PenjualanController extends Controller
             'status' => 'success',
             'message' => 'Data berhasil dihapus'
         ]);
+    }
+
+    public function downloadTemplateImport(Request $request)
+    {
+        return Excel::download(
+            new TemplateImportPenjualanExport(),
+            'Template Import Penjualan ' . date('d-m-Y') . '.xlsx'
+        );
+    }
+
+    public function import(Request $request, $ulid)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls'
+        ]);
+
+        $pelaporan = Pelaporan::where('ulid', $ulid)->firstOrFail();
+
+        $file = $request->file('file');
+        try {
+            Excel::import(new PenjualanImport($pelaporan), $file);
+        } catch (ValidationException $e) {
+            $failures = $e->failures();
+            $errors = collect();
+            foreach ($failures as $failure) {
+                if (!$errors->has($failure->row())) {
+                    $errors->put($failure->row(), collect([
+                        $failure->attribute() => implode(", ", $failure->errors()),
+                    ]));
+                } else {
+                    $errors->get($failure->row())->put($failure->attribute(), implode(", ", $failure->errors()));
+                }
+            }
+
+            // mkdir if folder not exist storage/app/public/error-import-validation
+            if (!Storage::exists('public/error-import-validation/penjualan')) {
+                Storage::makeDirectory('public/error-import-validation/penjualan');
+            }
+
+            $filepath = storage_path('app/public/error-import-validation/penjualan/');
+            $filename = Str::uuid() . '.txt';
+            $file = fopen($filepath . $filename, 'w');
+            foreach ($errors as $key => $error) {
+                fwrite($file, "Baris " . $key . " : " . PHP_EOL);
+                foreach ($error as $key => $value) {
+                    fwrite($file, "- " . $key . " : " . $value . PHP_EOL);
+                }
+            }
+            fclose($file);
+
+            return redirect()->back()->with('error-validation', [
+                'message' => 'Import gagal, silahkan download dan cek file pesan error',
+                'file' => Storage::url('public/error-import-validation/penjualan/' . $filename),
+            ]);
+        }
+
+        return redirect()->route('pelaporan.penjualan.index', $ulid)->with('success', 'Import data berhasil');
+
     }
 }

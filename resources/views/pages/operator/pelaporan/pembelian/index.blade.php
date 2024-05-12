@@ -25,7 +25,7 @@
             <div class="d-flex gap-2 align-items-center mb-3">
                 <a class="btn btn-primary"
                    href="{{ route('pelaporan.pembelian.create', $pelaporan->ulid) }}">+ Tambah Data</a>
-                <button class="btn btn-primary disabled"
+                <button class="btn btn-primary"
                         data-bs-target="#importModal"
                         data-bs-toggle="modal"
                         type="button">
@@ -95,7 +95,7 @@
          data-bs-backdrop="static"
          id="importModal"
          tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title"
@@ -105,13 +105,11 @@
                             data-bs-dismiss="modal"
                             type="button"></button>
                 </div>
-                <form action="http://103.183.75.217/pegawai/kontrak/import"
+                <form action="{{ route('pelaporan.pembelian.import', $pelaporan->ulid) }}"
                       enctype="multipart/form-data"
                       method="POST">
                     <div class="modal-body">
-                        <input name="_token"
-                               type="hidden"
-                               value="29Uw4Bz45CfbDB9Kk7x2GJFeKXG6CcKzNfVp0klr">
+                        @csrf
                         <div class="form-group">
                             <label for="file">Pilih file</label>
                             <input class="form-control"
@@ -122,7 +120,7 @@
                         </div>
                         <p class="text-sm">* File wajib bertipe excel. Template struktur excel data diunduh <a
                                class="text-decoration-underline text-primary"
-                               href="">Di Sini</a></p>
+                               href="{{ route('pelaporan.pembelian.download-template-import') }}">Di Sini</a></p>
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-secondary"
