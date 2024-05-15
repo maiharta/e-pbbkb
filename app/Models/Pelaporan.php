@@ -74,7 +74,7 @@ class Pelaporan extends Model
 
     public function getSptpdBadgeAttribute()
     {
-        if (!$this->is_sent_to_admin || $this->catatan_revisi) {
+        if (!$this->is_verified) {
             return "<span class='fw-bold isax isax-minus text-disabled'></span>";
         } else {
             return "<span class='fw-bold isax isax-document-upload text-success'></span>";
@@ -83,7 +83,7 @@ class Pelaporan extends Model
 
     public function getSspdBadgeAttribute()
     {
-        if (!$this->is_sent_to_admin || $this->catatan_revisi) {
+        if (!$this->is_verified) {
             return "<span class='fw-bold isax isax-minus text-primary'></span>";
         } else {
             return "<span class='fw-bold isax isax-document-upload text-success'></span>";
@@ -101,14 +101,14 @@ class Pelaporan extends Model
 
     public function getStatusBadgeAttribute()
     {
-        if (!$this->is_sent_to_admin) {
+        if (!$this->is_sent_to_admin && !$this->catatan_revisi) {
             return "<span class='badge bg-warning'>Draft</span>";
         } else if ($this->catatan_revisi) {
-            return "<span class='badge bg-danger'>Revisi</span>";
+            return "<span class='badge bg-danger' title='".$this->catatan_revisi."'>Revisi</span>";
         } else if ($this->is_verified) {
             return "<span class='badge bg-success'>Terverifikasi</span>";
         } else {
-            return "<span class='badge bg-secondary'>Terkirim</span>";
+            return "<span class='badge bg-secondary'>Verifikasi</span>";
         }
     }
 }

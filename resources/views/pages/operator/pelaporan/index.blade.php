@@ -60,4 +60,54 @@
             }
         });
     </script>
+    <script>
+        function sendPelaporan(ulid){
+            Swal.fire({
+                'title': 'Apakah anda yakin?',
+                'text': 'Anda akan mengirimkan data ini dan tidak dapat melakukan perubahan sebelum revisi',
+                'icon': 'warning',
+                'showCancelButton': true,
+                'confirmButtonText': 'Kirim',
+                'cancelButtonText': 'Batal',
+                'customClass': {
+                    confirmButton: 'btn btn-primary me-2',
+                    cancelButton: 'btn btn-outline-secondary'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // ajax
+                    $.ajax({
+                        'url': '{{ route('pelaporan.send') }}/' + ulid,
+                        'type': 'POST',
+                        'data': {
+                            '_token': '{{ csrf_token() }}'
+                        },
+                        'success': function(data) {
+                            if (data.status == 'success') {
+                                Swal.fire({
+                                    'title': 'Berhasil',
+                                    'text': data.message,
+                                    'icon': 'success',
+                                    'showConfirmButton': false,
+                                    'allowOutsideClick': false,
+                                    'timer': 1500,
+                                }).then(function() {
+                                    window.location.reload();
+                                });
+                            }
+                        },
+                        'error': function(data) {
+                            Swal.fire({
+                                'title': 'Gagal',
+                                'text': data.message,
+                                'icon': 'error',
+                                'showConfirmButton': false,
+                                'timer': 1500,
+                            })
+                        }
+                    });
+                }
+            })
+        }
+    </script>
 @endpush

@@ -22,6 +22,17 @@
             </div>
         </div>
         <section class="section">
+            @if ($pelaporan->catatan_revisi)
+                <div class="card w-100">
+                    <div class="card-body d-flex bg-danger text-white align-items-center gap-3">
+                        <div class="d-flex gap-2 align-items-center flex-column border-end pe-4">
+                            <span class="fw-bold fs-4 isax isax-warning-2"></span>
+                            <p class="fs-6 fw-bold mb-0">Revisi</p>
+                        </div>
+                        <p class="mb-0">{{ $pelaporan->catatan_revisi }}</p>
+                    </div>
+                </div>
+            @endif
             <div class="d-flex gap-2 align-items-center mb-3">
                 <a class="btn btn-primary"
                    href="{{ route('pelaporan.penjualan.create', $pelaporan->ulid) }}">+ Tambah Data</a>

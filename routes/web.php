@@ -109,31 +109,34 @@ Route::middleware(['auth'])->group(function () {
         // Pelaporan
         Route::prefix('pelaporan')->name('pelaporan.')->group(function () {
             Route::get('/', [PelaporanController::class, 'index'])->name('index');
+            Route::post('/{ulid?}', [PelaporanController::class, 'send'])->name('send');
 
-            // Pembelian
-            Route::prefix('pembelian')->name('pembelian.')->group(function () {
-                Route::get('/{ulid}', [PembelianController::class, 'index'])->name('index');
-                Route::get('/{ulid}/create', [PembelianController::class, 'create'])->name('create');
-                Route::get('/{ulid}/show', [PembelianController::class, 'show'])->name('show');
-                Route::post('/{ulid}/store', [PembelianController::class, 'store'])->name('store');
-                Route::get('/{ulid}/edit/{pembelian}', [PembelianController::class, 'edit'])->name('edit');
-                Route::put('/{ulid}/{pembelian}', [PembelianController::class, 'update'])->name('update');
-                Route::delete('/{ulid}/{pembelian}', [PembelianController::class, 'destroy'])->name('destroy');
-                Route::post('/{ulid}/import', [PembelianController::class, 'import'])->name('import');
-                Route::get('/download/template-import', [PembelianController::class, 'downloadTemplateImport'])->name('download-template-import');
-            });
+            Route::middleware('ensure_pelaporan_is_not_send_to_admin')->group(function () {
+                // Pembelian
+                Route::prefix('pembelian')->name('pembelian.')->group(function () {
+                    Route::get('/{ulid}', [PembelianController::class, 'index'])->name('index');
+                    Route::get('/{ulid}/create', [PembelianController::class, 'create'])->name('create');
+                    Route::get('/{ulid}/show', [PembelianController::class, 'show'])->name('show');
+                    Route::post('/{ulid}/store', [PembelianController::class, 'store'])->name('store');
+                    Route::get('/{ulid}/edit/{pembelian}', [PembelianController::class, 'edit'])->name('edit');
+                    Route::put('/{ulid}/{pembelian}', [PembelianController::class, 'update'])->name('update');
+                    Route::delete('/{ulid}/{pembelian}', [PembelianController::class, 'destroy'])->name('destroy');
+                    Route::post('/{ulid}/import', [PembelianController::class, 'import'])->name('import');
+                    Route::get('/download/template-import', [PembelianController::class, 'downloadTemplateImport'])->name('download-template-import');
+                });
 
-            // Penjualan
-            Route::prefix('penjualan')->name('penjualan.')->group(function () {
-                Route::get('/{ulid}', [PenjualanController::class, 'index'])->name('index');
-                Route::get('/{ulid}/create', [PenjualanController::class, 'create'])->name('create');
-                Route::get('/{ulid}/show', [PenjualanController::class, 'show'])->name('show');
-                Route::post('/{ulid}/store', [PenjualanController::class, 'store'])->name('store');
-                Route::get('/{ulid}/edit/{penjualan}', [PenjualanController::class, 'edit'])->name('edit');
-                Route::put('/{ulid}/{penjualan}', [PenjualanController::class, 'update'])->name('update');
-                Route::delete('/{ulid}/{penjualan}', [PenjualanController::class, 'destroy'])->name('destroy');
-                Route::post('/{ulid}/import', [PenjualanController::class, 'import'])->name('import');
-                Route::get('/download/template-import', [PenjualanController::class, 'downloadTemplateImport'])->name('download-template-import');
+                // Penjualan
+                Route::prefix('penjualan')->name('penjualan.')->group(function () {
+                    Route::get('/{ulid}', [PenjualanController::class, 'index'])->name('index');
+                    Route::get('/{ulid}/create', [PenjualanController::class, 'create'])->name('create');
+                    Route::get('/{ulid}/show', [PenjualanController::class, 'show'])->name('show');
+                    Route::post('/{ulid}/store', [PenjualanController::class, 'store'])->name('store');
+                    Route::get('/{ulid}/edit/{penjualan}', [PenjualanController::class, 'edit'])->name('edit');
+                    Route::put('/{ulid}/{penjualan}', [PenjualanController::class, 'update'])->name('update');
+                    Route::delete('/{ulid}/{penjualan}', [PenjualanController::class, 'destroy'])->name('destroy');
+                    Route::post('/{ulid}/import', [PenjualanController::class, 'import'])->name('import');
+                    Route::get('/download/template-import', [PenjualanController::class, 'downloadTemplateImport'])->name('download-template-import');
+                });
             });
         });
     });
