@@ -7,11 +7,12 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\Operator\PelaporanController;
+use App\Http\Controllers\Operator\PembelianController;
 use App\Http\Controllers\Operator\PenjualanController;
 use App\Http\Controllers\Admin\Verifikasi\UserController;
 use App\Http\Controllers\Admin\MasterData\SektorController;
 use App\Http\Controllers\Admin\MasterData\JenisBbmController;
-use App\Http\Controllers\Operator\PembelianController;
+use App\Http\Controllers\Admin\Verifikasi\PelaporanController as AdminPelaporanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -70,6 +71,15 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:administrator'])->group(function () {
         // Verifikasi
         Route::prefix('verifikasi')->name('verifikasi.')->group(function () {
+            // Pelaporan
+            Route::prefix('pelaporan')->name('pelaporan.')->group(function () {
+                Route::get('/', [AdminPelaporanController::class, 'index'])->name('index');
+                Route::get('/{ulid}/show', [AdminPelaporanController::class, 'show'])->name('show');
+
+                // ajax
+                Route::post('/approve', [AdminPelaporanController::class, 'approve'])->name('approve');
+                Route::post('/revisi', [AdminPelaporanController::class, 'revisi'])->name('revisi');
+            });
             // User
             Route::prefix('user')->name('user.')->group(function () {
                 Route::get('/', [UserController::class, 'index'])->name('index');

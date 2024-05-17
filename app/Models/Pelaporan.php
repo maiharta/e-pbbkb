@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\User;
 use App\Models\Pembelian;
 use App\Models\Penjualan;
 use Illuminate\Support\Str;
@@ -38,6 +39,11 @@ class Pelaporan extends Model
         });
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function pembelian()
     {
         return $this->hasMany(Pembelian::class);
@@ -55,7 +61,7 @@ class Pelaporan extends Model
 
     public function getPembelianBadgeAttribute()
     {
-        if (!$this->is_sent_to_admin || $this->catatan_revisi) {
+        if (!$this->is_sent_to_admin) {
             $link = route('pelaporan.pembelian.index', ['ulid' => $this->ulid]);
             return "<a href='{$link}' class='fw-bold'><span class='fw-bold isax isax-document-upload text-primary'></span></a>";
         } else {
@@ -64,7 +70,7 @@ class Pelaporan extends Model
     }
     public function getPenjualanBadgeAttribute()
     {
-        if (!$this->is_sent_to_admin || $this->catatan_revisi) {
+        if (!$this->is_sent_to_admin) {
             $link = route('pelaporan.penjualan.index', ['ulid' => $this->ulid]);
             return "<a href='{$link}' class='fw-bold'><span class='fw-bold isax isax-document-download text-primary'></span></a>";
         } else {
@@ -77,7 +83,7 @@ class Pelaporan extends Model
         if (!$this->is_verified) {
             return "<span class='fw-bold isax isax-minus text-disabled'></span>";
         } else {
-            return "<span class='fw-bold isax isax-document-upload text-success'></span>";
+            return "<span class='fw-bold isax isax-chart text-primary'></span>";
         }
     }
 
@@ -86,13 +92,13 @@ class Pelaporan extends Model
         if (!$this->is_verified) {
             return "<span class='fw-bold isax isax-minus text-primary'></span>";
         } else {
-            return "<span class='fw-bold isax isax-document-upload text-success'></span>";
+            return "<span class='fw-bold isax isax-chart text-primary'></span>";
         }
     }
 
     public function getSendBadgeAttribute()
     {
-        if (!$this->is_sent_to_admin || $this->catatan_revisi) {
+        if (!$this->is_sent_to_admin) {
             return "<button class='btn' type='button' onclick='sendPelaporan(\"{$this->ulid}\")'><span class='fw-bold isax isax-direct-right text-primary'></span></button>";
         } else {
             return "<span class='fw-bold isax isax-direct-right text-success'></span>";
@@ -103,10 +109,10 @@ class Pelaporan extends Model
     {
         if (!$this->is_sent_to_admin && !$this->catatan_revisi) {
             return "<span class='badge bg-warning'>Draft</span>";
-        } else if ($this->catatan_revisi) {
+        } else if ($this->catatan_revisi && !$this->is_sent_to_admin) {
             return "<span class='badge bg-danger' title='".$this->catatan_revisi."'>Revisi</span>";
         } else if ($this->is_verified) {
-            return "<span class='badge bg-success'>Terverifikasi</span>";
+            return "<span class='badge bg-info'>Terverifikasi - Pending SSPD</span>";
         } else {
             return "<span class='badge bg-secondary'>Verifikasi</span>";
         }

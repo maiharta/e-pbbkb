@@ -30,6 +30,10 @@
                             <a class="submenu-link"
                                href="{{ route('verifikasi.user.index') }}">User</a>
                         </li>
+                        <li class="submenu-item {{ request()->routeIs('verifikasi.pelaporan*') ? 'active' : '' }}">
+                            <a class="submenu-link"
+                               href="{{ route('verifikasi.pelaporan.index') }}">Pelaporan</a>
+                        </li>
                     </ul>
                 </li>
                 <li class="sidebar-item has-sub {{ request()->routeIs('master-data*') ? 'active' : '' }}">
