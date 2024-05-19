@@ -27,33 +27,33 @@ class SptpdController extends Controller
                     $subtotal_volume = 0;
                     $subtotal_dpp = 0;
                     $subtotal_pbbkb = 0;
-                    foreach ($category->groupBy('jenis_bbm_id') as $jenis_bbm_id => $item) {
+                    foreach ($category->groupBy('jenis_bbm_id') as $item) {
                         $item_unique = $item->first();
-                        $pbbkb = $item->sum('dpp') * $item_unique->persentase_tarif_jenis_bbm + $item_unique->persentase_tarif_sektor / 100;
+                        $pbbkb = $item->sum('dpp') * ($item_unique->persentase_tarif_jenis_bbm + $item_unique->persentase_tarif_sektor) / 100;
 
                         $subtotal_volume += $item->sum('volume');
                         $subtotal_dpp += $item->sum('dpp');
                         $subtotal_pbbkb += $pbbkb;
 
-                        $items->push([
+                        $items->push(collect([
                             'nama_jenis_bbm' => $item_unique->nama_jenis_bbm,
                             'persentase_tarif' => $item_unique->persentase_tarif_jenis_bbm + $item_unique->persentase_tarif_sektor,
                             'volume' => $item->sum('volume'),
                             'dpp' => $item->sum('dpp'),
                             'pbbkb' => $pbbkb
-                        ]);
+                        ]));
                     }
-
-                    $categories->push([
-                        $is_subsidi ? 'Subsidi' : 'Umum' => [
+                    $categories->put(
+                        $is_subsidi ? 'Subsidi' : 'Umum',
+                        collect([
                             'items' => $items,
-                            'subtotal' => [
+                            'subtotal' => collect([
                                 'volume' => $subtotal_volume,
                                 'dpp' => $subtotal_dpp,
                                 'pbbkb' => $subtotal_pbbkb
-                            ]
-                        ]
-                    ]);
+                            ])
+                        ])
+                    );
                 }
                 return [
                     $nama_sektor => $categories
