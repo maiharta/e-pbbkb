@@ -2,6 +2,8 @@
 
 namespace App\Imports\Operator\Pelaporan;
 
+use App\Models\JenisBbm;
+use App\Models\Sektor;
 use App\Models\Pelaporan;
 use App\Models\Penjualan;
 use Illuminate\Support\Collection;
@@ -25,14 +27,24 @@ class PenjualanImport implements ToCollection, WithHeadingRow, WithValidation, W
      */
     public function collection(Collection $collection)
     {
+        $sektors = Sektor::get();
+        $jenis_bbms = JenisBbm::get();
         foreach ($collection as $row) {
-            // dd($row);
+            $jenis_bbm = $jenis_bbms->where('id', $row['jenis_bbm_id'])->first();
+            $sektor = $sektors->where('id', $row['sektor_id'])->first();
             Penjualan::create([
                 'pelaporan_id' => $this->pelaporan->id,
                 'pembeli' => $row['pembeli'],
                 'kabupaten_id' => $row['kabupaten_id'],
                 'sektor_id' => $row['sektor_id'],
                 'jenis_bbm_id' => $row['jenis_bbm_id'],
+                'kode_jenis_bbm' => $jenis_bbm->kode,
+                'nama_jenis_bbm' => $jenis_bbm->nama,
+                'is_subsidi' => $jenis_bbm->is_subsidi,
+                'persentase_tarif_jenis_bbm' => $jenis_bbm->persentase_tarif,
+                'kode_sektor' => $sektor->kode,
+                'nama_sektor' => $sektor->nama,
+                'persentase_tarif_sektor' => $sektor->persentase_tarif,
                 'volume' => $row['volume'],
                 'dpp' => $row['dpp'],
             ]);

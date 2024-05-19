@@ -6,6 +6,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\Operator\SptpdController;
 use App\Http\Controllers\Operator\PelaporanController;
 use App\Http\Controllers\Operator\PembelianController;
 use App\Http\Controllers\Operator\PenjualanController;
@@ -146,6 +147,13 @@ Route::middleware(['auth'])->group(function () {
                     Route::delete('/{ulid}/{penjualan}', [PenjualanController::class, 'destroy'])->name('destroy');
                     Route::post('/{ulid}/import', [PenjualanController::class, 'import'])->name('import');
                     Route::get('/download/template-import', [PenjualanController::class, 'downloadTemplateImport'])->name('download-template-import');
+                });
+            });
+
+            Route::middleware(['ensure_pelaporan_is_verified'])->group(function () {
+                // SPTPD
+                Route::prefix('sptpd')->name('sptpd.')->group(function () {
+                    Route::get('/{ulid}', [SptpdController::class, 'index'])->name('index');
                 });
             });
         });
