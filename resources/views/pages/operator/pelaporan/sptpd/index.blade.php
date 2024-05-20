@@ -28,10 +28,10 @@
                         <p class="mt-3 mb-2 fw-bold">{{ $loop->iteration }}. {{ $sektor }}</p>
                         <div class="ms-4">
                             @foreach ($categories as $category => $items)
-                                <p class="mb-0">{{ chr(64 + $loop->iteration) }}. {{ $category }}
+                                <p class="mb-0 fw-bold">{{ chr(64 + $loop->iteration) }}. {{ $category }}
                                 </p>
                                 <div class="table-responsive">
-                                    <table class="table table-striped">
+                                    <table class="table">
                                         <thead>
                                             <tr>
                                                 <th>No</th>
@@ -45,7 +45,7 @@
                                         <tbody>
                                             {{-- {{ $loop->iteration == 2 ?$pelaporan_2->groupBy('nama_jenis_bbm')->dd():''  }} --}}
                                             @foreach ($items['items'] as $key => $item)
-                                                <tr>
+                                                <tr class="table-secondary">
                                                     <td width="5%">
                                                         {{ $loop->iteration }}
                                                     </td>
@@ -67,7 +67,7 @@
                                                     </td>
                                                 </tr>
                                             @endforeach
-                                            <tr>
+                                            <tr class="table-secondary">
                                                 <td class="fw-bold"
                                                     colspan="3">SUBTOTAL</td>
                                                 <td class="fw-bold">
