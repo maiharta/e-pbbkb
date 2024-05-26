@@ -156,6 +156,7 @@ Route::middleware(['auth'])->group(function () {
                     Route::get('/{ulid}', [SptpdController::class, 'index'])->name('index');
                     // ajax
                     Route::post('/cancel/{ulid?}', [SptpdController::class, 'cancel'])->name('cancel');
+                    Route::post('/approve/{ulid?}', [SptpdController::class, 'approve'])->name('approve');
                 });
             });
         });

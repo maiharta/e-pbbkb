@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('pelaporans', function (Blueprint $table) {
-            $table->boolean('is_sptpd_aprroved')->default(false);
+            $table->boolean('is_sptpd_approved')->default(false);
             $table->boolean('is_sptpd_canceled')->default(false);
         });
     }
@@ -23,7 +23,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('pelaporans', function (Blueprint $table) {
-            $table->dropColumn('is_sptpd_aprroved');
+            $table->dropColumn('is_sptpd_approved');
             $table->dropColumn('is_sptpd_canceled');
         });
     }

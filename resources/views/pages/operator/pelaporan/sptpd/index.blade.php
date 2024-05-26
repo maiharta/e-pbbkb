@@ -130,9 +130,103 @@
                             </div>
                         @endif
                     @endforeach
-                    <div class="d-flex gap-2 mt-3">
-                        <button onclick="cancelSptpd('{{ $pelaporan->ulid }}')" class="btn btn-secondary w-100"><span class="isax isax-back-square"></span> Perbaiki Data</button>
-                        <button class="btn btn-primary w-100 alinve"><span class="isax isax-add-square"></span> Surat Pernyataan</button>
+                    @if (!$pelaporan->is_sptpd_approved)
+                        <div class="d-flex gap-2 mt-3">
+                            <button class="btn btn-secondary w-100"
+                                    onclick="cancelSptpd('{{ $pelaporan->ulid }}')"><span
+                                      class="isax isax-back-square"></span>
+                                Perbaiki Data</button>
+                            <button class="btn btn-primary w-100"
+                                    data-bs-target="#staticBackdrop"
+                                    data-bs-toggle="modal"><span class="isax isax-add-square"></span> Surat
+                                Pernyataan</button>
+                        </div>
+                    @endif
+                </div>
+            </div>
+            <div aria-hidden="true"
+                 aria-labelledby="staticBackdropLabel"
+                 class="modal fade"
+                 data-bs-backdrop="static"
+                 data-bs-keyboard="false"
+                 id="staticBackdrop"
+                 tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title"
+                                id="staticBackdropLabel">Pernyataan</h5>
+                            <button aria-label="Close"
+                                    class="btn-close"
+                                    data-bs-dismiss="modal"
+                                    type="button"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group mb-3">
+                                        <label class="col-form-label fw-bold"
+                                               for="periode">Periode</label>
+                                        <input class="form-control"
+                                               disabled
+                                               id="periode"
+                                               name="periode"
+                                               type="text"
+                                               value="{{ $pelaporan->bulan_name }} - {{ $pelaporan->tahun }}">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group mb-3">
+                                        <label class="col-form-label fw-bold"
+                                               for="pbbkb">Jumlah pemungutan PBBKB</label>
+                                        <input class="form-control"
+                                               disabled
+                                               id="pbbkb"
+                                               name="pbbkb"
+                                               type="text"
+                                               value="Rp {{ number_format($pelaporan->data_formatted->values()->map(fn($item) => $item->values()->pluck('subtotal')->sum('pbbkb'))->sum(), 2, ',', '.') }}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="col-form-label fw-bold"
+                                       for="periode">Wajib Pungut</label>
+                                <input class="form-control"
+                                       disabled
+                                       id="periode"
+                                       name="periode"
+                                       type="text"
+                                       value="{{ auth()->user()->name }}">
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label class="col-form-label fw-bold"
+                                       for="pbbkb">NPWPD</label>
+                                <input class="form-control"
+                                       disabled
+                                       id="pbbkb"
+                                       name="pbbkb"
+                                       type="text"
+                                       value="{{ auth()->user()->userDetail->npwpd }}">
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="col-form-label fw-bold"
+                                       for="nomor_sptpd">Nomor SPTPD*</label>
+                                <input class="form-control"
+                                       id="nomor_sptpd"
+                                       name="nomor_sptpd"
+                                       placeholder="Masukkan nomor SPTPD perusahaan"
+                                       type="text">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary"
+                                    data-bs-dismiss="modal"
+                                    type="button">Batal</button>
+                            <button class="btn btn-primary"
+                                    onclick="approveSptpd('{{ $pelaporan->ulid }}')"
+                                    type="button">Simpan</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -142,7 +236,7 @@
 
 @push('scripts')
     <script>
-        function cancelSptpd(ulid){
+        function cancelSptpd(ulid) {
             Swal.fire({
                 'title': 'Apakah anda yakin?',
                 'text': 'Anda akan membatalkan proses SPTPD dan memperbaiki data pelaporan kemudian melakukan verifikasi ulang ke admin',
@@ -162,6 +256,87 @@
                         'type': 'POST',
                         'data': {
                             '_token': '{{ csrf_token() }}'
+                        },
+                        'success': function(data) {
+                            if (data.status == 'success') {
+                                Swal.fire({
+                                    'title': 'Berhasil',
+                                    'text': data.message,
+                                    'icon': 'success',
+                                    'showConfirmButton': false,
+                                    'allowOutsideClick': false,
+                                    'timer': 1500,
+                                }).then(function() {
+                                    window.location.href = '{{ route('pelaporan.index') }}'
+                                });
+                            }
+                        },
+                        'error': function(data) {
+                            Swal.fire({
+                                'title': 'Gagal',
+                                'text': data.message,
+                                'icon': 'error',
+                                'showConfirmButton': false,
+                                'timer': 1500,
+                            })
+                        }
+                    });
+                }
+            })
+        }
+
+        function approveSptpd(ulid) {
+            const nomor_sptpd = $('#nomor_sptpd').val();
+            if (nomor_sptpd == null || nomor_sptpd == '') {
+                Toast.fire({
+                    'icon': 'error',
+                    'text': 'Semua kolom dengan tanda (*) wajib diisi'
+                });
+                return;
+            }
+            Swal.fire({
+                'title': 'Apakah anda yakin?',
+                'showCancelButton': true,
+                'confirmButtonText': 'Ya, Simpan',
+                'cancelButtonText': 'Batal',
+                'reverseButtons': true,
+                'customClass': {
+                    confirmButton: 'btn btn-primary ms-2',
+                    cancelButton: 'btn btn-outline-secondary'
+                },
+                'html': '<p class="text-start text-sm fw-bold">Silahkan konfirmasi data di bawah ini</p>' +
+                    '<table class="table text-sm table-bordered">' +
+                    '<tr>' +
+                    '<td>Wajib Pungut</td>' +
+                    '<th> {{ auth()->user()->name }}</th>' +
+                    '</tr>' +
+                    '<tr>' +
+                    '<td>NPWPD</td>' +
+                    '<th> {{ auth()->user()->userDetail->npwpd }}</th>' +
+                    '</tr>' +
+                    '<tr>' +
+                    '<td>Periode</td>' +
+                    '<th> {{ $pelaporan->bulan_name }} - {{ $pelaporan->tahun }}</th>' +
+                    '</tr>' +
+                    '<tr>' +
+                    '<td>Jumlah Pemungutan PBBKB</td>' +
+                    '<th> Rp {{ number_format($pelaporan->data_formatted->values()->map(fn($item) => $item->values()->pluck('subtotal')->sum('pbbkb'))->sum(), 2, ',', '.') }}</th>' +
+                    '</tr>' +
+                    '<tr>' +
+                    '<td>Nomor SPTPD</td>' +
+                    '<th> ' + nomor_sptpd + '</th>' +
+                    '</tr>' +
+                    '</table>' +
+                    '<p class="text-danger fw-bold text-sm mb-0">*Dengan menyadari sepenuhnya akan segala akibat termasuk sanksi sesuai dengan ketentuan perundang-undangan yang berlaku, saya atau yang saya beri kuasa menyatakan bahwa apa yang telah kami beritahu tersebut beserta lampiran-lampirannya adalah benar, lengkap, dan jelas</p>',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // ajax
+                    $.ajax({
+                        'url': '{{ route('pelaporan.sptpd.approve') }}/' + ulid,
+                        'type': 'POST',
+                        'data': {
+                            '_token': '{{ csrf_token() }}',
+                            'nomor_sptpd': nomor_sptpd
                         },
                         'success': function(data) {
                             if (data.status == 'success') {

@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Operator;
 
 use App\Models\Pelaporan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 
 class SptpdController extends Controller
@@ -68,7 +70,7 @@ class SptpdController extends Controller
         $pelaporan = Pelaporan::with(['penjualan'])
             ->where('ulid', $ulid)
             ->where('is_verified', true)
-            ->where('is_sptpd_aprroved', false)
+            ->where('is_sptpd_approved', false)
             ->where('user_id', auth()->user()->id)
             ->firstOrFail();
 
@@ -83,6 +85,43 @@ class SptpdController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Berhasil melakukan pembatalan SPTPD'
+        ]);
+    }
+
+    public function approve(Request $request, $ulid)
+    {
+        $request->validate([
+            'nomor_sptpd' => 'required',
+        ]);
+
+        $pelaporan = Pelaporan::with(['penjualan'])
+            ->where('ulid', $ulid)
+            ->where('is_verified', true)
+            ->where('is_sptpd_approved', false)
+            ->where('user_id', auth()->user()->id)
+            ->firstOrFail();
+
+        DB::beginTransaction();
+        try {
+            $pelaporan->update([
+                'is_sptpd_approved' => true,
+            ]);
+
+            $pelaporan->sptpd()->create([
+                'nomor' => $request->nomor_sptpd,
+            ]);
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage() . ' | ' . $e->getFile() . ':' . $e->getLine());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan server. Hubungi administrator'
+            ]);
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Berhasil menyimpan surat pernyataan'
         ]);
     }
 }
