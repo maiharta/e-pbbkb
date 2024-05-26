@@ -62,4 +62,27 @@ class SptpdController extends Controller
 
         return view('pages.operator.pelaporan.sptpd.index', compact('pelaporan'));
     }
+
+    public function cancel(Request $request, $ulid)
+    {
+        $pelaporan = Pelaporan::with(['penjualan'])
+            ->where('ulid', $ulid)
+            ->where('is_verified', true)
+            ->where('is_sptpd_aprroved', false)
+            ->where('user_id', auth()->user()->id)
+            ->firstOrFail();
+
+        $pelaporan->update([
+            'is_verified' => false,
+            'verfied_at' => null,
+            'is_sent_to_admin' => false,
+            'is_sptpd_canceled' => true,
+            'catatan_revisi' => 'Pemohon melakukan pembatalan SPTPD dan melakukan verifikasi ulang'
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Berhasil melakukan pembatalan SPTPD'
+        ]);
+    }
 }

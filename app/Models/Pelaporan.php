@@ -22,6 +22,8 @@ class Pelaporan extends Model
         'catatan_revisi',
         'is_verified',
         'verified_at',
+        'is_sptpd_aprroved',
+        'is_sptpd_canceled',
     ];
 
     protected $casts = [

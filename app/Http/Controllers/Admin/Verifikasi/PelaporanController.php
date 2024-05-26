@@ -44,6 +44,7 @@ class PelaporanController extends Controller
             $pelaporan->update([
                 'catatan_revisi' => $request->catatan_revisi,
                 'is_sent_to_admin' => false,
+                'is_sptpd_canceled' => false,
             ]);
 
             return response()->json([
@@ -74,7 +75,8 @@ class PelaporanController extends Controller
             $pelaporan->update([
                 'catatan_revisi' => null,
                 'is_verified' => true,
-                'verified_at' => now()
+                'verified_at' => now(),
+                'is_sptpd_canceled' => false,
             ]);
 
             return response()->json([
@@ -89,6 +91,4 @@ class PelaporanController extends Controller
             ]);
         }
     }
-
-
 }
