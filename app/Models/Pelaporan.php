@@ -93,7 +93,8 @@ class Pelaporan extends Model
         if (!$this->is_verified) {
             return "<span class='fw-bold isax isax-minus text-primary'></span>";
         } else {
-            return "<span class='fw-bold isax isax-chart text-primary'></span>";
+            $link = route('pelaporan.sspd.index', ['ulid' => $this->ulid]);
+            return "<a href='{$link}'><span class='fw-bold isax isax-chart text-primary'></span></a>";
         }
     }
 

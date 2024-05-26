@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\Verifikasi\UserController;
 use App\Http\Controllers\Admin\MasterData\SektorController;
 use App\Http\Controllers\Admin\MasterData\JenisBbmController;
 use App\Http\Controllers\Admin\Verifikasi\PelaporanController as AdminPelaporanController;
+use App\Http\Controllers\Operator\SspdController;
 
 /*
 |--------------------------------------------------------------------------
@@ -154,6 +155,10 @@ Route::middleware(['auth'])->group(function () {
                 // SPTPD
                 Route::prefix('sptpd')->name('sptpd.')->group(function () {
                     Route::get('/{ulid}', [SptpdController::class, 'index'])->name('index');
+                });
+                // SSPD
+                Route::prefix('sspd')->name('sspd.')->group(function(){
+                    Route::get('/{ulid}', [SspdController::class, 'index'])->name('index');
                 });
             });
         });
