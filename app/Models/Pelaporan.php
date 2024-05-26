@@ -22,6 +22,8 @@ class Pelaporan extends Model
         'catatan_revisi',
         'is_verified',
         'verified_at',
+        'is_sptpd_approved',
+        'is_sptpd_canceled',
     ];
 
     protected $casts = [
@@ -52,6 +54,11 @@ class Pelaporan extends Model
     public function penjualan()
     {
         return $this->hasMany(Penjualan::class);
+    }
+
+    public function sptpd()
+    {
+        return $this->hasOne(Sptpd::class);
     }
 
     public function getBulanNameAttribute()
@@ -90,7 +97,7 @@ class Pelaporan extends Model
 
     public function getSspdBadgeAttribute()
     {
-        if (!$this->is_verified) {
+        if (!$this->is_sptpd_approved) {
             return "<span class='fw-bold isax isax-minus text-primary'></span>";
         } else {
             $link = route('pelaporan.sspd.index', ['ulid' => $this->ulid]);
@@ -112,8 +119,10 @@ class Pelaporan extends Model
         if (!$this->is_sent_to_admin && !$this->catatan_revisi) {
             return "<span class='badge bg-warning'>Draft</span>";
         } else if ($this->catatan_revisi && !$this->is_sent_to_admin) {
-            return "<span class='badge bg-danger' title='".$this->catatan_revisi."'>Revisi</span>";
-        } else if ($this->is_verified) {
+            return "<span class='badge bg-danger' title='" . $this->catatan_revisi . "'>Revisi</span>";
+        } else if ($this->is_verified && !$this->is_sptpd_approved) {
+            return "<span class='badge bg-info'>Terverifikasi - Pending SPTPD</span>";
+        } else if ($this->is_sptpd_approved) {
             return "<span class='badge bg-info'>Terverifikasi - Pending SSPD</span>";
         } else {
             return "<span class='badge bg-secondary'>Verifikasi</span>";

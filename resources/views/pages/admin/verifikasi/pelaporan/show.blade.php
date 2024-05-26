@@ -101,10 +101,16 @@
             </div>
             @if ($pelaporan->catatan_revisi)
                 <div class="card w-100">
-                    <div class="card-body d-flex bg-danger text-white align-items-center gap-3">
+                    <div
+                         class="card-body d-flex {{ $pelaporan->is_sptpd_canceled ? 'bg-info' : 'bg-danger' }} text-white align-items-center gap-3">
                         <div class="d-flex gap-3 align-items-center flex-column border-end pe-4">
-                            <span class="fw-bold fs-4 isax isax-warning-2"></span>
-                            <p class="fs-6 fw-bold mb-0 text-center">Revisi Sebelumnya</p>
+                            @if ($pelaporan->is_sptpd_canceled)
+                                <span class="fw-bold fs-4 isax isax-warning-2"></span>
+                                <p class="fs-6 fw-bold mb-0">Info</p>
+                            @else
+                                <span class="fw-bold fs-4 isax isax-warning-2"></span>
+                                <p class="fs-6 fw-bold mb-0 text-center">Revisi Sebelumnya</p>
+                            @endif
                         </div>
                         <p class="mb-0">{{ $pelaporan->catatan_revisi }}</p>
                     </div>
