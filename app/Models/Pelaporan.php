@@ -123,9 +123,9 @@ class Pelaporan extends Model
         } else if ($this->is_verified && !$this->is_sptpd_approved) {
             return "<span class='badge bg-info'>Terverifikasi - Pending SPTPD</span>";
         } else if ($this->is_sptpd_approved) {
-            return "<span class='badge bg-info'>Terverifikasi - Pending SSPD</span>";
+            return "<span class='badge bg-info'>Pending Pembayaran SSPD</span>";
         } else {
-            return "<span class='badge bg-secondary'>Verifikasi</span>";
+            return "<span class='badge bg-secondary'>Verifikasi Admin</span>";
         }
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kabupaten;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -23,14 +24,16 @@ class ProfileController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(),[
             'kabupaten_id' => 'required|exists:kabupatens,id',
             'name' => 'required',
             'npwpd' => 'required',
             'nomor_telepon' => 'required',
             'alamat' => 'required',
             'berkas' => 'required|max:2048',
-        ]);
+        ],[
+            'max' => 'Berkas yang diunggah tidak boleh lebih dari 2MB'
+        ])->validate();
 
         DB::beginTransaction();
         try {

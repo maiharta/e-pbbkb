@@ -15,6 +15,7 @@ class SspdController extends Controller
         }])
             ->where('ulid', $ulid)
             ->where('is_verified', true)
+            ->where('is_sptpd_approved', true)
             ->where('user_id', auth()->user()->id)
             ->firstOrFail();
 

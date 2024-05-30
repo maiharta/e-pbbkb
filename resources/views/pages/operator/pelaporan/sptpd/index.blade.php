@@ -45,7 +45,7 @@
                                         <tbody>
                                             {{-- {{ $loop->iteration == 2 ?$pelaporan_2->groupBy('nama_jenis_bbm')->dd():''  }} --}}
                                             @foreach ($items['items'] as $key => $item)
-                                                <tr class="table-secondary">
+                                                <tr class="table-secondary-custom">
                                                     <td width="5%">
                                                         {{ $loop->iteration }}
                                                     </td>
@@ -67,7 +67,7 @@
                                                     </td>
                                                 </tr>
                                             @endforeach
-                                            <tr class="table-secondary">
+                                            <tr class="table-secondary-custom">
                                                 <td class="fw-bold"
                                                     colspan="3">SUBTOTAL</td>
                                                 <td class="fw-bold">
@@ -99,7 +99,7 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($pelaporan->data_formatted as $sektor => $categories)
-                                            <tr class="table-secondary">
+                                            <tr class="table-secondary-custom">
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $sektor }}</td>
                                                 <td>{{ number_format($categories->values()->pluck('subtotal')->sum('volume'), 0, ',', '.') }}
@@ -112,7 +112,7 @@
                                                 </td>
                                             </tr>
                                         @endforeach
-                                        <tr class="table-secondary">
+                                        <tr class="table-secondary-custom">
                                             <td class="fw-bold"
                                                 colspan="2">Total</td>
                                             <td class="fw-bold">
