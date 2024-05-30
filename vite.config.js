@@ -21,6 +21,8 @@ export default defineConfig({
                 'resources/scss/auth/style.scss',
                 'resources/js/auth.js',
                 'resources/js/auth/register.js',
+                'resources/scss/app.scss',
+                'resources/scss/themes/dark/app-dark.scss',
             ],
             refresh: true,
         }),
@@ -28,6 +30,11 @@ export default defineConfig({
     resolve: {
         alias: {
             '@': normalizePath(__dirname, 'resources/js'),
+            '~bootstrap': resolve(__dirname, 'node_modules/bootstrap'),
+            '~bootstrap-icons': resolve(__dirname, 'node_modules/bootstrap-icons'),
+            '~select2': resolve(__dirname, 'node_modules/select2'),
+            '~perfect-scrollbar': resolve(__dirname, 'node_modules/perfect-scrollbar'),
+            '~flatpickr': resolve(__dirname, 'node_modules/flatpickr'),
         },
     },
 });

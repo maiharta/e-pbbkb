@@ -1,0 +1,196 @@
+@import "../mixins/mixins.scss";
+// variables
+@import "../variables";
+
+$primaryColor: $primary;
+$secondaryColor:#FFF;
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+::-webkit-input-placeholder {
+    text-transform: initial;
+}
+
+:-moz-placeholder {
+    text-transform: initial;
+}
+
+::-moz-placeholder {
+    text-transform: initial;
+}
+
+:-ms-input-placeholder {
+    text-transform: initial;
+}
+
+#login {
+    font-family: 'Roboto', sans-serif;
+
+    #loading {
+        position: fixed;
+        z-index: 9999;
+        background: rgba(0, 0, 0, 1);
+        height: 100%;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    @include medium-up {
+        .bg-login {
+            width: 100vw;
+            height: 100vh;
+            background-color: $primaryColor;
+
+            .bg-overlay {
+                box-sizing: border-box;
+                position: fixed;
+                width: 100vw;
+                height: 180vh;
+                left: 50vw;
+                background: $secondaryColor;
+                border-radius: 0px 0px 0px 332px;
+                transform: rotate(24.7deg);
+            }
+
+            .content {
+                z-index: 1;
+
+                .app-name {
+                    letter-spacing: 0.065em;
+                }
+
+                .avatar-logo {
+                    width: 80%;
+                }
+            }
+
+            .form-section {
+                h3 {
+                    font-size: 1.5rem;
+                    font-weight: 500;
+                    color: #3E3E3E;
+                    font-size: 32px;
+                }
+
+                form {
+                    label {
+                        font-size: 0.9rem;
+                        font-weight: 500;
+                        color: #3E3E3E;
+                    }
+
+                    .BDC_CaptchaImageDiv a {
+                        display: none !important;
+                    }
+
+                    input[type="text"],
+                    input[type="password"] {
+                        border: 1px solid #B7BFDD;
+                        border-radius: 8px;
+                        font-weight: 400;
+                        font-size: 14px;
+                        line-height: 16px;
+                        letter-spacing: 0.02em;
+                        padding: 16px 20px;
+                    }
+
+                    input[type="password"] {
+                        border-radius: 8px 0 0 8px;
+                        border: 1px 1px 1px 0;
+                    }
+
+                    .forgot-password {
+                        font-size: 16px;
+                        font-weight: 400;
+                        color: $primary;
+                        text-decoration: none;
+                    }
+
+                    .btn-toggle-password {
+                        border: 1px solid #B7BFDD;
+                        border-radius: 0 8px 8px 0;
+                        border-left: 0;
+                        background: #FFF;
+                        color: #B3B3B3;
+                        font-size: 16px;
+                        font-weight: 400;
+                        line-height: 16px;
+                    }
+
+                    .btn-login {
+                        background: $primary;
+                        padding: 16px 20px;
+                        color: #FFF;
+                        font-weight: 500;
+                        font-size: 16px;
+                        line-height: 19px;
+                    }
+                }
+            }
+        }
+    }
+
+    @include medium-down {
+        .bg-login {
+            width: 100vw;
+            height: 50vh;
+            background-color: $primaryColor;
+
+            .content {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+
+                .content-flex {
+                    display: block !important;
+                }
+
+                .title-section {
+                    margin-top: 30%;
+                    margin-bottom: 30%;
+                    text-align: center;
+
+                    .welcome {
+                        text-align: start;
+                        font-size: 1.2rem;
+                        color: #3E3E3E;
+                    }
+
+                    .app-name {
+                        text-align: start;
+                        letter-spacing: 0.065em;
+                    }
+
+                    .avatar-logo {
+                        text-align: center;
+                        width: 70%;
+                    }
+                }
+
+                .form-section {
+                    margin-bottom: 100px;
+
+                    h3 {
+                        text-align: center;
+                    }
+
+                    .btn-login {
+                        width: 100%;
+                        background-color: $primary;
+                        color: #FFF;
+                        font-weight: bold;
+                    }
+                }
+            }
+        }
+
+
+    }
+}

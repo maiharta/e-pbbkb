@@ -16,6 +16,9 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
     {{-- VENDORS --}}
     <link rel="stylesheet" href="{{ asset('assets/vendors/iconsax/style.css') }}">
+    {{-- favicon --}}
+    <link rel="icon" href="{{ asset('assets/images/favicon.png') }}" type="image/png">
+    {{-- custom css --}}
     @stack('styles')
     @vite(['resources/scss/auth/style.scss'])
 </head>
@@ -36,8 +39,9 @@
     </script>
     {{-- Jquery --}}
     <script src="{{ asset('assets/js/jquery-3.4.1.min.js') }}"></script>
-    <script src="{{ asset('assets/vendors/sweetalert2/sweetalert2@11.js') }}"></script>
-    <script src="{{ asset('assets/js/toastr.min.js') }}"></script>
+    {{-- <script src="{{ asset('assets/vendors/sweetalert2/sweetalert2@11.js') }}"></script> --}}
+    {{-- <script src="{{ asset('assets/js/toastr.min.js') }}"></script> --}}
+    <x-toastr/>
     @vite(['resources/js/app.js', 'resources/js/auth.js'])
     @stack('scripts')
 </body>
