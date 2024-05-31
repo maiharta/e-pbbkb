@@ -128,7 +128,7 @@ return [
      * Default 'validation.recaptcha'
      *
      */
-    'error_message_key' => 'validation.recaptcha',
+    'error_message_key' => 'Verifikasi captcha gagal. Harap ulangi kembali',
 
     /**
      *

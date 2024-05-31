@@ -32,7 +32,6 @@
                    name="password_verify"
                    placeholder="Konfirmasi Password"
                    type="password" />
-
     <button class="btn btn-primary w-100"
             id="generate_otp"
             type="button">
@@ -78,6 +77,9 @@
                                 class="fw-bold text-decoration-none text-primary bg-transparent border-0"
                                 href="#"
                                 id="resend-otp">Kirim Ulang</button></p>
+                    <div class="form-group mt-3 d-flex justify-content-center">
+                        {!! htmlFormSnippet() !!}
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-primary w-100"

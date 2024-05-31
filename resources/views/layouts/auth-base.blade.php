@@ -21,6 +21,7 @@
     {{-- custom css --}}
     @stack('styles')
     @vite(['resources/scss/auth/style.scss'])
+    {!! ReCaptcha::htmlScriptTagJsApi() !!}
 </head>
 
 <body>

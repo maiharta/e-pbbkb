@@ -21,6 +21,7 @@ class AuthenticationController extends Controller
         $request->validate([
             'email' => 'required|email',
             'password' => 'required|string',
+            'g-recaptcha-response' => 'recaptcha',
         ]);
 
         if (auth()->attempt($request->only('email', 'password'))) {
@@ -42,6 +43,7 @@ class AuthenticationController extends Controller
             'password' => 'required|string|min:8',
             'password_verify' => 'required|same:password',
             'otp_code' => 'required|digits:6',
+            'g-recaptcha-response' => 'recaptcha',
         ]);
 
         try{
@@ -79,7 +81,7 @@ class AuthenticationController extends Controller
     public function generateOtp(Request $request)
     {
         $request->validate([
-            'email' => 'required|email',
+            'email' => 'required|email'
         ]);
 
         $user = User::where('email', $request->email)->first();

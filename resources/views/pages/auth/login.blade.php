@@ -21,10 +21,13 @@
                        name="password"
                        placeholder="Password"
                        type="password" />
-        <a class="forgot-password d-block"
+        <a class="forgot-password d-block mb-2"
            href="{{ route('password.request') }}">
             Lupa Password?
         </a>
+        <div class="form-group mb-4">
+            {!! htmlFormSnippet() !!}
+        </div>
         <button class="btn w-100 shadow""
                 type="submit">
             Login
