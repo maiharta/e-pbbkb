@@ -13,11 +13,11 @@ class Sektor extends Model
     protected $fillable = [
         'kode',
         'nama',
-        'persentase_tarif',
+        'persentase_pengenaan',
     ];
 
     protected $casts = [
-        'persentase_tarif' => 'decimal:2',
+        'persentase_pengenaan' => 'decimal:2',
     ];
 
     protected static function boot()

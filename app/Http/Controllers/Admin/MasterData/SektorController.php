@@ -25,7 +25,7 @@ class SektorController extends Controller
         $request->validate([
             'kode' => 'required|string|max:255',
             'nama' => 'required|string|max:255',
-            'persentase_tarif' => 'required|numeric|min:0|max:100',
+            'persentase_pengenaan' => 'required|numeric|min:0|max:100',
         ]);
 
         try{
@@ -35,14 +35,14 @@ class SektorController extends Controller
             Sektor::create([
                 'kode' => $request->kode,
                 'nama' => $request->nama,
-                'persentase_tarif' => $request->persentase_tarif,
+                'persentase_pengenaan' => $request->persentase_pengenaan,
             ]);
         }catch(\Exception $e){
             Log::error($e->getMessage() . ' | ' . $e->getFile() . ':' . $e->getLine());
             return redirect()->back()->with('error', 'Terjadi kesalahan pada sistem. Hubungi Administrator');
         }
 
-        return redirect()->route('master-data.sektor.index')->with('success', 'Sektor berhasil ditambahkan');
+        return redirect()->route('pages.admin.master-data.sektor.index')->with('success', 'Sektor berhasil ditambahkan');
     }
 
     public function edit(Request $request, $ulid)
@@ -56,7 +56,7 @@ class SektorController extends Controller
         $request->validate([
             'kode' => 'required|string|max:255|unique:sektors,kode,' . $ulid . ',ulid',
             'nama' => 'required|string|max:255',
-            'persentase_tarif' => 'required|numeric|min:0|max:100',
+            'persentase_pengenaan' => 'required|numeric|min:0|max:100',
         ]);
 
         try{
@@ -64,7 +64,7 @@ class SektorController extends Controller
             $sektor->update([
                 'kode' => $request->kode,
                 'nama' => $request->nama,
-                'persentase_tarif' => $request->persentase_tarif,
+                'persentase_pengenaan' => $request->persentase_pengenaan,
             ]);
         }catch(\Exception $e){
             Log::error($e->getMessage() . ' | ' . $e->getFile() . ':' . $e->getLine());
