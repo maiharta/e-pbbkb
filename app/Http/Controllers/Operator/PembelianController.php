@@ -29,38 +29,43 @@ class PembelianController extends Controller
     public function create(Request $request, $ulid)
     {
         $pelaporan = Pelaporan::where('user_id', auth()->user()->id)->where('ulid', $ulid)->firstOrFail();
-        $kabupatens = Kabupaten::all();
-        $sektors = Sektor::all();
         $jenis_bbms = JenisBbm::all();
         return view('pages.operator.pelaporan.pembelian.create', compact(
             'pelaporan',
-            'kabupatens',
-            'sektors',
             'jenis_bbms'
         ));
     }
 
     public function store(Request $request, $ulid)
     {
-        $pelaporan = Pelaporan::where('user_id', auth()->user()->id)->where('ulid', $ulid)->firstOrFail();
+        $pelaporan = Pelaporan::where('user_id', auth()->user()->id)
+            ->where('ulid', $ulid)
+            ->firstOrFail();
         $request->validate([
             'penjual' => 'required',
-            'kabupaten_id' => 'required|exists:kabupatens,id',
             'jenis_bbm_id' => 'required|exists:jenis_bbms,id',
             'volume' => 'required',
+            'sisa_volume' => 'required',
+            'nomor_kuitansi' => 'required',
+            'tanggal' => 'required|date:Y-m-d',
+            'alamat' => 'required',
         ]);
 
         try {
             $jenis_bbm = JenisBbm::where('id', $request->jenis_bbm_id)->first();
 
             $pelaporan->pembelian()->create([
-                'kabupaten_id' => $request->kabupaten_id,
                 'jenis_bbm_id' => $request->jenis_bbm_id,
                 'kode_jenis_bbm' => $jenis_bbm->kode,
                 'nama_jenis_bbm' => $jenis_bbm->nama,
+                'persentase_tarif_jenis_bbm' => $jenis_bbm->persentase_tarif,
                 'is_subsidi' => $jenis_bbm->is_subsidi,
                 'penjual' => $request->penjual,
                 'volume' => $request->volume,
+                'sisa_volume' => $request->sisa_volume,
+                'nomor_kuitansi' => $request->nomor_kuitansi,
+                'tanggal' => $request->tanggal,
+                'alamat' => $request->alamat,
             ]);
 
             return redirect()->route('pelaporan.pembelian.index', $pelaporan->ulid)->with('success', 'Berhasil menambahkan data pembelian');
@@ -78,15 +83,11 @@ class PembelianController extends Controller
             })
             ->firstOrFail();
         $pembelian = Pembelian::where('ulid', $pembelian)->firstOrFail();
-        $kabupatens = Kabupaten::all();
-        $sektors = Sektor::all();
         $jenis_bbms = JenisBbm::all();
 
         return view('pages.operator.pelaporan.pembelian.edit', compact(
             'pelaporan',
             'pembelian',
-            'kabupatens',
-            'sektors',
             'jenis_bbms'
         ));
     }
@@ -101,23 +102,30 @@ class PembelianController extends Controller
 
         $request->validate([
             'penjual' => 'required',
-            'kabupaten_id' => 'required|exists:kabupatens,id',
             'jenis_bbm_id' => 'required|exists:jenis_bbms,id',
-            'volume' => 'required'
+            'volume' => 'required',
+            'sisa_volume' => 'required',
+            'nomor_kuitansi' => 'required',
+            'tanggal' => 'required|date:Y-m-d',
+            'alamat' => 'required',
         ]);
 
         try {
             $jenis_bbm = JenisBbm::where('id', $request->jenis_bbm_id)->first();
 
             $pembelian->update([
-                'kabupaten_id' => $request->kabupaten_id,
                 'sektor_id' => $request->sektor_id,
                 'jenis_bbm_id' => $request->jenis_bbm_id,
                 'kode_jenis_bbm' => $jenis_bbm->kode,
                 'nama_jenis_bbm' => $jenis_bbm->nama,
+                'persentase_tarif_jenis_bbm' => $jenis_bbm->persentase_tarif,
                 'is_subsidi' => $jenis_bbm->is_subsidi,
                 'penjual' => $request->penjual,
                 'volume' => $request->volume,
+                'sisa_volume' => $request->sisa_volume,
+                'nomor_kuitansi' => $request->nomor_kuitansi,
+                'tanggal' => $request->tanggal,
+                'alamat' => $request->alamat,
             ]);
             return redirect()->route('pelaporan.pembelian.index', $pelaporan->ulid)->with('success', 'Data berhasil diubah');
         } catch (\Exception $e) {

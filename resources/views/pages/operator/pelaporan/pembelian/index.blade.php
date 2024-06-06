@@ -24,7 +24,8 @@
         <section class="section">
             @if ($pelaporan->catatan_revisi)
                 <div class="card w-100">
-                    <div class="card-body d-flex {{ $pelaporan->is_sptpd_canceled ? 'bg-info' : 'bg-danger' }} text-white align-items-center gap-3">
+                    <div
+                         class="card-body d-flex {{ $pelaporan->is_sptpd_canceled ? 'bg-info' : 'bg-danger' }} text-white align-items-center gap-3">
                         <div class="d-flex gap-2 align-items-center flex-column border-end pe-4">
                             @if ($pelaporan->is_sptpd_canceled)
                                 <span class="fw-bold fs-4 isax isax-warning-2"></span>
@@ -56,9 +57,10 @@
                             <tr>
                                 <th>No</th>
                                 <th>Penjual</th>
-                                <th>Kab/Kota</th>
+                                <th>Tanggal</th>
                                 <th>Jenis BBM</th>
                                 <th>Subsidi/Non Subsidi</th>
+                                <th>Sisa Volume (liter)</th>
                                 <th>Total Volume (liter)</th>
                                 <th>Aksi</th>
                             </tr>
@@ -68,9 +70,10 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $pembelian->penjual }}</td>
-                                    <td>{{ $pembelian->kabupaten->nama }}</td>
+                                    <td>{{ $pembelian->tanggal_formatted }}</td>
                                     <td>{{ $pembelian->jenisBbm->nama }}</td>
                                     <td>{{ $pembelian->jenisBbm->is_subsidi ? 'Subsidi' : 'Non Subsidi' }}</td>
+                                    <td class="text-start">{{ number_format($pembelian->sisa_volume, 0, ',', '.') }}</td>
                                     <td class="text-start">{{ number_format($pembelian->volume, 0, ',', '.') }}</td>
                                     <td>
                                         <div class="dropdown">

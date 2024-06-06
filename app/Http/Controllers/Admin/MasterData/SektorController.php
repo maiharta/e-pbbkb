@@ -42,7 +42,7 @@ class SektorController extends Controller
             return redirect()->back()->with('error', 'Terjadi kesalahan pada sistem. Hubungi Administrator');
         }
 
-        return redirect()->route('pages.admin.master-data.sektor.index')->with('success', 'Sektor berhasil ditambahkan');
+        return redirect()->route('master-data.sektor.index')->with('success', 'Sektor berhasil ditambahkan');
     }
 
     public function edit(Request $request, $ulid)

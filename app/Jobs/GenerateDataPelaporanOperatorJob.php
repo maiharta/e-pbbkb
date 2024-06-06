@@ -35,7 +35,7 @@ class GenerateDataPelaporanOperatorJob implements ShouldQueue
         foreach ($users as $user) {
             $pelaporan = Pelaporan::firstOrCreate([
                 'user_id' => $user->id,
-                'bulan' => now()->month,
+                'bulan' => now()->month - 1,
                 'tahun' => now()->year,
             ], [
                 'is_sent_to_admin' => false,
