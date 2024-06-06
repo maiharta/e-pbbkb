@@ -2,8 +2,7 @@
 
 namespace App\Exports\Operator\Pelaporan;
 
-use App\Exports\JenisBbmExport;
-use App\Exports\KabupatenExport;
+use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Style\Border;
@@ -13,26 +12,22 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
-class TemplateImportPembelianExport implements FromCollection, ShouldAutoSize, WithMultipleSheets, WithStyles, WithHeadings, WithTitle
+class ExampleImportPembelianExport implements FromCollection, ShouldAutoSize, WithStyles, WithHeadings, WithTitle
 {
     /**
      * @return \Illuminate\Support\Collection
      */
     public function collection()
     {
-        return collect();
-    }
-
-    public function sheets(): array
-    {
-        $sheets = [
-            // this export
-            'Pembelian' => $this,
-            'Jenis BBM' => new JenisBbmExport(),
-            'Contoh Data' => new ExampleImportPembelianExport(),
-        ];
-
-        return $sheets;
+        return new Collection([[
+            'PT. Pertamina',
+            'Jl. Tukad Ayung No. 5, Denpasar, Bali',
+            1,
+            500,
+            150000,
+            'INV_12345',
+            '30-03-2024',
+        ]]);
     }
 
     public function styles($sheet)
@@ -54,7 +49,7 @@ class TemplateImportPembelianExport implements FromCollection, ShouldAutoSize, W
 
     public function title(): string
     {
-        return 'Pembelian';
+        return 'Contoh Data';
     }
 
     private function getHeader()

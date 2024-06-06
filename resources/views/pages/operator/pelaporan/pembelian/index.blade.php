@@ -51,57 +51,61 @@
             </div>
             <div class="card">
                 <div class="card-body">
-                    <table class="table table-striped table-bordered"
-                           id="pembelian-table">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Penjual</th>
-                                <th>Tanggal</th>
-                                <th>Jenis BBM</th>
-                                <th>Subsidi/Non Subsidi</th>
-                                <th>Sisa Volume (liter)</th>
-                                <th>Total Volume (liter)</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($pembelians as $pembelian)
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered"
+                               id="pembelian-table">
+                            <thead>
                                 <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $pembelian->penjual }}</td>
-                                    <td>{{ $pembelian->tanggal_formatted }}</td>
-                                    <td>{{ $pembelian->jenisBbm->nama }}</td>
-                                    <td>{{ $pembelian->jenisBbm->is_subsidi ? 'Subsidi' : 'Non Subsidi' }}</td>
-                                    <td class="text-start">{{ number_format($pembelian->sisa_volume, 0, ',', '.') }}</td>
-                                    <td class="text-start">{{ number_format($pembelian->volume, 0, ',', '.') }}</td>
-                                    <td>
-                                        <div class="dropdown">
-                                            <button aria-expanded="false"
-                                                    class="btn"
-                                                    data-bs-toggle="dropdown"
-                                                    id="dropdownMenuButton1"
-                                                    type="button">
-                                                <i class="isax isax-more"></i>
-                                            </button>
-                                            <ul aria-labelledby="dropdownMenuButton1"
-                                                class="dropdown-menu">
-                                                <li><a class="dropdown-item"
-                                                       href="{{ route('pelaporan.pembelian.edit', ['pembelian' => $pembelian->ulid, 'ulid' => $pelaporan->ulid]) }}">Edit</a>
-                                                </li>
-                                                <li>
-                                                    <button class="dropdown-item"
-                                                            onclick="hapus('{{ route('pelaporan.pembelian.destroy', ['pembelian' => $pembelian->ulid, 'ulid' => $pelaporan->ulid]) }}')">
-                                                        Hapus
-                                                    </button>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </td>
+                                    <th>No</th>
+                                    <th>Penjual</th>
+                                    <th>Nomor Kuitansi</th>
+                                    <th>Tanggal</th>
+                                    <th>Jenis BBM</th>
+                                    <th>Sisa Volume (liter)</th>
+                                    <th>Total Volume (liter)</th>
+                                    <th>Aksi</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach ($pembelians as $pembelian)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $pembelian->penjual }}</td>
+                                        <td>{{ $pembelian->nomor_kuitansi }}</td>
+                                        <td>{{ $pembelian->tanggal_formatted }}</td>
+                                        <td>{{ $pembelian->jenisBbm->nama }} -
+                                            {{ $pembelian->jenisBbm->is_subsidi ? 'Subsidi' : 'Non Subsidi' }}</td>
+                                        <td class="text-start">{{ number_format($pembelian->sisa_volume, 0, ',', '.') }}
+                                        </td>
+                                        <td class="text-start">{{ number_format($pembelian->volume, 0, ',', '.') }}</td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button aria-expanded="false"
+                                                        class="btn"
+                                                        data-bs-toggle="dropdown"
+                                                        id="dropdownMenuButton1"
+                                                        type="button">
+                                                    <i class="isax isax-more"></i>
+                                                </button>
+                                                <ul aria-labelledby="dropdownMenuButton1"
+                                                    class="dropdown-menu">
+                                                    <li><a class="dropdown-item"
+                                                           href="{{ route('pelaporan.pembelian.edit', ['pembelian' => $pembelian->ulid, 'ulid' => $pelaporan->ulid]) }}">Edit</a>
+                                                    </li>
+                                                    <li>
+                                                        <button class="dropdown-item"
+                                                                onclick="hapus('{{ route('pelaporan.pembelian.destroy', ['pembelian' => $pembelian->ulid, 'ulid' => $pelaporan->ulid]) }}')">
+                                                            Hapus
+                                                        </button>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </section>

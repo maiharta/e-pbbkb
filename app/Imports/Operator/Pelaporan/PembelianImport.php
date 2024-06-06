@@ -4,6 +4,7 @@ namespace App\Imports\Operator\Pelaporan;
 
 use App\Models\Pelaporan;
 use App\Models\Pembelian;
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -20,18 +21,20 @@ class PembelianImport implements ToCollection, WithHeadingRow, WithValidation, W
     }
 
     /**
-    * @param Collection $collection
-    */
+     * @param Collection $collection
+     */
     public function collection(Collection $collection)
     {
         foreach ($collection as $row) {
-            // dd($row);
             Pembelian::create([
                 'pelaporan_id' => $this->pelaporan->id,
                 'penjual' => $row['penjual'],
-                'kabupaten_id' => $row['kabupaten_id'],
+                'alamat' => $row['alamat'],
                 'jenis_bbm_id' => $row['jenis_bbm_id'],
-                'volume' => $row['volume']
+                'sisa_volume' => $row['sisa_volume'],
+                'volume' => $row['volume'],
+                'nomor_kuitansi' => $row['nomor_kuitansi'],
+                'tanggal' => Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['tanggal_pembelian']))->format('Y-m-d'),
             ]);
         }
     }
@@ -40,9 +43,12 @@ class PembelianImport implements ToCollection, WithHeadingRow, WithValidation, W
     {
         return [
             'penjual' => 'required',
-            'kabupaten_id' => 'required|exists:kabupatens,id',
+            'alamat' => 'required',
             'jenis_bbm_id' => 'required|exists:jenis_bbms,id',
+            'sisa_volume' => 'required',
             'volume' => 'required',
+            'nomor_kuitansi' => 'required',
+            'tanggal_pembelian' => 'required',
         ];
     }
 
