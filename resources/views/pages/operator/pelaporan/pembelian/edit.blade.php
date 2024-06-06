@@ -44,15 +44,13 @@
                         </div>
                         <div class="form-group mb-3">
                             <label class="col-form-label fw-bold"
-                                   for="kabupaten">Kabupaten/Kota</label>
-                            <select class="form-select"
-                                    id="kabupaten"
-                                    name="kabupaten_id">
-                                <option value=""></option>
-                                @foreach ($kabupatens as $kabupaten)
-                                    <option value="{{ $kabupaten->id }}">{{ $kabupaten->nama }}</option>
-                                @endforeach
-                            </select>
+                                   for="alamat">Alamat</label>
+                            <input class="form-control"
+                                   id="alamat"
+                                   name="alamat"
+                                   placeholder="Masukkan nama alamat"
+                                   type="text"
+                                   value="{{ old('alamat', $pembelian->alamat) }}">
                         </div>
                         <div class="form-group mb-3">
                             <label class="col-form-label fw-bold"
@@ -70,7 +68,18 @@
                         </div>
                         <div class="form-group mb-3">
                             <label class="col-form-label fw-bold"
-                                   for="volume">Total Volume (Liter)</label>
+                                   for="sisa_volume">Sisa Volume BBM (Liter)</label>
+                            <input autocomplete="off"
+                                   class="form-control"
+                                   id="sisa_volume"
+                                   name="sisa_volume"
+                                   placeholder="Masukkan sisa  volume"
+                                   type="text"
+                                   value="{{ old('sisa_volume', $pembelian->sisa_volume) }}">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="col-form-label fw-bold"
+                                   for="volume">Total Volume Pembelian (Liter)</label>
                             <input autocomplete="off"
                                    class="form-control"
                                    id="volume"
@@ -78,6 +87,26 @@
                                    placeholder="Masukkan total volume"
                                    type="text"
                                    value="{{ old('volume', $pembelian->volume) }}">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="col-form-label fw-bold"
+                                   for="nomor_kuitansi">Nomor Kuitansi Pembelian</label>
+                            <input class="form-control"
+                                   id="nomor_kuitansi"
+                                   name="nomor_kuitansi"
+                                   placeholder="Masukkan nama nomor kuitansi pembelian"
+                                   type="text"
+                                   value="{{ old('nomor_kuitansi', $pembelian->nomor_kuitansi) }}">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="col-form-label fw-bold"
+                                   for="tanggal">Tanggal Pembelian</label>
+                            <input class="form-control"
+                                   id="tanggal"
+                                   name="tanggal"
+                                   placeholder="Pilih Tanggal Referensi Pembayaran"
+                                   required
+                                   type="text">
                         </div>
                         <button class="btn btn-primary d-block w-100">Simpan</button>
                     </form>
@@ -89,14 +118,17 @@
 
 @push('scripts')
     <script>
-        $('#kabupaten').select2({
-            theme: 'bootstrap-5',
-            placeholder: 'Pilih Kabupaten/Kota',
-        });
 
         $('#jenis_bbm').select2({
             theme: 'bootstrap-5',
             placeholder: 'Pilih Jenis BBM',
+        });
+
+        new AutoNumeric('#sisa_volume', {
+            decimalCharacter: ',',
+            digitGroupSeparator: '.',
+            decimalPlaces: 0,
+            unformatOnSubmit: true,
         });
 
         new AutoNumeric('#volume', {
@@ -106,9 +138,19 @@
             unformatOnSubmit: true,
         })
 
-        @if (old('kabupaten_id', $pembelian->kabupaten_id))
-            $('#kabupaten').val({{ old('kabupaten_id', $pembelian->kabupaten_id) }}).trigger('change');
-        @endif
+        flatpickr('#tanggal', {
+            enableTime: false,
+            dateFormat: 'Y-m-d',
+            locale: 'id',
+            altInput: true,
+            altFormat: 'd F Y',
+            @if (old('tanggal', $pembelian->tanggal))
+                defaultDate: '{{ old('tanggal', $pembelian->tanggal) }}',
+            @endif
+            minDate: moment().set('month', {{ $pelaporan->bulan }} - 1).startOf('bulan').format("YYYY-MM-DD"),
+            maxDate: moment().set('month', {{ $pelaporan->bulan }} - 1).endOf('month').format("YYYY-MM-DD"),
+        });
+
         @if (old('jenis_bbm_id', $pembelian->jenis_bbm_id))
             $('#jenis_bbm').val({{ old('jenis_bbm_id', $pembelian->jenis_bbm_id) }}).trigger('change');
         @endif
