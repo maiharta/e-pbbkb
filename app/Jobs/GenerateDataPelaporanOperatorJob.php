@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\User;
 use App\Models\Pelaporan;
+use App\Services\CutiService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -28,20 +29,25 @@ class GenerateDataPelaporanOperatorJob implements ShouldQueue
     public function handle(): void
     {
         // Generate data pelaporan operator pada bulan dan tahun ini
-        $users = User::role('operator')->whereHas('userDetail', function($query){
+        $users = User::role('operator')->whereHas('userDetail', function ($query) {
             $query->where('is_verified', true);
         })->get();
 
         foreach ($users as $user) {
+            $bulan = now()->month - 1;
+            $tahun = now()->year;
+            $batas_pelaporan = CutiService::getBatasPelaporan($bulan, $tahun);
+            $batas_pembayaran = CutiService::getBatasPembayaran($bulan, $tahun);
             $pelaporan = Pelaporan::firstOrCreate([
                 'user_id' => $user->id,
-                'bulan' => now()->month - 1,
-                'tahun' => now()->year,
+                'bulan' => $bulan,
+                'tahun' => $tahun,
             ], [
                 'is_sent_to_admin' => false,
                 'is_verified' => false,
+                'batas_pelaporan' => $batas_pelaporan,
+                'batas_pembayaran' => $batas_pembayaran
             ]);
         }
-
     }
 }

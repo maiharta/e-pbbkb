@@ -51,6 +51,10 @@
                             <a class="submenu-link"
                                href="{{ route('master-data.jenis-bbm.index') }}">Jenis BBM</a>
                         </li>
+                        <li class="submenu-item {{ request()->routeIs('master-data.cuti*') ? 'active' : '' }}">
+                            <a class="submenu-link"
+                               href="{{ route('master-data.cuti.index') }}">Cuti</a>
+                        </li>
                     </ul>
                 </li>
             @endrole

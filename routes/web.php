@@ -4,17 +4,18 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Operator\SspdController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\Operator\SptpdController;
 use App\Http\Controllers\Operator\PelaporanController;
 use App\Http\Controllers\Operator\PembelianController;
 use App\Http\Controllers\Operator\PenjualanController;
+use App\Http\Controllers\Admin\MasterData\CutiController;
 use App\Http\Controllers\Admin\Verifikasi\UserController;
 use App\Http\Controllers\Admin\MasterData\SektorController;
 use App\Http\Controllers\Admin\MasterData\JenisBbmController;
 use App\Http\Controllers\Admin\Verifikasi\PelaporanController as AdminPelaporanController;
-use App\Http\Controllers\Operator\SspdController;
 
 /*
 |--------------------------------------------------------------------------
@@ -113,6 +114,15 @@ Route::middleware(['auth'])->group(function () {
                 Route::put('/{ulid}', [JenisBbmController::class, 'update'])->name('update');
                 Route::delete('/{ulid}', [JenisBbmController::class, 'destroy'])->name('destroy');
             });
+            // Cuti
+            Route::prefix('cuti')->name('cuti.')->group(function () {
+                Route::get('/', [CutiController::class, 'index'])->name('index');
+                Route::get('/create', [CutiController::class, 'create'])->name('create');
+                Route::post('/', [CutiController::class, 'store'])->name('store');
+                Route::get('/{ulid}/edit', [CutiController::class, 'edit'])->name('edit');
+                Route::put('/{ulid}', [CutiController::class, 'update'])->name('update');
+                Route::delete('/{ulid}', [CutiController::class, 'destroy'])->name('destroy');
+            });
         });
     });
 
@@ -160,7 +170,7 @@ Route::middleware(['auth'])->group(function () {
                     Route::post('/approve/{ulid?}', [SptpdController::class, 'approve'])->name('approve');
                 });
                 // SSPD
-                Route::prefix('sspd')->name('sspd.')->group(function(){
+                Route::prefix('sspd')->name('sspd.')->group(function () {
                     Route::get('/{ulid}', [SspdController::class, 'index'])->name('index');
                 });
             });

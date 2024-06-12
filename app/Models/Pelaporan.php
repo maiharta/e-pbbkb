@@ -24,6 +24,8 @@ class Pelaporan extends Model
         'verified_at',
         'is_sptpd_approved',
         'is_sptpd_canceled',
+        'batas_pelaporan',
+        'batas_pembayaran'
     ];
 
     protected $casts = [
@@ -63,7 +65,7 @@ class Pelaporan extends Model
 
     public function getBulanNameAttribute()
     {
-        return Carbon::create()->month($this->bulan)->locale('id')->format('F');
+        return Carbon::create()->month($this->bulan)->locale('id')->isoFormat('MMMM');
     }
 
     public function getPembelianBadgeAttribute()
@@ -127,5 +129,14 @@ class Pelaporan extends Model
         } else {
             return "<span class='badge bg-secondary'>Verifikasi Admin</span>";
         }
+    }
+
+    public function getBatasPelaporanFormattedAttribute()
+    {
+        return $this->batas_pelaporan ? Carbon::parse($this->batas_pelaporan)->locale('id')->isoFormat('D MMMM Y') : '-';
+    }
+    public function getBatasPembayaranFormattedAttribute()
+    {
+        return $this->batas_pembayaran ? Carbon::parse($this->batas_pembayaran)->locale('id')->isoFormat('D MMMM Y') : '-';
     }
 }
