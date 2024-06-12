@@ -22,19 +22,17 @@ class PenjualanController extends Controller
     public function index(Request $request, $ulid)
     {
         $pelaporan = Pelaporan::where('user_id', auth()->user()->id)->where('ulid', $ulid)->firstOrFail();
-        $penjualans = $pelaporan->penjualan()->with(['kabupaten', 'sektor', 'jenisBbm'])->get();
+        $penjualans = $pelaporan->penjualan()->with(['sektor', 'jenisBbm'])->get();
         return view('pages.operator.pelaporan.penjualan.index', compact('pelaporan', 'penjualans'));
     }
 
     public function create(Request $request, $ulid)
     {
         $pelaporan = Pelaporan::where('user_id', auth()->user()->id)->where('ulid', $ulid)->firstOrFail();
-        $kabupatens = Kabupaten::all();
         $sektors = Sektor::all();
         $jenis_bbms = JenisBbm::all();
         return view('pages.operator.pelaporan.penjualan.create', compact(
             'pelaporan',
-            'kabupatens',
             'sektors',
             'jenis_bbms'
         ));
@@ -45,11 +43,16 @@ class PenjualanController extends Controller
         $pelaporan = Pelaporan::where('user_id', auth()->user()->id)->where('ulid', $ulid)->firstOrFail();
         $request->validate([
             'pembeli' => 'required',
-            'kabupaten_id' => 'required|exists:kabupatens,id',
             'sektor_id' => 'required|exists:sektors,id',
             'jenis_bbm_id' => 'required|exists:jenis_bbms,id',
             'volume' => 'required',
-            'dpp' => 'required'
+            'dpp' => 'required',
+            'alamat' => 'required',
+            'tanggal' => 'required|date:Y-m-d',
+            'nomor_kuitansi' => 'required',
+            'pbbkb' => 'required',
+            'lokasi_penyaluran' => 'required|in:depot,TBBM',
+            'is_wajib_pajak' => 'required|boolean'
         ]);
 
         try {
@@ -57,7 +60,6 @@ class PenjualanController extends Controller
             $jenis_bbm = JenisBbm::where('id', $request->jenis_bbm_id)->first();
 
             $pelaporan->penjualan()->create([
-                'kabupaten_id' => $request->kabupaten_id,
                 'sektor_id' => $request->sektor_id,
                 'jenis_bbm_id' => $request->jenis_bbm_id,
                 'kode_jenis_bbm' => $jenis_bbm->kode,
@@ -66,10 +68,16 @@ class PenjualanController extends Controller
                 'persentase_tarif_jenis_bbm' => $jenis_bbm->persentase_tarif,
                 'kode_sektor' => $sektor->kode,
                 'nama_sektor' => $sektor->nama,
-                'persentase_tarif_sektor' => $sektor->persentase_tarif,
+                'persentase_pengenaan_sektor' => $sektor->persentase_pengenaan,
                 'pembeli' => $request->pembeli,
                 'volume' => $request->volume,
                 'dpp' => $request->dpp,
+                'alamat' => $request->alamat,
+                'tanggal' => $request->tanggal,
+                'nomor_kuitansi' => $request->nomor_kuitansi,
+                'pbbkb' => $request->pbbkb,
+                'lokasi_penyaluran' => $request->lokasi_penyaluran,
+                'is_wajib_pajak' => $request->is_wajib_pajak
             ]);
 
             return redirect()->route('pelaporan.penjualan.index', $pelaporan->ulid)->with('success', 'Berhasil menambahkan data penjualan');
@@ -94,7 +102,6 @@ class PenjualanController extends Controller
         return view('pages.operator.pelaporan.penjualan.edit', compact(
             'pelaporan',
             'penjualan',
-            'kabupatens',
             'sektors',
             'jenis_bbms'
         ));
@@ -110,11 +117,16 @@ class PenjualanController extends Controller
 
         $request->validate([
             'pembeli' => 'required',
-            'kabupaten_id' => 'required|exists:kabupatens,id',
             'sektor_id' => 'required|exists:sektors,id',
             'jenis_bbm_id' => 'required|exists:jenis_bbms,id',
             'volume' => 'required',
-            'dpp' => 'required'
+            'dpp' => 'required',
+            'alamat' => 'required',
+            'tanggal' => 'required|date:Y-m-d',
+            'nomor_kuitansi' => 'required',
+            'pbbkb' => 'required',
+            'lokasi_penyaluran' => 'required|in:depot,TBBM',
+            'is_wajib_pajak' => 'required|boolean'
         ]);
 
         try {
@@ -122,7 +134,6 @@ class PenjualanController extends Controller
             $jenis_bbm = JenisBbm::where('id', $request->jenis_bbm_id)->first();
 
             $penjualan->update([
-                'kabupaten_id' => $request->kabupaten_id,
                 'sektor_id' => $request->sektor_id,
                 'jenis_bbm_id' => $request->jenis_bbm_id,
                 'kode_jenis_bbm' => $jenis_bbm->kode,
@@ -131,10 +142,16 @@ class PenjualanController extends Controller
                 'persentase_tarif_jenis_bbm' => $jenis_bbm->persentase_tarif,
                 'kode_sektor' => $sektor->kode,
                 'nama_sektor' => $sektor->nama,
-                'persentase_tarif_sektor' => $sektor->persentase_tarif,
+                'persentase_pengenaan_sektor' => $sektor->persentase_pengenaan,
                 'pembeli' => $request->pembeli,
                 'volume' => $request->volume,
                 'dpp' => $request->dpp,
+                'alamat' => $request->alamat,
+                'tanggal' => $request->tanggal,
+                'nomor_kuitansi' => $request->nomor_kuitansi,
+                'pbbkb' => $request->pbbkb,
+                'lokasi_penyaluran' => $request->lokasi_penyaluran,
+                'is_wajib_pajak' => $request->is_wajib_pajak
             ]);
             return redirect()->route('pelaporan.penjualan.index', $pelaporan->ulid)->with('success', 'Data berhasil diubah');
         } catch (\Exception $e) {
@@ -215,6 +232,5 @@ class PenjualanController extends Controller
         }
 
         return redirect()->route('pelaporan.penjualan.index', $ulid)->with('success', 'Import data berhasil');
-
     }
 }

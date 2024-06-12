@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
+use App\Models\Sektor;
+use App\Models\JenisBbm;
 use App\Models\Pelaporan;
 use Illuminate\Support\Str;
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -13,7 +16,6 @@ class Penjualan extends Model
 
     protected $fillable = [
         'pelaporan_id',
-        'kabupaten_id',
         'jenis_bbm_id',
         'sektor_id',
         'kode_jenis_bbm',
@@ -22,15 +24,16 @@ class Penjualan extends Model
         'persentase_tarif_jenis_bbm',
         'kode_sektor',
         'nama_sektor',
-        'persentase_tarif_sektor',
+        'persentase_pengenaan_sektor',
         'pembeli',
         'volume',
         'dpp',
-    ];
-
-    protected $casts = [
-        // 'volume' => 'decimal',
-        // 'dpp' => 'decimal',
+        'alamat',
+        'tanggal',
+        'nomor_kuitansi',
+        'pbbkb',
+        'lokasi_penyaluran',
+        'is_wajib_pajak',
     ];
 
     protected static function boot()
@@ -57,8 +60,8 @@ class Penjualan extends Model
         return $this->belongsTo(Sektor::class);
     }
 
-    public function kabupaten()
+    public function getTanggalFormattedAttribute()
     {
-        return $this->belongsTo(Kabupaten::class);
+        return Carbon::parse($this->tanggal)->locale('id')->isoFormat('D MMMM Y');
     }
 }

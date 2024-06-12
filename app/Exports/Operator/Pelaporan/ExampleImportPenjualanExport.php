@@ -2,45 +2,35 @@
 
 namespace App\Exports\Operator\Pelaporan;
 
-use App\Exports\LokasiPenyaluranExport;
-use App\Exports\SektorExport;
-use App\Exports\JenisBbmExport;
-use App\Exports\KabupatenExport;
-use App\Exports\StatusPajakExport;
+use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\WithTitle;
-use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
-class TemplateImportPenjualanExport implements FromCollection, ShouldAutoSize, WithMultipleSheets, WithStyles, WithHeadings, WithTitle
+class ExampleImportPenjualanExport implements FromCollection, ShouldAutoSize, WithStyles, WithHeadings, WithTitle
 {
-    use Exportable;
     /**
      * @return \Illuminate\Support\Collection
      */
     public function collection()
     {
-        return collect();
-    }
-
-    public function sheets(): array
-    {
-        $sheets = [
-            // this export
-            'Penjualan' => $this,
-            'Sektor' => new SektorExport(),
-            'Jenis BBM' => new JenisBbmExport(),
-            'Lokasi Penyaluran' => new LokasiPenyaluranExport(),
-            'Status Pajak' => new StatusPajakExport(),
-            'Contoh Data' => new ExampleImportPenjualanExport(),
-        ];
-
-        return $sheets;
+        return new Collection([[
+            'PT. Pertamina',
+            'Jl. Tukad Ayung No. 5, Denpasar, Bali',
+            1,
+            1,
+            1,
+            1,
+            500,
+            150000,
+            15000,
+            'INV_12345',
+            '30-03-2024',
+        ]]);
     }
 
     public function styles($sheet)
@@ -62,7 +52,7 @@ class TemplateImportPenjualanExport implements FromCollection, ShouldAutoSize, W
 
     public function title(): string
     {
-        return 'Penjualan';
+        return 'Contoh Data';
     }
 
     private function getHeader()

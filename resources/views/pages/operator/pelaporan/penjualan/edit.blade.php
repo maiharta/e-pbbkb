@@ -32,76 +32,66 @@
                           method="POST">
                         @csrf
                         @method('PUT')
-                        <div class="form-group mb-3">
-                            <label class="col-form-label fw-bold"
-                                   for="pembeli">Pembeli</label>
-                            <input class="form-control"
-                                   id="pembeli"
-                                   name="pembeli"
-                                   placeholder="Masukkan nama pembeli"
-                                   type="text"
-                                   value="{{ old('pembeli', $penjualan->pembeli) }}">
-                        </div>
-                        <div class="form-group mb-3">
-                            <label class="col-form-label fw-bold"
-                                   for="kabupaten">Kabupaten/Kota</label>
-                            <select class="form-select"
-                                    id="kabupaten"
-                                    name="kabupaten_id">
-                                <option value=""></option>
-                                @foreach ($kabupatens as $kabupaten)
-                                    <option value="{{ $kabupaten->id }}">{{ $kabupaten->nama }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label class="col-form-label fw-bold"
-                                   for="sektor">sektor/Kota</label>
-                            <select class="form-select"
-                                    id="sektor"
-                                    name="sektor_id">
-                                <option value=""></option>
-                                @foreach ($sektors as $sektor)
-                                    <option value="{{ $sektor->id }}">{{ $sektor->nama }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label class="col-form-label fw-bold"
-                                   for="jenis_bbm">Jenis BBM</label>
-                            <select class="form-select"
-                                    id="jenis_bbm"
-                                    name="jenis_bbm_id">
-                                <option value=""></option>
-                                @foreach ($jenis_bbms as $jenis_bbm)
-                                    <option value="{{ $jenis_bbm->id }}"><span
-                                              class="fw-bold">{{ $jenis_bbm->is_subsidi ? 'Subsidi' : 'Non Subsidi' }}</span>
-                                        - {{ $jenis_bbm->nama }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label class="col-form-label fw-bold"
-                                   for="volume">Total Volume (Liter)</label>
-                            <input autocomplete="off"
-                                   class="form-control"
-                                   id="volume"
-                                   name="volume"
-                                   placeholder="Masukkan total volume"
-                                   type="text"
-                                   value="{{ old('volume', $penjualan->volume) }}">
-                        </div>
-                        <div class="form-group mb-3">
-                            <label class="col-form-label fw-bold"
-                                   for="dpp">Total DPP</label>
-                            <input autocomplete="off"
-                                   class="form-control"
-                                   id="dpp"
-                                   name="dpp"
-                                   placeholder="Masukkan total DPP"
-                                   type="text"
-                                   value="{{ old('dpp', $penjualan->dpp) }}">
-                        </div>
+                        <x-input.text label="Pembeli"
+                                      name="pembeli"
+                                      placeholder="Masukkan nama pembeli"
+                                      value="{{ old('pembeli', $penjualan->pembeli) }}" />
+                        <x-input.text label="Alamat"
+                                      name="alamat"
+                                      placeholder="Masukkan nama alamat"
+                                      value="{{ old('alamat', $penjualan->alamat) }}" />
+                        <x-input.select :options="$sektors->map(fn($item) => ['key' => $item->id, 'value' => $item->nama])"
+                                        label="Sektor"
+                                        name="sektor_id"
+                                        placeholder="Pilih sektor"
+                                        value="{{ old('sektor_id', $penjualan->sektor_id) }}" />
+                        <x-input.select :options="$jenis_bbms->map(
+                            fn($item) => [
+                                'key' => $item->id,
+                                'value' => $item->nama . ' - ' . ($item->is_subsidi ? 'Subsidi' : 'Non Subsidi'),
+                            ],
+                        )"
+                                        label="Jenis BBM"
+                                        name="jenis_bbm_id"
+                                        placeholder="Pilih jenis BBM"
+                                        value="{{ old('jenis_bbm_id', $penjualan->jenis_bbm_id) }}" />
+                        <x-input.number label="Total Volume (Liter)"
+                                        name="volume"
+                                        placeholder="Masukkan total volume"
+                                        value="{{ old('volume', $penjualan->volume) }}" />
+                        <x-input.number :is_currency="true"
+                                        label="Total DPP"
+                                        name="dpp"
+                                        placeholder="Masukkan total DPP"
+                                        value="{{ old('dpp', $penjualan->dpp) }}" />
+                        <x-input.text label="Nomor Kuitansi Pembelian"
+                                      name="nomor_kuitansi"
+                                      placeholder="Masukkan nomor kuitansi pembelian"
+                                      value="{{ old('nomor_kuitansi', $penjualan->nomor_kuitansi) }}" />
+                        <x-input.date label="Tanggal Penjualan"
+                                      name="tanggal"
+                                      placeholder="Masukkan tanggal penjualan"
+                                      settings="minDate: moment().set('month', {{ $pelaporan->bulan }} - 1).startOf('month').format('YYYY-MM-DD'),maxDate: moment().set('month', {{ $pelaporan->bulan }} - 1).endOf('month').format('YYYY-MM-DD'),"
+                                      value="{{ old('tanggal', $penjualan->tanggal) }}"/>
+                        <x-input.number :currency="true"
+                                        :is_currency="true"
+                                        label="PBBKB"
+                                        name="pbbkb"
+                                        placeholder="Masukkan total PBBKB"
+                                        value="{{ old('pbbkb', $penjualan->pbbkb) }}" />
+                        <x-input.select :options="[['key' => 'depot', 'value' => 'Depot'], ['key' => 'TBBM', 'value' => 'TBBM']]"
+                                        label="Lokasi Penyaluran"
+                                        name="lokasi_penyaluran"
+                                        placeholder="Pilih lokasi penyaluran"
+                                        value="{{ old('lokasi_penyaluran',$penjualan->lokasi_penyaluran) }}" />
+                        <x-input.select :options="[
+                            ['key' => '1', 'value' => 'Wajib Pajak'],
+                            ['key' => '0', 'value' => 'Tidak Wajib Pajak'],
+                        ]"
+                                        label="Status Pajak"
+                                        name="is_wajib_pajak"
+                                        placeholder="Pilih status pajak pembeli"
+                                        value="{{ old('is_wajib_pajak',$penjualan->is_wajib_pajak) }}" />
                         <button class="btn btn-primary d-block w-100">Simpan</button>
                     </form>
                 </div>
@@ -111,45 +101,4 @@
 @endsection
 
 @push('scripts')
-    <script>
-        $('#kabupaten').select2({
-            theme: 'bootstrap-5',
-            placeholder: 'Pilih Kabupaten/Kota',
-        });
-
-        $('#sektor').select2({
-            theme: 'bootstrap-5',
-            placeholder: 'Pilih Sektor',
-        });
-
-        $('#jenis_bbm').select2({
-            theme: 'bootstrap-5',
-            placeholder: 'Pilih Jenis BBM',
-        });
-
-        new AutoNumeric('#volume', {
-            decimalCharacter: ',',
-            digitGroupSeparator: '.',
-            decimalPlaces: 0,
-            unformatOnSubmit: true,
-        })
-
-        new AutoNumeric('#dpp', {
-            currencySymbol: 'Rp ',
-            decimalCharacter: ',',
-            digitGroupSeparator: '.',
-            decimalPlaces: 2,
-            unformatOnSubmit: true,
-        });
-
-        @if (old('kabupaten_id', $penjualan->kabupaten_id))
-            $('#kabupaten').val({{ old('kabupaten_id', $penjualan->kabupaten_id) }}).trigger('change');
-        @endif
-        @if (old('sektor_id', $penjualan->sektor_id))
-            $('#sektor').val({{ old('sektor_id', $penjualan->sektor_id) }}).trigger('change');
-        @endif
-        @if (old('jenis_bbm_id', $penjualan->jenis_bbm_id))
-            $('#jenis_bbm').val({{ old('jenis_bbm_id', $penjualan->jenis_bbm_id) }}).trigger('change');
-        @endif
-    </script>
 @endpush
