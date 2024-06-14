@@ -37,5 +37,13 @@ class DatabaseSeeder extends Seeder
         $this->call([
             PengaturanSistemSeeder::class,
         ]);
+
+        if (config('app.env') != 'production') {
+            $this->call([
+                SektorSeeder::class,
+                JenisBbmSeeder::class,
+                OperatorSeeder::class
+            ]);
+        }
     }
 }
