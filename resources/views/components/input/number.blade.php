@@ -9,18 +9,35 @@
     'icon' => '',
     'is_currency' => true,
     'decimal' => 0,
+    'group' => '',
 ])
 
 <div class="form-group mb-3">
     <label class="col-form-label fw-bold"
            for="{{ $name }}">{{ $label }}</label>
-    <input autocomplete="off"
-           class="form-control @error($name) is-invalid @enderror"
-           id="{{ $name }}"
-           name="{{ $name }}"
-           placeholder="{{ $placeholder }}"
-           type="text"
-           value="{{ $value }}">
+
+    @if ($group)
+        <div class="input-group">
+            <input aria-describedby="{{ $name }}-addon"
+                   autocomplete="off"
+                   class="form-control @error($name) is-invalid @enderror"
+                   id="{{ $name }}"
+                   name="{{ $name }}"
+                   placeholder="{{ $placeholder }}"
+                   type="text"
+                   value="{{ $value }}">
+            <span class="input-group-text"
+                  id="{{ $name }}-addon">{{ $group }}</span>
+        </div>
+    @else
+        <input autocomplete="off"
+               class="form-control @error($name) is-invalid @enderror"
+               id="{{ $name }}"
+               name="{{ $name }}"
+               placeholder="{{ $placeholder }}"
+               type="text"
+               value="{{ $value }}">
+    @endif
     @error($name)
         <div class="invalid-feedback">
             <i class="isax isax-info-circle"></i>

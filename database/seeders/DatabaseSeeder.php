@@ -33,5 +33,9 @@ class DatabaseSeeder extends Seeder
                 'nama' => $nama,
             ]);
         }
+
+        $this->call([
+            PengaturanSistemSeeder::class,
+        ]);
     }
 }

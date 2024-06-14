@@ -57,6 +57,13 @@
                         </li>
                     </ul>
                 </li>
+                <li class="sidebar-item {{ request()->routeIs('pengaturan-sistem*') ? 'active' : '' }}">
+                    <a class="sidebar-link"
+                       href="{{ route('pengaturan-sistem.index') }}">
+                        <i class="isax isax-setting-2"></i>
+                        <span>Pengaturan Sistem</span>
+                    </a>
+                </li>
             @endrole
 
             @role('operator')

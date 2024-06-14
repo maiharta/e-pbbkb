@@ -13,6 +13,7 @@ use App\Http\Controllers\Operator\PembelianController;
 use App\Http\Controllers\Operator\PenjualanController;
 use App\Http\Controllers\Admin\MasterData\CutiController;
 use App\Http\Controllers\Admin\Verifikasi\UserController;
+use App\Http\Controllers\Admin\PengaturanSistemController;
 use App\Http\Controllers\Admin\MasterData\SektorController;
 use App\Http\Controllers\Admin\MasterData\JenisBbmController;
 use App\Http\Controllers\Admin\Verifikasi\PelaporanController as AdminPelaporanController;
@@ -123,6 +124,11 @@ Route::middleware(['auth'])->group(function () {
                 Route::put('/{ulid}', [CutiController::class, 'update'])->name('update');
                 Route::delete('/{ulid}', [CutiController::class, 'destroy'])->name('destroy');
             });
+        });
+        // Pengaturan Sistem
+        Route::prefix('pengaturan-sistem')->name('pengaturan-sistem.')->group(function () {
+            Route::get('/', [PengaturanSistemController::class, 'index'])->name('index');
+            Route::put('/', [PengaturanSistemController::class, 'update'])->name('update');
         });
     });
 
