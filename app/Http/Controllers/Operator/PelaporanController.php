@@ -6,6 +6,7 @@ use App\Models\Pelaporan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Services\PelaporanService;
 
 class PelaporanController extends Controller
 {
@@ -20,8 +21,14 @@ class PelaporanController extends Controller
     public function send(Request $request, $ulid)
     {
         $pelaporan = Pelaporan::where('user_id', auth()->user()->id)->where('ulid', $ulid)->firstOrFail();
-        try {
 
+        // generate pbbkb sistem
+        PelaporanService::generatePbbkbSistem($pelaporan);
+
+        // generate note pelaporan
+        PelaporanService::generateNote($pelaporan);
+
+        try {
             $pelaporan->update([
                 'is_sent_to_admin' => true
             ]);

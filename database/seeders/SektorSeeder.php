@@ -15,7 +15,7 @@ class SektorSeeder extends Seeder
     {
         $setors = [
             [
-                'nama' => 'Perusaan',
+                'nama' => 'Perusahaan',
                 'kode' => '001',
                 'persentase_pengenaan' => 10
             ],

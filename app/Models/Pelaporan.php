@@ -62,6 +62,10 @@ class Pelaporan extends Model
     {
         return $this->hasOne(Sptpd::class);
     }
+    public function pelaporanNote()
+    {
+        return $this->hasMany(PelaporanNote::class);
+    }
 
     public function getBulanNameAttribute()
     {

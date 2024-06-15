@@ -44,7 +44,63 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-6 col-lg-4 col-md-6">
+                <div class="col-6 col-lg-4 col-md-4">
+                    <div class="card">
+                        <div class="card-body px-4 py-4-5">
+                            <div class="row">
+                                <div class="col-md-3 col-lg-12 col-xl-12 col-xxl-4 d-flex justify-content-start ">
+                                    <div class="stats-icon bg-primary mb-2">
+                                        <i class="isax isax-money"></i>
+                                    </div>
+                                </div>
+                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
+                                    <h6 class="text-muted font-semibold text-sm">Total DPP Penjualan</h6>
+                                    <h6 class="font-extrabold mb-0">Rp.
+                                        {{ number_format($pelaporan->penjualan->sum('dpp'), 2, ',', '.') }}</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-4 col-md-4">
+                    <div class="card">
+                        <div class="card-body px-4 py-4-5">
+                            <div class="row">
+                                <div class="col-md-3 col-lg-12 col-xl-12 col-xxl-4 d-flex justify-content-start ">
+                                    <div class="stats-icon bg-primary mb-2">
+                                        <i class="isax isax-money"></i>
+                                    </div>
+                                </div>
+                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
+                                    <h6 class="text-muted font-semibold text-sm">Total PBBKB User</h6>
+                                    <h6 class="font-extrabold mb-0">Rp.
+                                        {{ number_format($pelaporan->penjualan->sum('pbbkb'), 2, ',', '.') }}</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-4 col-md-4">
+                    <div class="card">
+                        <div class="card-body px-4 py-4-5">
+                            <div class="row">
+                                <div class="col-md-3 col-lg-12 col-xl-12 col-xxl-4 d-flex justify-content-start ">
+                                    <div class="stats-icon bg-primary mb-2">
+                                        <i class="isax isax-money"></i>
+                                    </div>
+                                </div>
+                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
+                                    <h6 class="text-muted font-semibold text-sm">Total PBBKB Sistem</h6>
+                                    <h6 class="font-extrabold mb-0">Rp.
+                                        {{ number_format($pelaporan->penjualan->sum('pbbkb_sistem'), 2, ',', '.') }}</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6 col-md-6">
                     <div class="card">
                         <div class="card-body px-4 py-4-5">
                             <div class="row">
@@ -59,10 +115,28 @@
                                         {{ number_format($pelaporan->pembelian->sum('volume'), 0, ',', '.') }}</h6>
                                 </div>
                             </div>
+                            <hr>
+                            <div class="mt-3"
+                                 style="max-height: 300px; overflow-y: auto">
+                                <table class="table">
+                                    <tr>
+                                        <th>Jenis PBBKB</th>
+                                        <th>Sisa Terakhir(L)</th>
+                                        <th>Volume(L)</th>
+                                    </tr>
+                                    @foreach ($pelaporan->data_pembelian_terakhir as $pembelian)
+                                        <tr>
+                                            <td>{{ $pembelian->nama_jenis_bbm }}</td>
+                                            <td>{{ number_format($pembelian->sisa_volume, 0, ',', '.') }}</td>
+                                            <td>{{ number_format($pembelian->total_volume, 0, ',', '.') }}</td>
+                                        </tr>
+                                    @endforeach
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-6 col-lg-4 col-md-6">
+                <div class="col-6 col-md-6">
                     <div class="card">
                         <div class="card-body px-4 py-4-5">
                             <div class="row">
@@ -77,23 +151,21 @@
                                         {{ number_format($pelaporan->penjualan->sum('volume'), 0, ',', '.') }}</h6>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-lg-4 col-md-6">
-                    <div class="card">
-                        <div class="card-body px-4 py-4-5">
-                            <div class="row">
-                                <div class="col-md-3 col-lg-12 col-xl-12 col-xxl-4 d-flex justify-content-start ">
-                                    <div class="stats-icon bg-primary mb-2">
-                                        <i class="isax isax-money"></i>
-                                    </div>
-                                </div>
-                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                    <h6 class="text-muted font-semibold">Total DPP Penjualan</h6>
-                                    <h6 class="font-extrabold mb-0">Rp.
-                                        {{ number_format($pelaporan->penjualan->sum('dpp'), 2, ',', '.') }}</h6>
-                                </div>
+                            <hr>
+                            <div class="mt-3"
+                                 style="max-height: 300px; overflow-y: auto">
+                                <table class="table">
+                                    <tr>
+                                        <th>Jenis PBBKB</th>
+                                        <th>Volume (L)</th>
+                                    </tr>
+                                    @foreach ($pelaporan->data_penjualan_terakhir as $penjualan)
+                                        <tr>
+                                            <td>{{ $penjualan->nama_jenis_bbm }}</td>
+                                            <td>{{ number_format($penjualan->total_volume, 0, ',', '.') }}</td>
+                                        </tr>
+                                    @endforeach
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -116,6 +188,43 @@
                     </div>
                 </div>
             @endif
+            <button aria-controls="collapseNote"
+                    aria-expanded="false"
+                    class="btn btn-primary w-100 mb-3 fw-bold"
+                    data-bs-target="#collapseNote"
+                    data-bs-toggle="collapse"
+                    type="button">
+                <span class="isax isax-danger text-danger"></span>
+                {{ $pelaporan->pelaporanNote->where('is_active', true)->where('status', 'danger')->count() }}
+                <span class="isax isax-warning-2 text-warning"></span>
+                {{ $pelaporan->pelaporanNote->where('is_active', true)->where('status', 'info')->count() }}
+                <span class="ms-4">
+                    Klik
+                    untuk
+                    menampilkan
+                    catatan sistem
+                </span>
+            </button>
+            <div class="collapse"
+                 id="collapseNote">
+                <div class="card card-body text-sm">
+                    @if ($pelaporan->pelaporanNote->count() == 0)
+                        Tidak ada catatan sistem
+                    @endif
+                    @foreach ($pelaporan->pelaporanNote->where('is_active', true)->where('status', 'danger') as $pelaporan_note)
+                        <p class="mb-2"><span
+                                  class="isax isax-danger text-danger me-2"></span>{{ $pelaporan_note->penjualan->nomor_kuitansi }}
+                            - {{ $pelaporan_note->deskripsi }}
+                        </p>
+                    @endforeach
+                    <hr class="mt-0 mb-2">
+                    @foreach ($pelaporan->pelaporanNote->where('is_active', true)->where('status', 'info') as $pelaporan_note)
+                        <p class="mb-2"><span
+                                  class="isax isax-warning-2 text-warning me-2"></span>{{ $pelaporan_note->deskripsi }}
+                        </p>
+                    @endforeach
+                </div>
+            </div>
             <div class="card">
                 <div class="card-body">
                     <ul class="nav nav-tabs"
@@ -149,15 +258,16 @@
                              class="tab-pane fade active show"
                              id="pembelian"
                              role="tabpanel">
-                            <table class="table table-striped table-bordered w-100"
+                            <table class="table text-sm table-striped table-bordered w-100"
                                    id="pembelian-table">
                                 <thead>
                                     <tr>
                                         <th>No</th>
                                         <th>Penjual</th>
-                                        <th>Kab/Kota</th>
+                                        <th>Nomor Kuitansi</th>
+                                        <th>Tanggal</th>
                                         <th>Jenis BBM</th>
-                                        <th>Subsidi/Non Subsidi</th>
+                                        <th>Sisa Volume (liter)</th>
                                         <th>Total Volume (liter)</th>
                                     </tr>
                                 </thead>
@@ -166,9 +276,13 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $pembelian->penjual }}</td>
-                                            <td>{{ $pembelian->kabupaten->nama }}</td>
-                                            <td>{{ $pembelian->jenisBbm->nama }}</td>
-                                            <td>{{ $pembelian->jenisBbm->is_subsidi ? 'Subsidi' : 'Non Subsidi' }}</td>
+                                            <td>{{ $pembelian->nomor_kuitansi }}</td>
+                                            <td>{{ $pembelian->tanggal_formatted }}</td>
+                                            <td>{{ $pembelian->jenisBbm->nama }} -
+                                                {{ $pembelian->jenisBbm->is_subsidi ? 'Subsidi' : 'Non Subsidi' }}</td>
+                                            <td class="text-start">
+                                                {{ number_format($pembelian->sisa_volume, 0, ',', '.') }}
+                                            </td>
                                             <td class="text-start">{{ number_format($pembelian->volume, 0, ',', '.') }}
                                             </td>
                                         </tr>
@@ -180,38 +294,57 @@
                              class="tab-pane fade"
                              id="penjualan"
                              role="tabpanel">
-                            <table class="table table-striped table-bordered w-100"
-                                   id="penjualan-table">
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Pembeli</th>
-                                        <th>Kab/Kota</th>
-                                        <th>Jenis BBM</th>
-                                        <th>Subsidi/Non Subsidi</th>
-                                        <th>Sektor</th>
-                                        <th>Total Volume (liter)</th>
-                                        <th>Total DPP</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($pelaporan->penjualan as $penjualan)
-                                        {{-- @dd($penjualan) --}}
+                            <div class="table-responsive">
+                                <table class="table text-sm table-bordered w-100"
+                                       id="penjualan-table">
+                                    <thead>
                                         <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $penjualan->pembeli }}</td>
-                                            <td>{{ $penjualan->kabupaten->nama }}</td>
-                                            <td>{{ $penjualan->jenisBbm->nama }}</td>
-                                            <td>{{ $penjualan->jenisBbm->is_subsidi ? 'Subsidi' : 'Non Subsidi' }}</td>
-                                            <td>{{ $penjualan->sektor->nama }}</td>
-                                            <td class="text-start">{{ number_format($penjualan->volume, 0, ',', '.') }}
-                                            </td>
-                                            <td class="text-start">Rp. {{ number_format($penjualan->dpp, 2, ',', '.') }}
-                                            </td>
+                                            <th>No</th>
+                                            <th>Pembeli</th>
+                                            <th>Nomor Kuitansi</th>
+                                            <th>Tanggal</th>
+                                            <th>Jenis BBM</th>
+                                            <th>Sektor</th>
+                                            <th>Total Volume (liter)</th>
+                                            <th>Total DPP</th>
+                                            <th>Status Pajak</th>
+                                            <th>PBBKB User</th>
+                                            <th>PBBKB Sistem</th>
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($pelaporan->penjualan as $penjualan)
+                                            {{-- @dd($penjualan) --}}
+                                            <tr
+                                                class="{{ $penjualan->pbbkb != $penjualan->pbbkb_sistem ? 'bg-danger text-white' : '' }}">
+                                                <td>{{ $loop->iteration }}</td>
+                                                <td>{{ $penjualan->pembeli }}</td>
+                                                <td>{{ $penjualan->nomor_kuitansi }}</td>
+                                                <td>{{ $penjualan->tanggal_formatted }}</td>
+                                                <td>{{ $penjualan->jenisBbm->nama }} -
+                                                    {{ $penjualan->jenisBbm->is_subsidi ? 'Subsidi' : 'Non Subsidi' }}</td>
+                                                <td>{{ $penjualan->sektor->nama }}</td>
+                                                <td class="text-start">
+                                                    {{ number_format($penjualan->volume, 0, ',', '.') }}
+                                                </td>
+                                                <td class="text-start">Rp.
+                                                    {{ number_format($penjualan->dpp, 2, ',', '.') }}
+                                                </td>
+                                                <td>
+                                                    <span
+                                                          class="w-100 badge bg-{{ $penjualan->is_wajib_pajak ? 'success' : 'secondary' }}">{{ $penjualan->is_wajib_pajak ? 'Wajib' : 'Tidak Wajib' }}</span>
+                                                </td>
+                                                <td class="text-start">Rp.
+                                                    {{ number_format($penjualan->pbbkb, 2, ',', '.') }}
+                                                </td>
+                                                <td class="text-start">Rp.
+                                                    {{ number_format($penjualan->pbbkb_sistem, 2, ',', '.') }}
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -314,48 +447,75 @@
         }
 
         function valid() {
-            Swal.fire({
-                icon: 'question',
-                title: 'Apakah anda yakin ingin menyetujui permohonan ini?',
-                showCancelButton: true,
-                confirmButtonText: `Ya`,
-                cancelButtonText: `Tidak`,
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: "{{ route('verifikasi.pelaporan.approve') }}",
-                        type: "POST",
-                        data: {
-                            _token: "{{ csrf_token() }}",
-                            ulid: getUlid(),
-                        },
-                        success: function(response) {
-                            if (response.status == 'success') {
-                                Swal.fire(
-                                    'Berhasil!',
-                                    response.message,
-                                    'success'
-                                ).then((result) => {
-                                    window.location.href =
-                                        "{{ route('verifikasi.pelaporan.index') }}";
-                                });
-                            } else {
-                                Toast.fire({
-                                    icon: 'error',
-                                    title: response.message,
+            @if ($pelaporan->pelaporanNote->where('is_active', true)->where('status', 'danger')->count() != 0)
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal menyetujui laporan. Terdapat data yang belum sesuai dengan sistem'
+                });
+            @else
+                Swal.fire({
+                    icon: 'question',
+                    title: 'Apakah anda yakin ingin menyetujui permohonan ini?',
+                    showCancelButton: true,
+                    confirmButtonText: `Ya`,
+                    cancelButtonText: `Tidak`,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Masukkan Nomor SPTPD',
+                            input: 'text',
+                            // input required
+                            inputAttributes: {
+                                required: true
+                            },
+                            inputValidator: (value) => {
+                                if (!value) {
+                                    return 'Nomor SPTPD tidak boleh kosong!'
+                                }
+                            },
+                            showCancelButton: true,
+                            confirmButtonText: `Kirim`,
+                            cancelButtonText: `Batal`,
+                            preConfirm: (nomor_sptpd) => {
+                                $.ajax({
+                                    url: "{{ route('verifikasi.pelaporan.approve') }}",
+                                    type: "POST",
+                                    data: {
+                                        _token: "{{ csrf_token() }}",
+                                        ulid: getUlid(),
+                                        nomor_sptpd: nomor_sptpd
+                                    },
+                                    success: function(response) {
+                                        if (response.status == 'success') {
+                                            Swal.fire(
+                                                'Berhasil!',
+                                                response.message,
+                                                'success'
+                                            ).then((result) => {
+                                                window.location.href =
+                                                    "{{ route('verifikasi.pelaporan.index') }}";
+                                            });
+                                        } else {
+                                            Toast.fire({
+                                                icon: 'error',
+                                                title: response.message,
+                                            });
+                                        }
+                                    },
+                                    error: function(response) {
+                                        Swal.fire(
+                                            'Gagal!',
+                                            'Form permohonan gagal divalidasi. Hubungi administrator',
+                                            'error'
+                                        );
+                                    }
                                 });
                             }
-                        },
-                        error: function(response) {
-                            Swal.fire(
-                                'Gagal!',
-                                'Form permohonan gagal divalidasi. Hubungi administrator',
-                                'error'
-                            );
-                        }
-                    });
-                }
-            });
+                        })
+                    }
+                });
+            @endif
         }
     </script>
 @endpush

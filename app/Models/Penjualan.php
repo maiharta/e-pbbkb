@@ -34,6 +34,7 @@ class Penjualan extends Model
         'pbbkb',
         'lokasi_penyaluran',
         'is_wajib_pajak',
+        'pbbkb_sistem',
     ];
 
     protected static function boot()
@@ -58,6 +59,10 @@ class Penjualan extends Model
     public function sektor()
     {
         return $this->belongsTo(Sektor::class);
+    }
+    public function pelaporanNote()
+    {
+        return $this->belongsTo(PelaporanNote::class);
     }
 
     public function getTanggalFormattedAttribute()
