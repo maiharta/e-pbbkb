@@ -24,6 +24,7 @@ class Pelaporan extends Model
         'verified_at',
         'is_sptpd_approved',
         'is_sptpd_canceled',
+        'sptpd_approved_at',
         'batas_pelaporan',
         'batas_pembayaran'
     ];

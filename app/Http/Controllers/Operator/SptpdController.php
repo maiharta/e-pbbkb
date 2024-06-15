@@ -31,18 +31,17 @@ class SptpdController extends Controller
                     $subtotal_pbbkb = 0;
                     foreach ($category->groupBy('jenis_bbm_id') as $item) {
                         $item_unique = $item->first();
-                        $pbbkb = $item->sum('dpp') * ($item_unique->persentase_tarif_jenis_bbm + $item_unique->persentase_tarif_sektor) / 100;
 
                         $subtotal_volume += $item->sum('volume');
                         $subtotal_dpp += $item->sum('dpp');
-                        $subtotal_pbbkb += $pbbkb;
+                        $subtotal_pbbkb += $item->sum('pbbkb_sistem');
 
                         $items->push(collect([
                             'nama_jenis_bbm' => $item_unique->nama_jenis_bbm,
-                            'persentase_tarif' => $item_unique->persentase_tarif_jenis_bbm + $item_unique->persentase_tarif_sektor,
+                            'persentase_tarif' => $item_unique->persentase_tarif_jenis_bbm / 100 * $item_unique->persentase_pengenaan_sektor / 100,
                             'volume' => $item->sum('volume'),
                             'dpp' => $item->sum('dpp'),
-                            'pbbkb' => $pbbkb
+                            'pbbkb' => $item->sum('pbbkb_sistem')
                         ]));
                     }
                     $categories->put(
@@ -90,10 +89,6 @@ class SptpdController extends Controller
 
     public function approve(Request $request, $ulid)
     {
-        $request->validate([
-            'nomor_sptpd' => 'required',
-        ]);
-
         $pelaporan = Pelaporan::with(['penjualan'])
             ->where('ulid', $ulid)
             ->where('is_verified', true)
@@ -105,10 +100,10 @@ class SptpdController extends Controller
         try {
             $pelaporan->update([
                 'is_sptpd_approved' => true,
+                'sptpd_approved_at' => now()
             ]);
-
-            $pelaporan->sptpd()->create([
-                'nomor' => $request->nomor_sptpd,
+            $pelaporan->sptpd->update([
+                'tanggal' => now()->format('Y-m-d')
             ]);
             DB::commit();
         } catch (\Exception $e) {

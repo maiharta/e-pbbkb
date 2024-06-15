@@ -24,6 +24,34 @@
         <section class="section">
             <div class="card">
                 <div class="card-body">
+                    <table>
+                        <tr>
+                            <td class="pb-1 pe-4">Nama perusahaan</td>
+                            <th>: {{ $pelaporan->user->name }}</th>
+                        </tr>
+                        <tr>
+                            <td class="pb-1 pe-4">Periode Laporan</td>
+                            <th>: {{ $pelaporan->bulan_name }} {{ $pelaporan->tahun }}</th>
+                        </tr>
+                        <tr>
+                            <td class="pb-1 pe-4">Tanggal Approval SPTPD</td>
+                            <th>:
+                                {{ Carbon\Carbon::parse($pelaporan->sptpd_approved_at)->locale('id')->isoFormat('LL') }}
+                            </th>
+                        </tr>
+                        <tr>
+                            <td class="pb-1 pe-4">Nomor SPTPD</td>
+                            <th>: {{ $pelaporan->sptpd->nomor }}</th>
+                        </tr>
+                        <tr>
+                            <td class="pb-1 pe-4">NPWPD</td>
+                            <th>: {{ $pelaporan->user->userDetail->npwpd }}</th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
                     @foreach ($pelaporan->data_formatted as $sektor => $categories)
                         <p class="mt-3 mb-2 fw-bold">{{ $loop->iteration }}. {{ $sektor }}</p>
                         <div class="ms-4">
@@ -213,10 +241,11 @@
                                 <label class="col-form-label fw-bold"
                                        for="nomor_sptpd">Nomor SPTPD*</label>
                                 <input class="form-control"
+                                       disabled
                                        id="nomor_sptpd"
-                                       name="nomor_sptpd"
                                        placeholder="Masukkan nomor SPTPD perusahaan"
-                                       type="text">
+                                       type="text"
+                                       value="{{ $pelaporan->sptpd->nomor }}">
                             </div>
                         </div>
                         <div class="modal-footer">

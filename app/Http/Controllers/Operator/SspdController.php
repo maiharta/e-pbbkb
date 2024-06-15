@@ -32,7 +32,7 @@ class SspdController extends Controller
                 $penjualan->each(function ($item) use (&$volume, &$dpp, &$pbbkb) {
                     $volume += $item->volume;
                     $dpp += $item->dpp;
-                    $pbbkb += $item->dpp * ($item->persentase_tarif_jenis_bbm + $item->persentase_tarif_sektor) / 100;
+                    $pbbkb += $item->pbbkb_sistem;
                 });
 
                 return collect([
