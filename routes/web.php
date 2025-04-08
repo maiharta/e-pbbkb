@@ -4,12 +4,16 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Operator\SspdController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\Operator\SptpdController;
 use App\Http\Controllers\Operator\PelaporanController;
 use App\Http\Controllers\Operator\PembelianController;
 use App\Http\Controllers\Operator\PenjualanController;
+use App\Http\Controllers\Admin\MasterData\CutiController;
 use App\Http\Controllers\Admin\Verifikasi\UserController;
+use App\Http\Controllers\Admin\PengaturanSistemController;
 use App\Http\Controllers\Admin\MasterData\SektorController;
 use App\Http\Controllers\Admin\MasterData\JenisBbmController;
 use App\Http\Controllers\Admin\Verifikasi\PelaporanController as AdminPelaporanController;
@@ -111,6 +115,20 @@ Route::middleware(['auth'])->group(function () {
                 Route::put('/{ulid}', [JenisBbmController::class, 'update'])->name('update');
                 Route::delete('/{ulid}', [JenisBbmController::class, 'destroy'])->name('destroy');
             });
+            // Cuti
+            Route::prefix('cuti')->name('cuti.')->group(function () {
+                Route::get('/', [CutiController::class, 'index'])->name('index');
+                Route::get('/create', [CutiController::class, 'create'])->name('create');
+                Route::post('/', [CutiController::class, 'store'])->name('store');
+                Route::get('/{ulid}/edit', [CutiController::class, 'edit'])->name('edit');
+                Route::put('/{ulid}', [CutiController::class, 'update'])->name('update');
+                Route::delete('/{ulid}', [CutiController::class, 'destroy'])->name('destroy');
+            });
+        });
+        // Pengaturan Sistem
+        Route::prefix('pengaturan-sistem')->name('pengaturan-sistem.')->group(function () {
+            Route::get('/', [PengaturanSistemController::class, 'index'])->name('index');
+            Route::put('/', [PengaturanSistemController::class, 'update'])->name('update');
         });
     });
 
@@ -146,6 +164,20 @@ Route::middleware(['auth'])->group(function () {
                     Route::delete('/{ulid}/{penjualan}', [PenjualanController::class, 'destroy'])->name('destroy');
                     Route::post('/{ulid}/import', [PenjualanController::class, 'import'])->name('import');
                     Route::get('/download/template-import', [PenjualanController::class, 'downloadTemplateImport'])->name('download-template-import');
+                });
+            });
+
+            Route::middleware(['ensure_pelaporan_is_verified'])->group(function () {
+                // SPTPD
+                Route::prefix('sptpd')->name('sptpd.')->group(function () {
+                    Route::get('/{ulid}', [SptpdController::class, 'index'])->name('index');
+                    // ajax
+                    Route::post('/cancel/{ulid?}', [SptpdController::class, 'cancel'])->name('cancel');
+                    Route::post('/approve/{ulid?}', [SptpdController::class, 'approve'])->name('approve');
+                });
+                // SSPD
+                Route::prefix('sspd')->name('sspd.')->group(function () {
+                    Route::get('/{ulid}', [SspdController::class, 'index'])->name('index');
                 });
             });
         });

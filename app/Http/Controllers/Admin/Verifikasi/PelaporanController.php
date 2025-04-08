@@ -19,10 +19,26 @@ class PelaporanController extends Controller
 
     public function show(Request $request, $ulid)
     {
-        $pelaporan = Pelaporan::with(['user', 'penjualan', 'pembelian'])
+        $pelaporan = Pelaporan::with(['user', 'penjualan', 'pembelian', 'pelaporanNote'])
             ->where('ulid', $ulid)->where('is_sent_to_admin', true)
             ->where('is_verified', false)
             ->firstOrFail();
+
+        $pelaporan->data_pembelian_terakhir = $pelaporan->pembelian->groupBy('jenis_bbm_id')->map(function ($item) {
+            $total_volume = $item->sum('volume');
+            $item = $item->sortByDesc('tanggal')->first();
+            $item->total_volume = $total_volume;
+            return $item;
+        })->values();
+
+        $pelaporan->data_penjualan_terakhir = $pelaporan->penjualan->groupBy('jenis_bbm_id')->map(function ($item) {
+            $total_volume = $item->sum('volume');
+            $item = $item->first();
+            $item->total_volume = $total_volume;
+            return $item;
+        })->values();
+
+
         return view('pages.admin.verifikasi.pelaporan.show', compact(
             'pelaporan'
         ));
@@ -40,10 +56,11 @@ class PelaporanController extends Controller
             ->where('is_verified', false)
             ->firstOrFail();
 
-        try{
+        try {
             $pelaporan->update([
                 'catatan_revisi' => $request->catatan_revisi,
                 'is_sent_to_admin' => false,
+                'is_sptpd_canceled' => false,
             ]);
 
             return response()->json([
@@ -62,19 +79,33 @@ class PelaporanController extends Controller
     public function approve(Request $request)
     {
         $request->validate([
-            'ulid' => 'required'
+            'ulid' => 'required',
+            'nomor_sptpd' => 'required'
         ]);
 
-        $pelaporan = Pelaporan::where('ulid', $request->ulid)
+        $pelaporan = Pelaporan::with('pelaporanNote')
+            ->where('ulid', $request->ulid)
             ->where('is_sent_to_admin', true)
             ->where('is_verified', false)
             ->firstOrFail();
+
+        if ($pelaporan->pelaporanNote->where('is_active', true)->where('status', 'danger')->count() != 0) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Gagal melakukan validasi. Terdapat data pelaporan yang belum sesuai'
+            ]);
+        }
 
         try {
             $pelaporan->update([
                 'catatan_revisi' => null,
                 'is_verified' => true,
-                'verified_at' => now()
+                'verified_at' => now(),
+                'is_sptpd_canceled' => false,
+            ]);
+
+            $pelaporan->sptpd()->create([
+                'nomor' => $request->nomor_sptpd
             ]);
 
             return response()->json([
@@ -89,6 +120,4 @@ class PelaporanController extends Controller
             ]);
         }
     }
-
-
 }

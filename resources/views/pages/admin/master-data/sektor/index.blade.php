@@ -22,7 +22,7 @@
                                     <th>No</th>
                                     <th class="text-start">Kode</th>
                                     <th class="text-start">Nama</th>
-                                    <th class="text-start">Tarif</th>
+                                    <th class="text-start">Pengenaan</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -32,7 +32,7 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td class="text-start">{{ $sektor->kode }}</td>
                                         <td class="text-start">{{ $sektor->nama }}</td>
-                                        <td class="text-start">{{ $sektor->persentase_tarif }} %</td>
+                                        <td class="text-start">{{ $sektor->persentase_pengenaan }} %</td>
                                         <td>
                                             {{-- dropdown --}}
                                             <div class="dropdown">

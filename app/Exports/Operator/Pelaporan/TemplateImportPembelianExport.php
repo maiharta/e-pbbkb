@@ -28,8 +28,8 @@ class TemplateImportPembelianExport implements FromCollection, ShouldAutoSize, W
         $sheets = [
             // this export
             'Pembelian' => $this,
-            'Kabupaten/Kota' => new KabupatenExport(),
             'Jenis BBM' => new JenisBbmExport(),
+            'Contoh Data' => new ExampleImportPembelianExport(),
         ];
 
         return $sheets;
@@ -60,10 +60,13 @@ class TemplateImportPembelianExport implements FromCollection, ShouldAutoSize, W
     private function getHeader()
     {
         return [
-            'Penjual',
-            'kabupaten_id',
+            'penjual',
+            'alamat',
             'jenis_bbm_id',
+            'sisa_volume',
             'volume',
+            'nomor_kuitansi',
+            'tanggal_pembelian'
         ];
     }
 }

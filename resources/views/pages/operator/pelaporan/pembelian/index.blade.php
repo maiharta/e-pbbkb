@@ -24,10 +24,16 @@
         <section class="section">
             @if ($pelaporan->catatan_revisi)
                 <div class="card w-100">
-                    <div class="card-body d-flex bg-danger text-white align-items-center gap-3">
+                    <div
+                         class="card-body d-flex {{ $pelaporan->is_sptpd_canceled ? 'bg-info' : 'bg-danger' }} text-white align-items-center gap-3">
                         <div class="d-flex gap-2 align-items-center flex-column border-end pe-4">
-                            <span class="fw-bold fs-4 isax isax-warning-2"></span>
-                            <p class="fs-6 fw-bold mb-0">Revisi</p>
+                            @if ($pelaporan->is_sptpd_canceled)
+                                <span class="fw-bold fs-4 isax isax-warning-2"></span>
+                                <p class="fs-6 fw-bold mb-0">Info</p>
+                            @else
+                                <span class="fw-bold fs-4 isax isax-warning-2"></span>
+                                <p class="fs-6 fw-bold mb-0">Revisi</p>
+                            @endif
                         </div>
                         <p class="mb-0">{{ $pelaporan->catatan_revisi }}</p>
                     </div>
@@ -45,55 +51,61 @@
             </div>
             <div class="card">
                 <div class="card-body">
-                    <table class="table table-striped table-bordered"
-                           id="pembelian-table">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Penjual</th>
-                                <th>Kab/Kota</th>
-                                <th>Jenis BBM</th>
-                                <th>Subsidi/Non Subsidi</th>
-                                <th>Total Volume (liter)</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($pembelians as $pembelian)
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered"
+                               id="pembelian-table">
+                            <thead>
                                 <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $pembelian->penjual }}</td>
-                                    <td>{{ $pembelian->kabupaten->nama }}</td>
-                                    <td>{{ $pembelian->jenisBbm->nama }}</td>
-                                    <td>{{ $pembelian->jenisBbm->is_subsidi ? 'Subsidi' : 'Non Subsidi' }}</td>
-                                    <td class="text-start">{{ number_format($pembelian->volume, 0, ',', '.') }}</td>
-                                    <td>
-                                        <div class="dropdown">
-                                            <button aria-expanded="false"
-                                                    class="btn"
-                                                    data-bs-toggle="dropdown"
-                                                    id="dropdownMenuButton1"
-                                                    type="button">
-                                                <i class="isax isax-more"></i>
-                                            </button>
-                                            <ul aria-labelledby="dropdownMenuButton1"
-                                                class="dropdown-menu">
-                                                <li><a class="dropdown-item"
-                                                       href="{{ route('pelaporan.pembelian.edit', ['pembelian' => $pembelian->ulid, 'ulid' => $pelaporan->ulid]) }}">Edit</a>
-                                                </li>
-                                                <li>
-                                                    <button class="dropdown-item"
-                                                            onclick="hapus('{{ route('pelaporan.pembelian.destroy', ['pembelian' => $pembelian->ulid, 'ulid' => $pelaporan->ulid]) }}')">
-                                                        Hapus
-                                                    </button>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </td>
+                                    <th>No</th>
+                                    <th>Penjual</th>
+                                    <th>Nomor Kuitansi</th>
+                                    <th>Tanggal</th>
+                                    <th>Jenis BBM</th>
+                                    <th>Sisa Volume (liter)</th>
+                                    <th>Total Volume (liter)</th>
+                                    <th>Aksi</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach ($pembelians as $pembelian)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $pembelian->penjual }}</td>
+                                        <td>{{ $pembelian->nomor_kuitansi }}</td>
+                                        <td>{{ $pembelian->tanggal_formatted }}</td>
+                                        <td>{{ $pembelian->jenisBbm->nama }} -
+                                            {{ $pembelian->jenisBbm->is_subsidi ? 'Subsidi' : 'Non Subsidi' }}</td>
+                                        <td class="text-start">{{ number_format($pembelian->sisa_volume, 0, ',', '.') }}
+                                        </td>
+                                        <td class="text-start">{{ number_format($pembelian->volume, 0, ',', '.') }}</td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button aria-expanded="false"
+                                                        class="btn"
+                                                        data-bs-toggle="dropdown"
+                                                        id="dropdownMenuButton1"
+                                                        type="button">
+                                                    <i class="isax isax-more"></i>
+                                                </button>
+                                                <ul aria-labelledby="dropdownMenuButton1"
+                                                    class="dropdown-menu">
+                                                    <li><a class="dropdown-item"
+                                                           href="{{ route('pelaporan.pembelian.edit', ['pembelian' => $pembelian->ulid, 'ulid' => $pelaporan->ulid]) }}">Edit</a>
+                                                    </li>
+                                                    <li>
+                                                        <button class="dropdown-item"
+                                                                onclick="hapus('{{ route('pelaporan.pembelian.destroy', ['pembelian' => $pembelian->ulid, 'ulid' => $pelaporan->ulid]) }}')">
+                                                            Hapus
+                                                        </button>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </section>

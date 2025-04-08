@@ -22,6 +22,11 @@ class Pelaporan extends Model
         'catatan_revisi',
         'is_verified',
         'verified_at',
+        'is_sptpd_approved',
+        'is_sptpd_canceled',
+        'sptpd_approved_at',
+        'batas_pelaporan',
+        'batas_pembayaran'
     ];
 
     protected $casts = [
@@ -54,9 +59,18 @@ class Pelaporan extends Model
         return $this->hasMany(Penjualan::class);
     }
 
+    public function sptpd()
+    {
+        return $this->hasOne(Sptpd::class);
+    }
+    public function pelaporanNote()
+    {
+        return $this->hasMany(PelaporanNote::class);
+    }
+
     public function getBulanNameAttribute()
     {
-        return Carbon::create()->month($this->bulan)->locale('id')->format('F');
+        return Carbon::create()->month($this->bulan)->locale('id')->isoFormat('MMMM');
     }
 
     public function getPembelianBadgeAttribute()
@@ -83,16 +97,18 @@ class Pelaporan extends Model
         if (!$this->is_verified) {
             return "<span class='fw-bold isax isax-minus text-disabled'></span>";
         } else {
-            return "<span class='fw-bold isax isax-chart text-primary'></span>";
+            $link = route('pelaporan.sptpd.index', ['ulid' => $this->ulid]);
+            return "<a href='{$link}' class='fw-bold'><span class='fw-bold isax isax-chart text-primary'></span></a>";
         }
     }
 
     public function getSspdBadgeAttribute()
     {
-        if (!$this->is_verified) {
+        if (!$this->is_sptpd_approved) {
             return "<span class='fw-bold isax isax-minus text-primary'></span>";
         } else {
-            return "<span class='fw-bold isax isax-chart text-primary'></span>";
+            $link = route('pelaporan.sspd.index', ['ulid' => $this->ulid]);
+            return "<a href='{$link}'><span class='fw-bold isax isax-chart text-primary'></span></a>";
         }
     }
 
@@ -110,11 +126,22 @@ class Pelaporan extends Model
         if (!$this->is_sent_to_admin && !$this->catatan_revisi) {
             return "<span class='badge bg-warning'>Draft</span>";
         } else if ($this->catatan_revisi && !$this->is_sent_to_admin) {
-            return "<span class='badge bg-danger' title='".$this->catatan_revisi."'>Revisi</span>";
-        } else if ($this->is_verified) {
-            return "<span class='badge bg-info'>Terverifikasi - Pending SSPD</span>";
+            return "<span class='badge bg-danger' title='" . $this->catatan_revisi . "'>Revisi</span>";
+        } else if ($this->is_verified && !$this->is_sptpd_approved) {
+            return "<span class='badge bg-info'>Terverifikasi - Pending SPTPD</span>";
+        } else if ($this->is_sptpd_approved) {
+            return "<span class='badge bg-info'>Pending Pembayaran SSPD</span>";
         } else {
-            return "<span class='badge bg-secondary'>Verifikasi</span>";
+            return "<span class='badge bg-secondary'>Verifikasi Admin</span>";
         }
+    }
+
+    public function getBatasPelaporanFormattedAttribute()
+    {
+        return $this->batas_pelaporan ? Carbon::parse($this->batas_pelaporan)->locale('id')->isoFormat('D MMMM Y') : '-';
+    }
+    public function getBatasPembayaranFormattedAttribute()
+    {
+        return $this->batas_pembayaran ? Carbon::parse($this->batas_pembayaran)->locale('id')->isoFormat('D MMMM Y') : '-';
     }
 }

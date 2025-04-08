@@ -97,6 +97,7 @@ $body-text-align: null !default;
 
 // Bootstrap Variables
 $white:    #fff !default;
+$gray-custom: #F5F5F5 !default;
 $gray-100: #f8f9fa !default;
 $gray-200: #e9ecef !default;
 $gray-300: #dee2e6 !default;
@@ -155,6 +156,7 @@ $colors: (
 
 $primary:       $blue !default;
 $secondary:     $gray-600 !default;
+$secondary-custom: $gray-custom !default;
 $success:       $green !default;
 $info:          $cyan !default;
 $warning:       $yellow !default;
@@ -745,6 +747,7 @@ $table-bg-scale:              -80% !default;
 $table-variants: (
   "primary":    shift-color($primary, $table-bg-scale),
   "secondary":  shift-color($secondary, $table-bg-scale),
+  "secondary-custom": $secondary-custom,
   "success":    shift-color($success, $table-bg-scale),
   "info":       shift-color($info, $table-bg-scale),
   "warning":    shift-color($warning, $table-bg-scale),

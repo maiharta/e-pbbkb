@@ -51,7 +51,18 @@
                             <a class="submenu-link"
                                href="{{ route('master-data.jenis-bbm.index') }}">Jenis BBM</a>
                         </li>
+                        <li class="submenu-item {{ request()->routeIs('master-data.cuti*') ? 'active' : '' }}">
+                            <a class="submenu-link"
+                               href="{{ route('master-data.cuti.index') }}">Cuti</a>
+                        </li>
                     </ul>
+                </li>
+                <li class="sidebar-item {{ request()->routeIs('pengaturan-sistem*') ? 'active' : '' }}">
+                    <a class="sidebar-link"
+                       href="{{ route('pengaturan-sistem.index') }}">
+                        <i class="isax isax-setting-2"></i>
+                        <span>Pengaturan Sistem</span>
+                    </a>
                 </li>
             @endrole
 

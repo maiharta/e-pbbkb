@@ -18,8 +18,9 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th class="text-start">Bulan Pajak</th>
-                                    <th class="text-start">Tahun Pajak</th>
+                                    <th class="text-start">Masa Pajak</th>
+                                    <th class="text-start">Batas Pelaporan</th>
+                                    <th class="text-start">Batas Pembayaran</th>
                                     <th class="text-start">Pembelian</th>
                                     <th class="text-start">Penjualan</th>
                                     <th class="text-start">SPTPD</th>
@@ -32,8 +33,9 @@
                                 @foreach ($pelaporans as $pelaporan)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td class="text-start">{{ $pelaporan->bulan_name }}</td>
-                                        <td class="text-start">{{ $pelaporan->tahun }}</td>
+                                        <td class="text-start">{{ $pelaporan->bulan_name }} {{ $pelaporan->tahun }}</td>
+                                        <td class="text-start">{{ $pelaporan->batas_pelaporan_formatted }}</td>
+                                        <td class="text-start">{{ $pelaporan->batas_pembayaran_formatted }}</td>
                                         <td class="text-center">{!! $pelaporan->pembelian_badge !!}</td>
                                         <td class="text-center">{!! $pelaporan->penjualan_badge !!}</td>
                                         <td class="text-center">{!! $pelaporan->sptpd_badge !!}</td>
@@ -61,7 +63,7 @@
         });
     </script>
     <script>
-        function sendPelaporan(ulid){
+        function sendPelaporan(ulid) {
             Swal.fire({
                 'title': 'Apakah anda yakin?',
                 'text': 'Anda akan mengirimkan data ini dan tidak dapat melakukan perubahan sebelum revisi',

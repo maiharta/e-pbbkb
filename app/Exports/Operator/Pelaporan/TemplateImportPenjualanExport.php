@@ -2,9 +2,11 @@
 
 namespace App\Exports\Operator\Pelaporan;
 
+use App\Exports\LokasiPenyaluranExport;
 use App\Exports\SektorExport;
 use App\Exports\JenisBbmExport;
 use App\Exports\KabupatenExport;
+use App\Exports\StatusPajakExport;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithStyles;
@@ -31,9 +33,11 @@ class TemplateImportPenjualanExport implements FromCollection, ShouldAutoSize, W
         $sheets = [
             // this export
             'Penjualan' => $this,
-            'Kabupaten/Kota' => new KabupatenExport(),
             'Sektor' => new SektorExport(),
             'Jenis BBM' => new JenisBbmExport(),
+            'Lokasi Penyaluran' => new LokasiPenyaluranExport(),
+            'Status Pajak' => new StatusPajakExport(),
+            'Contoh Data' => new ExampleImportPenjualanExport(),
         ];
 
         return $sheets;
@@ -64,12 +68,17 @@ class TemplateImportPenjualanExport implements FromCollection, ShouldAutoSize, W
     private function getHeader()
     {
         return [
-            'Pembeli',
-            'kabupaten_id',
+            'pembeli',
+            'alamat',
             'sektor_id',
             'jenis_bbm_id',
+            'lokasi_penyaluran_id',
+            'status_pajak_id',
             'volume',
-            'dpp'
+            'dpp',
+            'pbbkb',
+            'nomor_kuitansi',
+            'tanggal_penjualan',
         ];
     }
 }

@@ -90,15 +90,47 @@
                     Swal.fire({
                         icon: 'warning',
                         title: 'Masukkan keterangan revisi',
+                        html: '<div id="suggestion-list" class="d-flex gap-2 flex-wrap"></div>',
                         input: 'textarea',
                         // input required
                         inputAttributes: {
-                            required: true
+                            required: true,
+                            placeholder: "Masukkan keterangan revisi"
                         },
                         inputValidator: (value) => {
                             if (!value) {
                                 return 'Keterangan revisi tidak boleh kosong!'
                             }
+                        },
+                        didOpen: () => {
+                            const textarea = document.getElementById('textarea');
+                            const suggestionList = document.getElementById('suggestion-list');
+
+                            const suggestions = [
+                                'Alamat salah',
+                                'Berkas tidak valid',
+                                'NPWPD tidak valid',
+                                'Nama perusahaan salah',
+                                'Nomor telepon tidak valid'
+                            ];
+
+                            function displaySuggestions() {
+                                suggestionList.append(...suggestions.map((suggestion) => {
+                                    const button = document.createElement('button');
+                                    button.textContent = suggestion;
+                                    button.classList.add(
+                                        'btn', 'btn-sm', 'btn-outline-secondary'
+                                    ); // Add a class for styling (optional)
+                                    button.addEventListener('click', () => {
+                                        var a = $('.swal2-textarea').val();
+                                        $('.swal2-textarea').val(
+                                        `${a} ${suggestion}.`); // Add space before suggestion
+                                    });
+                                    return button;
+                                }));
+                            }
+
+                            displaySuggestions();
                         },
                         showCancelButton: true,
                         confirmButtonText: `Kirim`,
@@ -188,4 +220,5 @@
             });
         }
     </script>
+    <script></script>
 @endpush

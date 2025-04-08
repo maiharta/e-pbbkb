@@ -3,23 +3,33 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta content="width=device-width, initial-scale=1.0"
+          name="viewport">
+    <meta content="ie=edge"
+          http-equiv="X-UA-Compatible">
     <title>{{ config('app.name') }}</title>
-    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.png') }}" type="image/x-icon">
+    <link href="{{ asset('assets/images/favicon.png') }}"
+          rel="shortcut icon"
+          type="image/x-icon">
     @vite(['resources/scss/app.scss', 'resources/scss/themes/dark/app-dark.scss'])
-    <link rel="stylesheet" href="{{ asset('assets/vendors/iconsax/style.css') }}">
+    <link href="{{ asset('assets/vendors/iconsax/style.css') }}"
+          rel="stylesheet">
 
     {{-- datatables bootstrap --}}
-    <link rel="stylesheet" href="{{ asset('assets/vendors/datatables/dataTables.bootstrap5.min.css') }}">
+    <link href="{{ asset('assets/vendors/datatables/dataTables.bootstrap5.min.css') }}"
+          rel="stylesheet">
     {{-- datatables rowreorder --}}
-    <link rel="stylesheet" href="{{ asset('assets/vendors/datatables/rowReorder.dataTables.min.css') }}">
+    <link href="{{ asset('assets/vendors/datatables/rowReorder.dataTables.min.css') }}"
+          rel="stylesheet">
     {{-- datatables button --}}
-    <link rel="stylesheet" href="{{ asset('assets/vendors/datatables/buttons.bootstrap5.min.css') }}">
+    <link href="{{ asset('assets/vendors/datatables/buttons.bootstrap5.min.css') }}"
+          rel="stylesheet">
     {{-- select 2 --}}
-    <link rel="stylesheet" href="{{ asset('assets/vendors/select2/select2.min.css') }}">
+    <link href="{{ asset('assets/vendors/select2/select2.min.css') }}"
+          rel="stylesheet">
     {{-- daterangepicker --}}
-    <link rel="stylesheet" href="{{ asset('assets/vendors/daterangepicker/daterangepicker.css') }}">
+    <link href="{{ asset('assets/vendors/daterangepicker/daterangepicker.css') }}"
+          rel="stylesheet">
 
     @stack('styles')
 </head>
@@ -30,7 +40,8 @@
         <div id="sidebar">
             @include('layouts.partials.sidebar')
         </div>
-        <div id="main" class='layout-navbar navbar-fixed'>
+        <div class='layout-navbar navbar-fixed'
+             id="main">
             @include('layouts.partials.header')
             <div id="main-content">
                 @yield('content')
@@ -62,6 +73,9 @@
     <script src="{{ asset('assets/vendors/moment/moment.min.js') }}"></script>
     {{-- dateragepicker --}}
     <script src="{{ asset('assets/vendors/daterangepicker/daterangepicker.min.js') }}"></script>
+    {{-- flatpickr --}}
+    <script src="{{ asset('assets/vendors/flatpickr/flatpickr.min.js') }}"></script>
+    <script src="{{ asset('assets/vendors/flatpickr/id.js') }}"></script>
     {{-- @yield('content') --}}
     @vite(['resources/js/app.js'])
     @stack('scripts')

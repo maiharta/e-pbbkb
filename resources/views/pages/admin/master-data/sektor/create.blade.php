@@ -51,18 +51,18 @@
                                 </div>
                                 <div class="form-group mb-3">
                                     <label class="col-form-label fw-bold"
-                                           for="persentase_tarif">Tarif</label>
+                                           for="persentase_pengenaan">Pengenaan</label>
                                     <div class="input-group">
                                         <input aria-describedby="basic-addon2"
                                                class="form-control"
-                                               id="persentase_tarif"
+                                               id="persentase_pengenaan"
                                                max="100"
                                                min="0"
-                                               name="persentase_tarif"
-                                               placeholder="Masukkan persentase tarif sektor"
+                                               name="persentase_pengenaan"
+                                               placeholder="Masukkan persentase pengenaan sektor"
                                                step="0.01"
                                                type="number"
-                                               value="{{ old('persentase_tarif') }}">
+                                               value="{{ old('persentase_pengenaan') }}">
                                         <span class="input-group-text"
                                               id="basic-addon2">%</span>
                                     </div>
@@ -82,8 +82,8 @@
 
 @push('scripts')
     <script>
-        // prevent presentase_tarif above 100
-        $('#persentase_tarif').on('input', function() {
+        // prevent presentase_pengenaan above 100
+        $('#persentase_pengenaan').on('input', function() {
             if (this.value > 100) {
                 this.value = 100;
             }

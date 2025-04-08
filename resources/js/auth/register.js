@@ -58,12 +58,12 @@ $('#generate_otp').click(function () {
                 });
             }
         },
-        error: function () {
+        error: function (response) {
             Swal.close();
             Swal.fire({
                 icon: 'error',
                 title: 'Registrasi gagal',
-                text: 'Terjadi kesalahan'
+                text: response?.responseJSON?.message ?? 'Terjadi kesalahan pada server'
             });
 
             $('#generate_otp').attr('disabled', false);
@@ -131,12 +131,12 @@ $('#resend-otp').click(function () {
                 });
             }
         },
-        error: function () {
+        error: function (response) {
             Swal.close();
             Swal.fire({
                 icon: 'error',
                 title: 'Registrasi gagal',
-                text: 'Terjadi kesalahan'
+                text: response?.responseJSON?.message ?? 'Terjadi kesalahan pada server'
             });
 
             $('#generate_otp').attr('disabled', false);
@@ -151,12 +151,11 @@ $('#register').click(function () {
     var email = $('#email').val();
     var password = $('#password').val();
     var password_verify = $('#password_verify').val();
+    var token = $('#g-recaptcha-response').val();
     var otp_code = '';
     document.querySelectorAll('#otp > *[id]').forEach(function (element) {
         otp_code += element.value;
     })
-
-    console.log(otp_code);
 
     $.ajax({
         url: route_register,
@@ -166,7 +165,8 @@ $('#register').click(function () {
             email: email,
             password: password,
             password_verify: password_verify,
-            otp_code: otp_code
+            otp_code: otp_code,
+            'g-recaptcha-response': token
         },
         beforeSend: function () {
             // Swal loading
@@ -197,15 +197,19 @@ $('#register').click(function () {
                     title: 'Registrasi gagal',
                     text: response.message
                 });
+
+                grecaptcha.reset()
             }
         },
-        error: function () {
+        error: function (response) {
             Swal.close();
             Swal.fire({
                 icon: 'error',
                 title: 'Registrasi gagal',
-                text: 'Terjadi kesalahan'
+                text: response?.responseJSON?.message ?? 'Terjadi kesalahan'
             });
+
+            grecaptcha.reset()
         },
     });
 });

@@ -69,5 +69,6 @@ class Kernel extends HttpKernel
         'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
         'is_berkas_persyaratan_verified' => \App\Http\Middleware\IsBerkasPersyaratanVerified::class,
         'ensure_pelaporan_is_not_send_to_admin' => \App\Http\Middleware\EnsurePelaporanIsNotSendToAdminMiddleware::class,
+        'ensure_pelaporan_is_verified' => \App\Http\Middleware\EnsurePelaporanIsVerified::class,
     ];
 }
