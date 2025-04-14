@@ -316,11 +316,7 @@
                                         @foreach ($pelaporan->penjualan as $penjualan)
                                             {{-- @dd($penjualan) --}}
                                             <tr
-                                                class="{{ $penjualan->pelaporanNote()->where('is_active', true)->where('status', 'danger')->exists()
-                                                    ? 'bg-danger text-white'
-                                                    : ($penjualan->pelaporanNote()->where('is_active', true)->where('status', 'info')->exists()
-                                                        ? 'bg-warning text-white'
-                                                        : '') }}">
+                                                class="{{ $penjualan->pbbkb != $penjualan->pbbkb_sistem ? 'bg-danger text-white' : '' }}">
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $penjualan->pembeli }}</td>
                                                 <td>{{ $penjualan->nomor_kuitansi }}</td>
