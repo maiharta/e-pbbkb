@@ -312,37 +312,6 @@
                                             <th>PBBKB Sistem</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        @foreach ($pelaporan->penjualan as $penjualan)
-                                            {{-- @dd($penjualan) --}}
-                                            <tr
-                                                class="{{ $penjualan->pbbkb != $penjualan->pbbkb_sistem ? 'bg-danger text-white' : '' }}">
-                                                <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $penjualan->pembeli }}</td>
-                                                <td>{{ $penjualan->nomor_kuitansi }}</td>
-                                                <td>{{ $penjualan->tanggal_formatted }}</td>
-                                                <td>{{ $penjualan->jenisBbm->nama }} -
-                                                    {{ $penjualan->jenisBbm->is_subsidi ? 'Subsidi' : 'Non Subsidi' }}</td>
-                                                <td>{{ $penjualan->sektor->nama }}</td>
-                                                <td class="text-start">
-                                                    {{ number_format($penjualan->volume, 0, ',', '.') }}
-                                                </td>
-                                                <td class="text-start">Rp.
-                                                    {{ number_format($penjualan->dpp, 2, ',', '.') }}
-                                                </td>
-                                                <td>
-                                                    <span
-                                                          class="w-100 badge bg-{{ $penjualan->is_wajib_pajak ? 'success' : 'secondary' }}">{{ $penjualan->is_wajib_pajak ? 'Wajib' : 'Tidak Wajib' }}</span>
-                                                </td>
-                                                <td class="text-start">Rp.
-                                                    {{ number_format($penjualan->pbbkb, 2, ',', '.') }}
-                                                </td>
-                                                <td class="text-start">Rp.
-                                                    {{ number_format($penjualan->pbbkb_sistem, 2, ',', '.') }}
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
                                 </table>
                             </div>
                         </div>
@@ -361,16 +330,106 @@
 
 @push('scripts')
     <script>
-        $('#pembelian-table').DataTable({
+        var table = $('#pembelian-table').DataTable({
             "responsive": true,
             "language": {
                 "url": '{{ asset('assets/vendors/datatables-lang-id.json') }}'
             }
         });
-        $('#penjualan-table').DataTable({
+        var table2 = $('#penjualan-table').DataTable({
             "responsive": true,
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: '{{ route('verifikasi.pelaporan.penjualan.table', $pelaporan->ulid) }}',
+                data: function(d) {
+                    d.search = $('#penjualan #dt-search-1').val();
+                }
+            },
+            columns: [{
+                    data: null,
+                    name: 'index',
+                    searchable: false,
+                    orderable: false,
+                    className: 'text-center',
+                    render: function(data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }
+                },
+                {
+                    data: 'pembeli',
+                    name: 'pembeli',
+                    orderable: false,
+                },
+                {
+                    data: 'nomor_kuitansi',
+                    name: 'nomor_kuitansi',
+                    orderable: false,
+                },
+                {
+                    data: 'tanggal',
+                    name: 'tanggal',
+                    searchable: false
+                },
+                {
+                    data: 'jenis_bbm',
+                    name: 'jenis_bbm',
+                    orderable: false,
+                    searchable: false
+                },
+                {
+                    data: 'sektor',
+                    name: 'sektor',
+                    orderable: false,
+                    searchable: false,
+                },
+                {
+                    data: 'volume',
+                    name: 'volume',
+                    orderable: false,
+                    searchable: false,
+                },
+                {
+                    data: 'dpp',
+                    name: 'dpp',
+                    orderable: false,
+                    searchable: false,
+                },
+                {
+                    data: 'is_wajib_pajak',
+                    name: 'is_wajib_pajak',
+                    orderable: false,
+                    searchable: false
+                },
+                {
+                    data: 'pbbkb',
+                    name: 'pbbkb',
+                    orderable: false,
+                    searchable: false,
+                    className: 'text-end'
+                },
+                {
+                    data: 'pbbkb_sistem',
+                    name: 'pbbkb_sistem',
+                    orderable: false,
+                    searchable: false,
+                    className: 'text-end'
+                }
+            ],
             "language": {
                 "url": '{{ asset('assets/vendors/datatables-lang-id.json') }}'
+            },
+            "createdRow": function(row, data, dataIndex) {
+                // Add background color to rows where is_pbbkb_match is false
+                if (!data.is_pbbkb_match) {
+                    $(row).addClass('bg-danger text-white');
+                }
+            }
+        });
+
+        $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function(e) {
+            if ($(e.target).attr('id') === 'penjualan-tab') {
+                table2.ajax.reload();
             }
         });
     </script>

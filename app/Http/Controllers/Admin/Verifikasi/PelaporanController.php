@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin\Verifikasi;
 
 use App\Models\Pelaporan;
+use App\Models\Penjualan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
@@ -117,6 +118,74 @@ class PelaporanController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'Terjadi kesalahan saat melakukan validasi. Hubungi administrator'
+            ]);
+        }
+    }
+
+    public function penjualanTable(Request $request, $ulid)
+    {
+        if ($request->ajax()) {
+            $start = $request->input('start');
+            $length = $request->input('length');
+            $draw = $request->input('draw');
+            $search = $request->input('search');
+
+            // Query
+            $query = Penjualan::with(['jenisBbm', 'sektor'])->whereHas('pelaporan', function ($query) use ($ulid) {
+                $query->where('ulid', $ulid)->where('is_sent_to_admin', true)->where('is_verified', false);
+            });
+
+            // Total records
+            $totalRecords = $query->count();
+
+            // Filter records
+            if ($search) {
+                $query = $query->where(function ($query) use ($search) {
+                    $query->where('nomor_kuitansi', 'like', "%{$search}%");
+                });
+
+                // filtered records count
+                $totalFiltered = $query->count();
+            } else {
+                $totalFiltered = $totalRecords;
+            }
+
+            // Offset and limit
+            if ($start != 0 || $length != -1) {
+                $query = $query->offset($start)
+                    ->limit($length);
+            }
+
+            // Get data
+            $records = $query
+                ->get()
+                ->map(function ($order) {
+                    if($order->is_wajib_pajak){
+                        $is_wajib_pajak = '<span class="w-100 badge bg-success">Ya</span>';
+                    } else {
+                        $is_wajib_pajak = '<span class="w-100 badge bg-secondary">Tidak</span>';
+                    }
+                    return [
+                        'pembeli' => $order->pembeli,
+                        'nomor_kuitansi' => $order->nomor_kuitansi,
+                        'tanggal' => $order->tanggal_formatted,
+                        'jenis_bbm' => $order->jenisBbm->nama . ' - ' . ($order->jenisBbm->is_subsidi ? 'Subsidi' : 'Non Subsidi'),
+                        'sektor' => $order->sektor->nama,
+                        'volume' => number_format($order->volume, 0, ',', '.'),
+                        'dpp' => 'Rp. ' . number_format($order->dpp, 2, ',', '.'),
+                        'is_wajib_pajak' => $is_wajib_pajak,
+                        'pbbkb' => 'Rp. ' . number_format($order->pbbkb, 2, ',', '.'),
+                        'pbbkb_sistem' => 'Rp. ' . number_format($order->pbbkb_sistem, 2, ',', '.'),
+                        'is_pbbkb_match' => $order->pbbkb == $order->pbbkb_sistem 
+                    ];
+                });
+            
+            // JSON response
+            return response()->json([
+                'draw' => intval($draw),
+                'recordsTotal' => $totalRecords,
+                'recordsFiltered' => $totalFiltered,
+                'data' => $records,
             ]);
         }
     }

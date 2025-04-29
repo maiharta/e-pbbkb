@@ -83,6 +83,10 @@ Route::middleware(['auth'])->group(function () {
                 // ajax
                 Route::post('/approve', [AdminPelaporanController::class, 'approve'])->name('approve');
                 Route::post('/revisi', [AdminPelaporanController::class, 'revisi'])->name('revisi');
+
+                // table
+                Route::get('/{ulid}/penjualan/table', [AdminPelaporanController::class, 'penjualanTable'])->name('penjualan.table');
+                Route::get('/{ulid}/pembelian/table', [AdminPelaporanController::class, 'pembelianTable'])->name('pembelian.table');
             });
             // User
             Route::prefix('user')->name('user.')->group(function () {
