@@ -20,11 +20,14 @@
     <link rel="icon" href="{{ asset('assets/images/favicon.png') }}" type="image/png">
     {{-- custom css --}}
     @stack('styles')
-    @vite(['resources/scss/auth/style.scss'])
+    @vite(['resources/scss/auth/style.scss','resources/scss/app.scss'])
     {!! ReCaptcha::htmlScriptTagJsApi() !!}
 </head>
 
 <body>
+    <div class="loader-container">
+        <div class="loader"></div>
+    </div>
     {{-- left 40%, right is bg with 60%, height 100vh --}}
     <div class="container-fluid h-100 px-0">
         <div class="row align-items-center justify-content-center h-100 h-md-auto">

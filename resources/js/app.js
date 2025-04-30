@@ -1,4 +1,5 @@
 import './bootstrap';
+import "./components/loader";
 
 import "./mazer";
 import '@fontsource/nunito/300.css';

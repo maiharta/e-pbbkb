@@ -36,6 +36,9 @@
 
 <body>
     <script src="{{ asset('assets/js/initTheme.js') }}"></script>
+    <div class="loader-container">
+        <div class="loader"></div>
+    </div>
     <div id="app">
         <div id="sidebar">
             @include('layouts.partials.sidebar')
