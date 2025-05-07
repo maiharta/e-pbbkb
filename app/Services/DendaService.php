@@ -20,11 +20,6 @@ class DendaService
             throw new ServiceException('Pelaporan sudah kadaluarsa');
         }
 
-        // Check if the pelaporan is verified
-        if($pelaporan->is_verified) {
-            throw new ServiceException('Pelaporan sudah diverifikasi');
-        }
-
 
         $batas_pelaporan = $pelaporan->batas_pelaporan;
         $now = now();
