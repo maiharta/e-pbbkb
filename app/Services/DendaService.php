@@ -39,7 +39,7 @@ class DendaService
                     'waktu_denda' => $batas_pelaporan->addDays(1),
                     'denda_ke' => 1,
                     'denda' => 1000000,
-                    'keterangan' => null,
+                    'keterangan' => 'Denda keterlambatan ke-1',
                 ]);
             } else {
                 // check if denda ke 1 already exists
@@ -61,8 +61,8 @@ class DendaService
                         'pelaporan_id' => $pelaporan->id,
                         'waktu_denda' => $batas_pelaporan->addMonths($i),
                         'denda_ke' => $i+1,
-                        'denda' => 100000,
-                        'keterangan' => null,
+                        'denda' => 1000000,
+                        'keterangan' => 'Denda keterlambatan ke-' . ($i + 1),
                     ]);
                 }
             }

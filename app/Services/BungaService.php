@@ -39,7 +39,7 @@ class BungaService
                     'waktu_bunga' => $batas_pembayaran->addDays(1),
                     'bunga_ke' => 1,
                     'persentase_bunga' => 1,
-                    'bunga' => 0.1 * $pelaporan->sptpd->total_pbbkb,
+                    'bunga' => 0.01 * $pelaporan->sptpd->total_pbbkb,
                     'keterangan' => 'Bunga telat pembayaran ke-1',
                 ]);
             } else {
