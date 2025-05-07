@@ -55,16 +55,18 @@ class BungaService
             $existingBunga = Bunga::where('pelaporan_id', $pelaporan->id)
                 ->orderBy('bunga_ke', 'desc')
                 ->get();
-            foreach (range(1, $month_diff) as $i) {
-                if ($existingBunga->where('bunga_ke', $i + 1)->isEmpty()) {
-                    Bunga::create([
-                        'pelaporan_id' => $pelaporan->id,
-                        'waktu_bunga' => $batas_pembayaran->addMonths($i),
-                        'bunga_ke' => $i + 1,
-                        'persentase_bunga' => 1,
-                        'bunga' => 0.01 * $pelaporan->sptpd->total_pbbkb,
-                        'keterangan' => 'Bunga telat pembayaran ke-' . ($i + 1),
-                    ]);
+            if($month_diff){
+                foreach (range(1, $month_diff) as $i) {
+                    if ($existingBunga->where('bunga_ke', $i + 1)->isEmpty()) {
+                        Bunga::create([
+                            'pelaporan_id' => $pelaporan->id,
+                            'waktu_bunga' => $batas_pembayaran->addMonths($i),
+                            'bunga_ke' => $i + 1,
+                            'persentase_bunga' => 1,
+                            'bunga' => 0.01 * $pelaporan->sptpd->total_pbbkb,
+                            'keterangan' => 'Bunga telat pembayaran ke-' . ($i + 1),
+                        ]);
+                    }
                 }
             }
         }
