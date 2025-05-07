@@ -33,7 +33,7 @@ class DendaService
                 ->orderBy('denda_ke', 'desc')
                 ->get();
 
-            if($existingDenda->where('denda_ke', 1)->isEmpty()) {
+            if ($existingDenda->where('denda_ke', 1)->isEmpty()) {
                 Denda::create([
                     'pelaporan_id' => $pelaporan->id,
                     'waktu_denda' => $batas_pelaporan->addDays(1),
@@ -55,15 +55,17 @@ class DendaService
             $existingDenda = Denda::where('pelaporan_id', $pelaporan->id)
                 ->orderBy('denda_ke', 'desc')
                 ->get();
-            foreach (range(1, $month_diff) as $i) {
-                if ($existingDenda->where('denda_ke', $i+1)->isEmpty()) {
-                    Denda::create([
-                        'pelaporan_id' => $pelaporan->id,
-                        'waktu_denda' => $batas_pelaporan->addMonths($i),
-                        'denda_ke' => $i+1,
-                        'denda' => 1000000,
-                        'keterangan' => 'Denda keterlambatan ke-' . ($i + 1),
-                    ]);
+            if ($month_diff) {
+                foreach (range(1, $month_diff) as $i) {
+                    if ($existingDenda->where('denda_ke', $i + 1)->isEmpty()) {
+                        Denda::create([
+                            'pelaporan_id' => $pelaporan->id,
+                            'waktu_denda' => $batas_pelaporan->addMonths($i),
+                            'denda_ke' => $i + 1,
+                            'denda' => 1000000,
+                            'keterangan' => 'Denda keterlambatan ke-' . ($i + 1),
+                        ]);
+                    }
                 }
             }
         }
