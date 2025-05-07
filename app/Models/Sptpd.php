@@ -15,8 +15,12 @@ class Sptpd extends Model
         'pelaporan_id',
         'nomor',
         'tanggal',
-        'wajib_pajak',
-        'jabatan',
+        'total_pbbkb',
+    ];
+
+    protected $casts = [
+        'tanggal' => 'date',
+        'total_pbbkb' => 'decimal:2',
     ];
 
     protected static function boot()

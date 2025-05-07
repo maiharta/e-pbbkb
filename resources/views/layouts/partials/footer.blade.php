@@ -4,7 +4,7 @@
             <p>2024 &copy; {{ config('app.name') }}</p>
         </div>
         <div class="float-end">
-            <p>Powered by <a href="https://maiharta.com">CV. Maiharta</a></p>
+            <p>Powered with ♥️ by <a href="https://maiharta.com">CV. Maiharta</a></p>
         </div>
     </div>
 </footer>

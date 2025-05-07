@@ -8,11 +8,12 @@ use App\Models\Penjualan;
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Pelaporan extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'user_id',
@@ -26,13 +27,24 @@ class Pelaporan extends Model
         'is_sptpd_canceled',
         'sptpd_approved_at',
         'batas_pelaporan',
-        'batas_pembayaran'
+        'batas_pembayaran',
+        'first_send_at',
+        'is_expired',
+        'is_paid',
     ];
 
     protected $casts = [
         'is_sent_to_admin' => 'boolean',
         'is_verified' => 'boolean',
         'verified_at' => 'datetime',
+        'is_sptpd_approved' => 'boolean',
+        'is_sptpd_canceled' => 'boolean',
+        'sptpd_approved_at' => 'datetime',
+        'batas_pelaporan' => 'datetime',
+        'batas_pembayaran' => 'datetime',
+        'first_send_at' => 'datetime',
+        'is_expired' => 'boolean',
+        'is_paid' => 'boolean',
     ];
 
     protected static function boot()

@@ -24,6 +24,8 @@ class PengaturanSistemController extends Controller
         $validated = $request->validate([
             'batas_pelaporan' => 'required',
             'batas_pembayaran' => 'required',
+            'bunga' => 'required|numeric|min:0|max:100',
+            'denda' => 'required|numeric',
         ]);
 
         DB::beginTransaction();

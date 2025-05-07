@@ -103,7 +103,8 @@ class SptpdController extends Controller
                 'sptpd_approved_at' => now()
             ]);
             $pelaporan->sptpd->update([
-                'tanggal' => now()->format('Y-m-d')
+                'tanggal' => now()->format('Y-m-d'),
+                'total_pbbkb' => $pelaporan->penjualan->sum('pbbkb_sistem')
             ]);
             DB::commit();
         } catch (\Exception $e) {

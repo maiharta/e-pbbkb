@@ -23,13 +23,25 @@
                                                 label="Batas hari pelaporan"
                                                 name="batas_pelaporan"
                                                 placeholder="Masukkan batas hari pelaporan"
-                                                value="{{ old('batas_pelaporan', $pengaturan_sistem->where('key', 'batas_pelaporan')->first()->value) }}" />
+                                                value="{{ old('batas_pelaporan', $pengaturan_sistem->where('key', 'batas_pelaporan')->first()?->value) }}" />
                                 <x-input.number :is_currency="false"
                                                 group="Hari"
                                                 label="Batas hari pembayaran"
                                                 name="batas_pembayaran"
                                                 placeholder="Masukkan batas hari pembayaran"
-                                                value="{{ old('batas_pembayaran', $pengaturan_sistem->where('key', 'batas_pembayaran')->first()->value) }}" />
+                                                value="{{ old('batas_pembayaran', $pengaturan_sistem->where('key', 'batas_pembayaran')->first()?->value) }}" />
+                                <x-input.number :is_currency="false"
+                                                label="Denda keterlambatan pelaporan per bulan"
+                                                group="Rupiah"
+                                                name="denda"
+                                                placeholder="Masukkan persentase bunga keterlambatan pembayaran per bulan"
+                                                value="{{ old('denda', $pengaturan_sistem->where('key', 'denda')->first()?->value) }}" />
+                                <x-input.number :is_currency="false"
+                                                group="%"
+                                                label="Persentase bunga keterlambatan pembayaran per bulan"
+                                                name="bunga"
+                                                placeholder="Masukkan persentase bunga keterlambatan pembayaran per bulan"
+                                                value="{{ old('bunga', $pengaturan_sistem->where('key', 'bunga')->first()?->value) }}" />
                             </div>
                         </div>
                         <button class="btn btn-primary mt-3 ms-auto w-100"

@@ -61,7 +61,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <p class="mt-3 mb-2 fw-bolder">2. Jumlah Pajak Terhutang Brdasarkan Angka Sementara Untuk Masa Pajak Sekarang</p>
+                    <p class="mt-3 mb-2 fw-bolder">2. Jumlah Pajak Terhutang Berdasarkan Angka Sementara Untuk Masa Pajak Sekarang</p>
                     <div class="table-responsive ms-4">
                         <table class="table">
                             <thead>

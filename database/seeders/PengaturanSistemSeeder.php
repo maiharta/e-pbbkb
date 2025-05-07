@@ -23,7 +23,17 @@ class PengaturanSistemSeeder extends Seeder
                 'key' => 'batas_pembayaran',
                 'value' => '10',
                 'deskripsi' => 'Batas hari untuk pembayaran wapu',
-            ]
+            ],
+            [
+                'key' => 'bunga',
+                'value' => '1',
+                'deskripsi' => 'Besar bunga per tahun',
+            ],
+            [
+                'key' => 'denda',
+                'value' => '1000000',
+                'deskripsi' => 'Besar denda per hari',
+            ],
         ];
 
         foreach ($pengaturans as $pengaturan) {

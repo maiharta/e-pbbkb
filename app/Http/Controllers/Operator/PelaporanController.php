@@ -29,8 +29,14 @@ class PelaporanController extends Controller
         PelaporanService::generateNote($pelaporan);
 
         try {
+            if ($pelaporan->first_send_at === null) {
+                $pelaporan->update([
+                    'first_send_at' => now(),
+                ]);
+            }
+
             $pelaporan->update([
-                'is_sent_to_admin' => true
+                'is_sent_to_admin' => true,
             ]);
 
             return response()->json([
