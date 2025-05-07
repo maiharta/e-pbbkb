@@ -3,9 +3,13 @@
 namespace App\Models;
 
 use App\Models\User;
+use App\Models\Bunga;
+use App\Models\Denda;
+use App\Models\Sptpd;
 use App\Models\Pembelian;
 use App\Models\Penjualan;
 use Illuminate\Support\Str;
+use App\Models\PelaporanNote;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -78,6 +82,16 @@ class Pelaporan extends Model
     public function pelaporanNote()
     {
         return $this->hasMany(PelaporanNote::class);
+    }
+
+    public function denda()
+    {
+        return $this->hasMany(Denda::class);
+    }
+
+    public function bunga()
+    {
+        return $this->hasMany(Bunga::class);
     }
 
     public function getBulanNameAttribute()

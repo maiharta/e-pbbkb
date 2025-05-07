@@ -10,7 +10,7 @@ class SspdController extends Controller
 {
     public function index(Request $request, $ulid)
     {
-        $pelaporan = Pelaporan::with(['penjualan' => function ($query) {
+        $pelaporan = Pelaporan::with(['bunga','denda','penjualan' => function ($query) {
             $query->with(['sektor', 'jenisBbm']);
         }])
             ->where('ulid', $ulid)

@@ -93,6 +93,58 @@
                             </tbody>
                         </table>
                     </div>
+                    <p class="mt-3 mb-2 fw-bolder">3 Sanksi Administrasi</p>
+                    <div class="table-responsive ms-4">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Waktu</th>
+                                    <th>Keterangan</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($pelaporan->denda as $item)
+                                    <tr class="table-secondary-custom">
+                                        <td width="10%">
+                                            {{ $loop->iteration }}
+                                        </td>
+                                        <td width="25%">
+                                            {{ $item->waktu_denda->format('d-m-Y') }}
+                                        </td>
+                                        <td width="40%">
+                                            {{ $item->keterangan }}
+                                        </td>
+                                        <td width="25%">
+                                            Rp {{ number_format($item->denda, 2, ',', '.') }}
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                @foreach ($pelaporan->bunga as $item)
+
+                                    <tr class="table-secondary-custom">
+                                        <td width="10%">
+                                            {{ $loop->iteration }}
+                                        </td>
+                                        <td width="25%">
+                                            {{ $item->waktu_bunga->format('d-m-Y') }}
+                                        </td>
+                                        <td width="40%">
+                                            {{ $item->keterangan }}
+                                        </td>
+                                        <td width="25%">
+                                            Rp {{ number_format($item->bunga, 2, ',', '.') }}
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                <tr class="table-secondary-custom">
+                                    <td class="fw-bold"
+                                        colspan="3">Total</td>
+                                    <td class="fw-bold">Rp {{ number_format($pelaporan->denda->sum('denda')+$pelaporan->bunga->sum('bunga'), 2, ',', '.') }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     <button class="btn btn-primary d-block w-100"><span class="isax isax-add-square"></span> Pembayaran</button>
                 </div>
             </div>
