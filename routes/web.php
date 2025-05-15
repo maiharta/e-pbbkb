@@ -11,6 +11,7 @@ use App\Http\Controllers\Operator\SptpdController;
 use App\Http\Controllers\Operator\PelaporanController;
 use App\Http\Controllers\Operator\PembelianController;
 use App\Http\Controllers\Operator\PenjualanController;
+use App\Http\Controllers\Operator\TransactionController;
 use App\Http\Controllers\Admin\MasterData\CutiController;
 use App\Http\Controllers\Admin\Verifikasi\UserController;
 use App\Http\Controllers\Admin\PengaturanSistemController;
@@ -184,6 +185,13 @@ Route::middleware(['auth'])->group(function () {
                     Route::get('/{ulid}', [SspdController::class, 'index'])->name('index');
                 });
             });
+        });
+
+        // Data Transaksi
+        Route::prefix('invoices')->name('invoices.')->group(function () {
+            Route::get('/', [TransactionController::class, 'index'])->name('index');
+            Route::get('/detail-invoice/{ulid?}', [TransactionController::class, 'showInvoice'])->name('show-invoice');
+            Route::get('/{ulid}', [TransactionController::class, 'show'])->name('show');
         });
     });
 

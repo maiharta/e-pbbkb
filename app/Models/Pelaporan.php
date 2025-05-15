@@ -94,6 +94,16 @@ class Pelaporan extends Model
         return $this->hasMany(Bunga::class);
     }
 
+    public function transactions()
+    {
+        return $this->hasMany(Invoice::class);
+    }
+
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class);
+    }
+
     public function getBulanNameAttribute()
     {
         return Carbon::create()->month($this->bulan)->locale('id')->isoFormat('MMMM');
@@ -155,6 +165,8 @@ class Pelaporan extends Model
             return "<span class='badge bg-danger' title='" . $this->catatan_revisi . "'>Revisi</span>";
         } else if ($this->is_verified && !$this->is_sptpd_approved) {
             return "<span class='badge bg-info'>Terverifikasi - Pending SPTPD</span>";
+        } else if ($this->is_paid) {
+            return "<span class='badge bg-success'>Lunas</span>";
         } else if ($this->is_sptpd_approved) {
             return "<span class='badge bg-info'>Pending Pembayaran SSPD</span>";
         } else {

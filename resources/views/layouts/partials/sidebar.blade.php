@@ -74,6 +74,13 @@
                         <span>Pelaporan</span>
                     </a>
                 </li>
+                <li class="sidebar-item {{ request()->routeIs('invoices*') ? 'active' : '' }}">
+                    <a class="sidebar-link"
+                       href="{{ route('invoices.index') }}">
+                        <i class="isax isax-transaction-minus"></i>
+                        <span>Data Transaksi</span>
+                    </a>
+                </li>
             @endrole
         </ul>
     </div>

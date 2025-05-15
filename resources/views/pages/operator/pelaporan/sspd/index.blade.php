@@ -61,7 +61,8 @@
                             </tbody>
                         </table>
                     </div>
-                    <p class="mt-3 mb-2 fw-bolder">2. Jumlah Pajak Terhutang Berdasarkan Angka Sementara Untuk Masa Pajak Sekarang</p>
+                    <p class="mt-3 mb-2 fw-bolder">2. Jumlah Pajak Terhutang Berdasarkan Angka Sementara Untuk Masa Pajak
+                        Sekarang</p>
                     <div class="table-responsive ms-4">
                         <table class="table">
                             <thead>
@@ -122,7 +123,6 @@
                                     </tr>
                                 @endforeach
                                 @foreach ($pelaporan->bunga as $item)
-
                                     <tr class="table-secondary-custom">
                                         <td width="10%">
                                             {{ $loop->iteration }}
@@ -141,11 +141,24 @@
                                 <tr class="table-secondary-custom">
                                     <td class="fw-bold"
                                         colspan="3">Total</td>
-                                    <td class="fw-bold">Rp {{ number_format($pelaporan->denda->sum('denda')+$pelaporan->bunga->sum('bunga'), 2, ',', '.') }}</td>
+                                    <td class="fw-bold">Rp
+                                        {{ number_format($pelaporan->denda->sum('denda') + $pelaporan->bunga->sum('bunga'), 2, ',', '.') }}
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
-                    <button class="btn btn-primary d-block w-100"><span class="isax isax-add-square"></span> Pembayaran</button>
+                    </div>
+                    <p class="mt-3 mb-2 fw-bolder">4 Total Jumlah Pajak Terutang dengan Sanksi Administrasi</p>
+                    <p class="mt-3 mb-2 fw-bolder">Total: Rp {{ number_format($pelaporan->total_pbbkb, 2, ',', '.') }}
+                    </p>
+                    <p class="mt-3 mb-2 fw-bolder">Total Sanksi Administrasi: Rp
+                        {{ number_format($pelaporan->denda->sum('denda') + $pelaporan->bunga->sum('bunga'), 2, ',', '.') }}
+                    </p>
+                    <p class="mt-3 mb-2 fw-bolder">Total Jumlah Pajak Terutang dengan Sanksi Administrasi: Rp
+                        {{ number_format($pelaporan->total_pbbkb + $pelaporan->denda->sum('denda') + $pelaporan->bunga->sum('bunga'), 2, ',', '.') }}
+                    </p>
+                    <button class="btn btn-primary d-block w-100"><span class="isax isax-add-square"></span>
+                        Pembayaran</button>
                 </div>
             </div>
         </section>
