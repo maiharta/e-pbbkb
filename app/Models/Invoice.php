@@ -32,6 +32,8 @@ class Invoice extends Model
         'sipay_nomor_tagihan',
         'sipay_status_invoice',
         'sipay_status_bpd',
+        'sipay_payment_date_paid',
+        'sipay_payment_date_kasda',
         'expires_at'
     ];
 

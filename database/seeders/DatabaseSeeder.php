@@ -4,10 +4,17 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
-use App\Models\Kabupaten;
 use App\Models\User;
+use App\Models\UserApi;
+use App\Models\Kabupaten;
+use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
+use Database\Seeders\SektorSeeder;
 use Spatie\Permission\Models\Role;
+use Database\Seeders\JenisBbmSeeder;
+use Database\Seeders\OperatorSeeder;
+use Illuminate\Support\Facades\Hash;
+use Database\Seeders\PengaturanSistemSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -43,6 +50,15 @@ class DatabaseSeeder extends Seeder
                 SektorSeeder::class,
                 JenisBbmSeeder::class,
                 OperatorSeeder::class
+            ]);
+
+            UserApi::create([
+                'name' => 'API User',
+                'email' => 'api@example.com',
+                'email_verified_at' => now(),
+                'password' => Hash::make('password'), // Set a secure password
+                'api_key' => Str::random(64),
+                'status' => true,
             ]);
         }
     }

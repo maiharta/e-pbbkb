@@ -9,17 +9,22 @@ class InvoiceService
 {
     public static function generateInvoice(Pelaporan $pelaporan)
     {
+        if($pelaporan->invoices()->where('payment_status', 'paid')->exists()){
+            return null;
+        }
+
         // Generate invoice number and receipt number
         $existingInvoice = $pelaporan->invoices()->where('payment_status', 'pending')->first();
+
+        if ($existingInvoice) {
+            return $existingInvoice;
+        }
+
         $pelaporan->load([
             'denda',
             'bunga',
             'sptpd',
         ]);
-
-        if ($existingInvoice) {
-            return $existingInvoice;
-        }
 
         $invoice = $pelaporan->invoices()->create([
             'customer_npwpd' => $pelaporan->user->userDetail->npwpd,
