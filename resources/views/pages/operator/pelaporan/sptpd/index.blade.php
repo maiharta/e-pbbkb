@@ -1,11 +1,157 @@
 @extends('layouts.dashboard-base')
 
+@push('styles')
+    <style>
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #435ebe;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title::before {
+            content: "";
+            width: 4px;
+            height: 20px;
+            background-color: #435ebe;
+            display: inline-block;
+            margin-right: 10px;
+            border-radius: 4px;
+        }
+
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            background-color: rgba(67, 94, 190, 0.05);
+            border-bottom: 1px solid rgba(67, 94, 190, 0.1);
+            padding: 1rem 1.5rem;
+        }
+
+        .info-table {
+            width: 100%;
+        }
+
+        .info-table td {
+            padding: 0.5rem 0;
+            vertical-align: top;
+        }
+
+        .info-table td:first-child {
+            color: #6c757d;
+            width: 180px;
+            font-weight: 500;
+        }
+
+        .info-table td:last-child {
+            font-weight: 600;
+        }
+
+        .table {
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .table thead th {
+            background-color: rgba(67, 94, 190, 0.05);
+            color: #435ebe;
+            font-weight: 600;
+            border-top: none;
+            padding: 12px 15px;
+            vertical-align: middle;
+        }
+
+        .table tbody tr:hover {
+            background-color: rgba(67, 94, 190, 0.02);
+        }
+
+        .sector-title {
+            background-color: #f8f9fa;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            color: #435ebe;
+            border-left: 3px solid #435ebe;
+        }
+
+        .category-title {
+            margin-top: 1rem;
+            margin-bottom: 0.75rem;
+            font-weight: 500;
+            color: #495057;
+            padding-left: 1rem;
+            border-left: 2px solid #6c757d;
+        }
+
+        .subtotal-row td {
+            background-color: rgba(67, 94, 190, 0.05);
+            font-weight: 600;
+        }
+
+        .total-row td {
+            background-color: rgba(67, 94, 190, 0.1);
+            font-weight: 700;
+            color: #435ebe;
+        }
+
+        .btn-action {
+            border-radius: 6px;
+            font-weight: 500;
+            padding: 0.6rem 1.5rem;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+
+        .btn-primary {
+            background-color: #435ebe;
+            border-color: #435ebe;
+        }
+
+        .btn-icon {
+            margin-right: 0.5rem;
+        }
+
+        .modal-content {
+            border-radius: 10px;
+            border: none;
+        }
+
+        .modal-header {
+            background-color: rgba(67, 94, 190, 0.05);
+            border-bottom: 1px solid rgba(67, 94, 190, 0.1);
+        }
+
+        .modal-footer {
+            background-color: rgba(67, 94, 190, 0.02);
+            border-top: 1px solid rgba(67, 94, 190, 0.1);
+        }
+    </style>
+@endpush
+
 @section('content')
     <div class="page-heading">
         <div class="page-title mb-3">
             <div class="row">
                 <div class="col-12 col-md-6 order-md-1 order-last">
                     <h3>SPTPD</h3>
+                    <p class="text-muted">Surat Pemberitahuan Pajak Daerah</p>
                 </div>
                 <div class="col-12 col-md-6 order-md-2 order-first">
                     <nav aria-label="breadcrumb"
@@ -21,135 +167,144 @@
                 </div>
             </div>
         </div>
+
         <section class="section">
+            <!-- Company Information Card -->
             <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-building me-2"></i> Informasi Perusahaan</h5>
+                </div>
                 <div class="card-body">
-                    <table>
+                    <table class="info-table">
                         <tr>
-                            <td class="pb-1 pe-4">Nama perusahaan</td>
-                            <th>: {{ $pelaporan->user->name }}</th>
+                            <td>Nama Perusahaan</td>
+                            <td>: {{ $pelaporan->user->name }}</td>
                         </tr>
                         <tr>
-                            <td class="pb-1 pe-4">Periode Laporan</td>
-                            <th>: {{ $pelaporan->bulan_name }} {{ $pelaporan->tahun }}</th>
+                            <td>Periode Laporan</td>
+                            <td>: {{ $pelaporan->bulan_name }} {{ $pelaporan->tahun }}</td>
                         </tr>
                         <tr>
-                            <td class="pb-1 pe-4">Tanggal Approval SPTPD</td>
-                            <th>:
-                                {{ Carbon\Carbon::parse($pelaporan->sptpd_approved_at)->locale('id')->isoFormat('LL') }}
-                            </th>
+                            <td>Tanggal Approval SPTPD</td>
+                            <td>: {{ Carbon\Carbon::parse($pelaporan->sptpd_approved_at)->locale('id')->isoFormat('LL') }}
+                            </td>
                         </tr>
                         <tr>
-                            <td class="pb-1 pe-4">Nomor SPTPD</td>
-                            <th>: {{ $pelaporan->sptpd->nomor }}</th>
+                            <td>Nomor SPTPD</td>
+                            <td>: {{ $pelaporan->sptpd->nomor }}</td>
                         </tr>
                         <tr>
-                            <td class="pb-1 pe-4">NPWPD</td>
-                            <th>: {{ $pelaporan->user->userDetail->npwpd }}</th>
+                            <td>NPWPD</td>
+                            <td>: {{ $pelaporan->user->userDetail->npwpd }}</td>
                         </tr>
                     </table>
                 </div>
             </div>
+
+            <!-- Sales Data Card -->
             <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-file-earmark-text me-2"></i> Data Penjualan</h5>
+                </div>
                 <div class="card-body">
                     @foreach ($pelaporan->data_formatted as $sektor => $categories)
-                        <p class="mt-3 mb-2 fw-bold">{{ $loop->iteration }}. {{ $sektor }}</p>
-                        <div class="ms-4">
+                        <div class="sector-title">
+                            <i class="bi bi-chevron-right me-2"></i>{{ $loop->iteration }}. {{ $sektor }}
+                        </div>
+
+                        <div class="ms-3">
                             @foreach ($categories as $category => $items)
-                                <p class="mb-0 fw-bold">{{ chr(64 + $loop->iteration) }}. {{ $category }}
-                                </p>
-                                <div class="table-responsive">
-                                    <table class="table">
+                                <div class="category-title">
+                                    {{ chr(64 + $loop->iteration) }}. {{ $category }}
+                                </div>
+
+                                <div class="table-responsive mb-4">
+                                    <table class="table table-hover table-bordered">
                                         <thead>
                                             <tr>
-                                                <th>No</th>
-                                                <th>BBM</th>
-                                                <th>Tarif</th>
-                                                <th>Volume (Liter)</th>
-                                                <th>DPP</th>
-                                                <th>PBBKB</th>
+                                                <th width="5%">No</th>
+                                                <th width="15%">BBM</th>
+                                                <th width="10%">Tarif</th>
+                                                <th width="20%">Volume (Liter)</th>
+                                                <th width="25%">DPP</th>
+                                                <th width="25%">PBBKB</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {{-- {{ $loop->iteration == 2 ?$pelaporan_2->groupBy('nama_jenis_bbm')->dd():''  }} --}}
                                             @foreach ($items['items'] as $key => $item)
-                                                <tr class="table-secondary-custom">
-                                                    <td width="5%">
-                                                        {{ $loop->iteration }}
-                                                    </td>
-                                                    <td width="10%">
-                                                        {{ $item->get('nama_jenis_bbm') }}
-                                                    </td>
-                                                    <td width="10%">
-                                                        {{ $item->get('persentase_tarif') }}%
-                                                    </td>
-                                                    <td width="16.67%">
-                                                        {{ number_format($item->get('volume'), 0, ',', '.') }}
-                                                    </td>
-                                                    <td width="16.67%">
-                                                        Rp {{ number_format($item->get('dpp'), 2, ',', '.') }}
-                                                    </td>
-                                                    <td width="16.67%">
-                                                        Rp
-                                                        {{ number_format($item->get('pbbkb'), 2, ',', '.') }}
-                                                    </td>
+                                                <tr>
+                                                    <td class="text-center">{{ $loop->iteration }}</td>
+                                                    <td>{{ $item->get('nama_jenis_bbm') }}</td>
+                                                    <td class="text-center">{{ $item->get('persentase_tarif') }}%</td>
+                                                    <td class="text-end">
+                                                        {{ number_format($item->get('volume'), 0, ',', '.') }}</td>
+                                                    <td class="text-end">Rp
+                                                        {{ number_format($item->get('dpp'), 2, ',', '.') }}</td>
+                                                    <td class="text-end">Rp
+                                                        {{ number_format($item->get('pbbkb'), 2, ',', '.') }}</td>
                                                 </tr>
                                             @endforeach
-                                            <tr class="table-secondary-custom">
-                                                <td class="fw-bold"
+                                            <tr class="subtotal-row">
+                                                <td class="text-end"
                                                     colspan="3">SUBTOTAL</td>
-                                                <td class="fw-bold">
+                                                <td class="text-end">
                                                     {{ number_format($items['subtotal']->get('volume'), 0, ',', '.') }}
                                                 </td>
-                                                <td class="fw-bold">Rp
+                                                <td class="text-end">Rp
                                                     {{ number_format($items['subtotal']->get('dpp'), 2, ',', '.') }}</td>
-                                                <td class="fw-bold">Rp
-                                                    {{ number_format($items['subtotal']->get('pbbkb'), 2, ',', '.') }}
-                                                </td>
+                                                <td class="text-end">Rp
+                                                    {{ number_format($items['subtotal']->get('pbbkb'), 2, ',', '.') }}</td>
                                             </tr>
                                         </tbody>
                                     </table>
                                 </div>
                             @endforeach
                         </div>
+
                         @if ($loop->last)
-                            <p class="mt-3 mb-2 fw-bold">{{ $loop->iteration + 1 }}. Total</p>
-                            <div class="table-responsive ms-4">
-                                <table class="table">
+                            <div class="sector-title mt-4">
+                                <i class="bi bi-chevron-right me-2"></i>{{ $loop->iteration + 1 }}. Total Keseluruhan
+                            </div>
+
+                            <div class="table-responsive ms-3">
+                                <table class="table table-hover table-bordered">
                                     <thead>
                                         <tr>
-                                            <th>No</th>
-                                            <th>Sektor</th>
-                                            <th>Volume (Liter)</th>
-                                            <th>DPP</th>
-                                            <th>PBBKB</th>
+                                            <th width="5%">No</th>
+                                            <th width="25%">Sektor</th>
+                                            <th width="20%">Volume (Liter)</th>
+                                            <th width="25%">DPP</th>
+                                            <th width="25%">PBBKB</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($pelaporan->data_formatted as $sektor => $categories)
-                                            <tr class="table-secondary-custom">
-                                                <td>{{ $loop->iteration }}</td>
+                                            <tr>
+                                                <td class="text-center">{{ $loop->iteration }}</td>
                                                 <td>{{ $sektor }}</td>
-                                                <td>{{ number_format($categories->values()->pluck('subtotal')->sum('volume'), 0, ',', '.') }}
+                                                <td class="text-end">
+                                                    {{ number_format($categories->values()->pluck('subtotal')->sum('volume'), 0, ',', '.') }}
                                                 </td>
-                                                <td>Rp
+                                                <td class="text-end">Rp
                                                     {{ number_format($categories->values()->pluck('subtotal')->sum('dpp'), 2, ',', '.') }}
                                                 </td>
-                                                <td>Rp
+                                                <td class="text-end">Rp
                                                     {{ number_format($categories->values()->pluck('subtotal')->sum('pbbkb'), 2, ',', '.') }}
                                                 </td>
                                             </tr>
                                         @endforeach
-                                        <tr class="table-secondary-custom">
-                                            <td class="fw-bold"
-                                                colspan="2">Total</td>
-                                            <td class="fw-bold">
+                                        <tr class="total-row">
+                                            <td class="text-end"
+                                                colspan="2">TOTAL</td>
+                                            <td class="text-end">
                                                 {{ number_format($pelaporan->data_formatted->values()->map(fn($item) => $item->values()->pluck('subtotal')->sum('volume'))->sum(), 0, ',', '.') }}
                                             </td>
-                                            <td class="fw-bold">Rp
+                                            <td class="text-end">
+                                                Rp
                                                 {{ number_format($pelaporan->data_formatted->values()->map(fn($item) => $item->values()->pluck('subtotal')->sum('dpp'))->sum(), 2, ',', '.') }}
                                             </td>
-                                            <td class="fw-bold">Rp
+                                            <td class="text-end">
+                                                Rp
                                                 {{ number_format($pelaporan->data_formatted->values()->map(fn($item) => $item->values()->pluck('subtotal')->sum('pbbkb'))->sum(), 2, ',', '.') }}
                                             </td>
                                         </tr>
@@ -158,20 +313,24 @@
                             </div>
                         @endif
                     @endforeach
+
                     @if (!$pelaporan->is_sptpd_approved)
-                        <div class="d-flex gap-2 mt-3">
-                            <button class="btn btn-secondary w-100"
-                                    onclick="cancelSptpd('{{ $pelaporan->ulid }}')"><span
-                                      class="isax isax-back-square"></span>
-                                Perbaiki Data</button>
-                            <button class="btn btn-primary w-100"
+                        <div class="d-flex gap-3 mt-4">
+                            <button class="btn btn-secondary btn-action flex-grow-1"
+                                    onclick="cancelSptpd('{{ $pelaporan->ulid }}')">
+                                <i class="bi bi-arrow-left-square btn-icon"></i> Perbaiki Data
+                            </button>
+                            <button class="btn btn-primary btn-action flex-grow-1"
                                     data-bs-target="#staticBackdrop"
-                                    data-bs-toggle="modal"><span class="isax isax-add-square"></span> Surat
-                                Pernyataan</button>
+                                    data-bs-toggle="modal">
+                                <i class="bi bi-file-earmark-check btn-icon"></i> Surat Pernyataan
+                            </button>
                         </div>
                     @endif
                 </div>
             </div>
+
+            <!-- Statement Modal -->
             <div aria-hidden="true"
                  aria-labelledby="staticBackdropLabel"
                  class="modal fade"
@@ -183,78 +342,104 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title"
-                                id="staticBackdropLabel">Pernyataan</h5>
+                                id="staticBackdropLabel">
+                                <i class="bi bi-file-earmark-text me-2"></i>Pernyataan SPTPD
+                            </h5>
                             <button aria-label="Close"
                                     class="btn-close"
                                     data-bs-dismiss="modal"
                                     type="button"></button>
                         </div>
                         <div class="modal-body">
+                            <div class="alert alert-light border mb-4">
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-info-circle-fill text-primary fs-4 me-3"></i>
+                                    <p class="mb-0">Silahkan konfirmasi data pada form di bawah ini untuk melanjutkan
+                                        proses SPTPD</p>
+                                </div>
+                            </div>
+
                             <div class="row">
-                                <div class="col-6">
+                                <div class="col-md-6">
                                     <div class="form-group mb-3">
-                                        <label class="col-form-label fw-bold"
+                                        <label class="form-label fw-bold"
                                                for="periode">Periode</label>
-                                        <input class="form-control"
-                                               disabled
+                                        <input class="form-control bg-light"
                                                id="periode"
                                                name="periode"
+                                               readonly
                                                type="text"
                                                value="{{ $pelaporan->bulan_name }} - {{ $pelaporan->tahun }}">
                                     </div>
                                 </div>
-                                <div class="col-6">
+                                <div class="col-md-6">
                                     <div class="form-group mb-3">
-                                        <label class="col-form-label fw-bold"
-                                               for="pbbkb">Jumlah pemungutan PBBKB</label>
-                                        <input class="form-control"
-                                               disabled
+                                        <label class="form-label fw-bold"
+                                               for="pbbkb">Jumlah Pemungutan PBBKB</label>
+                                        <input class="form-control bg-light"
                                                id="pbbkb"
                                                name="pbbkb"
+                                               readonly
                                                type="text"
                                                value="Rp {{ number_format($pelaporan->data_formatted->values()->map(fn($item) => $item->values()->pluck('subtotal')->sum('pbbkb'))->sum(), 2, ',', '.') }}">
                                     </div>
                                 </div>
                             </div>
+
                             <div class="form-group mb-3">
-                                <label class="col-form-label fw-bold"
-                                       for="periode">Wajib Pungut</label>
-                                <input class="form-control"
-                                       disabled
-                                       id="periode"
-                                       name="periode"
+                                <label class="form-label fw-bold"
+                                       for="wajib_pungut">Wajib Pungut</label>
+                                <input class="form-control bg-light"
+                                       id="wajib_pungut"
+                                       name="wajib_pungut"
+                                       readonly
                                        type="text"
                                        value="{{ auth()->user()->name }}">
                             </div>
 
                             <div class="form-group mb-3">
-                                <label class="col-form-label fw-bold"
-                                       for="pbbkb">NPWPD</label>
-                                <input class="form-control"
-                                       disabled
-                                       id="pbbkb"
-                                       name="pbbkb"
+                                <label class="form-label fw-bold"
+                                       for="npwpd">NPWPD</label>
+                                <input class="form-control bg-light"
+                                       id="npwpd"
+                                       name="npwpd"
+                                       readonly
                                        type="text"
                                        value="{{ auth()->user()->userDetail->npwpd }}">
                             </div>
+
                             <div class="form-group mb-3">
-                                <label class="col-form-label fw-bold"
-                                       for="nomor_sptpd">Nomor SPTPD*</label>
+                                <label class="form-label fw-bold"
+                                       for="nomor_sptpd">Nomor SPTPD<span class="text-danger">*</span></label>
                                 <input class="form-control"
-                                       disabled
                                        id="nomor_sptpd"
                                        placeholder="Masukkan nomor SPTPD perusahaan"
                                        type="text"
                                        value="{{ $pelaporan->sptpd->nomor }}">
+                                <small class="text-muted">Nomor SPTPD wajib diisi</small>
+                            </div>
+
+                            <div class="alert alert-danger mt-4 mb-0">
+                                <div class="d-flex">
+                                    <i class="bi bi-exclamation-triangle-fill me-3 fs-5"></i>
+                                    <p class="mb-0"><strong>Perhatian:</strong> Dengan menyadari sepenuhnya akan segala
+                                        akibat termasuk sanksi sesuai dengan ketentuan perundang-undangan yang berlaku, saya
+                                        atau yang saya beri kuasa menyatakan bahwa apa yang telah kami beritahu tersebut
+                                        beserta lampiran-lampirannya adalah benar, lengkap, dan jelas.</p>
+                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button class="btn btn-secondary"
+                            <button class="btn btn-outline-secondary"
                                     data-bs-dismiss="modal"
-                                    type="button">Batal</button>
+                                    type="button">
+                                <i class="bi bi-x-circle me-1"></i> Batal
+                            </button>
                             <button class="btn btn-primary"
                                     onclick="approveSptpd('{{ $pelaporan->ulid }}')"
-                                    type="button">Simpan</button>
+                                    type="button">
+                                <i class="bi bi-check-circle me-1"></i> Simpan
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -333,30 +518,32 @@
                     confirmButton: 'btn btn-primary ms-2',
                     cancelButton: 'btn btn-outline-secondary'
                 },
-                'html': '<p class="text-start text-sm fw-bold">Silahkan konfirmasi data di bawah ini</p>' +
-                    '<table class="table text-sm table-bordered">' +
+                'html': '<p class="text-start fw-bold mb-3">Silahkan konfirmasi data di bawah ini:</p>' +
+                    '<table class="table table-sm table-bordered">' +
                     '<tr>' +
-                    '<td>Wajib Pungut</td>' +
+                    '<td class="text-muted">Wajib Pungut</td>' +
                     '<th> {{ auth()->user()->name }}</th>' +
                     '</tr>' +
                     '<tr>' +
-                    '<td>NPWPD</td>' +
+                    '<td class="text-muted">NPWPD</td>' +
                     '<th> {{ auth()->user()->userDetail->npwpd }}</th>' +
                     '</tr>' +
                     '<tr>' +
-                    '<td>Periode</td>' +
+                    '<td class="text-muted">Periode</td>' +
                     '<th> {{ $pelaporan->bulan_name }} - {{ $pelaporan->tahun }}</th>' +
                     '</tr>' +
                     '<tr>' +
-                    '<td>Jumlah Pemungutan PBBKB</td>' +
+                    '<td class="text-muted">Jumlah Pemungutan PBBKB</td>' +
                     '<th> Rp {{ number_format($pelaporan->data_formatted->values()->map(fn($item) => $item->values()->pluck('subtotal')->sum('pbbkb'))->sum(), 2, ',', '.') }}</th>' +
                     '</tr>' +
                     '<tr>' +
-                    '<td>Nomor SPTPD</td>' +
+                    '<td class="text-muted">Nomor SPTPD</td>' +
                     '<th> ' + nomor_sptpd + '</th>' +
                     '</tr>' +
                     '</table>' +
-                    '<p class="text-danger fw-bold text-sm mb-0">*Dengan menyadari sepenuhnya akan segala akibat termasuk sanksi sesuai dengan ketentuan perundang-undangan yang berlaku, saya atau yang saya beri kuasa menyatakan bahwa apa yang telah kami beritahu tersebut beserta lampiran-lampirannya adalah benar, lengkap, dan jelas</p>',
+                    '<div class="alert alert-danger mt-3 text-start">' +
+                    '<p class="mb-0 small"><strong>Perhatian:</strong> Dengan menyadari sepenuhnya akan segala akibat termasuk sanksi sesuai dengan ketentuan perundang-undangan yang berlaku, saya atau yang saya beri kuasa menyatakan bahwa apa yang telah kami beritahu tersebut beserta lampiran-lampirannya adalah benar, lengkap, dan jelas.</p>' +
+                    '</div>',
             }).then((result) => {
                 if (result.isConfirmed) {
                     // ajax

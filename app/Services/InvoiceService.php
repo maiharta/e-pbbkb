@@ -30,7 +30,7 @@ class InvoiceService
             'month' => $pelaporan->bulan,
             'year' => $pelaporan->tahun,
             'description' => 'Periode ' . Carbon::create($pelaporan->tahun, $pelaporan->bulan)->translatedFormat('F Y'),
-            'amount' => $pelaporan->sptpd->total_pbbkb,
+            'amount' => $pelaporan->sptpd->total_pbbkb + $pelaporan->denda->sum('denda') + $pelaporan->bunga->sum('bunga'),
             'items' => [
                 'pbbkb' => $pelaporan->sptpd->total_pbbkb,
                 'denda' => $pelaporan->denda->sum('denda'),
