@@ -156,6 +156,10 @@ class SipayService
             $body = json_decode($response->getBody(), true);
             // Check if the response is valid
             if ($response->getStatusCode() == 200 && isset($body['data']['data'])) {
+                Log::info('Sipay create virtual account success', [
+                    'response' => $body,
+                    'request_data' => $data,
+                ]);
                 return $body['data']['data'];
             }
             Log::error('Sipay create virtual account failed', [
