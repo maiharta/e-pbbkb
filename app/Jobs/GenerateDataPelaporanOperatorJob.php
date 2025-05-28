@@ -34,10 +34,9 @@ class GenerateDataPelaporanOperatorJob implements ShouldQueue
         })->get();
 
         foreach ($users as $user) {
-            $bulan = now()->month - 1;
-            $tahun = now()->year;
-            $batas_pelaporan = CutiService::getBatasPelaporan($bulan, $tahun);
-            $batas_pembayaran = CutiService::getBatasPembayaran($bulan, $tahun);
+            $now = now()->subMonth();
+            $bulan = $now->month;
+            $tahun = $now->year;
             $pelaporan = Pelaporan::firstOrCreate([
                 'user_id' => $user->id,
                 'bulan' => $bulan,
@@ -45,8 +44,12 @@ class GenerateDataPelaporanOperatorJob implements ShouldQueue
             ], [
                 'is_sent_to_admin' => false,
                 'is_verified' => false,
+            ]);
+            $batas_pelaporan = CutiService::getBatasPelaporan($pelaporan);
+            $batas_pembayaran = CutiService::getBatasPembayaran($pelaporan);
+            $pelaporan->update([
                 'batas_pelaporan' => $batas_pelaporan,
-                'batas_pembayaran' => $batas_pembayaran
+                'batas_pembayaran' => $batas_pembayaran,
             ]);
         }
     }

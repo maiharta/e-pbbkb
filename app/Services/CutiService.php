@@ -10,14 +10,16 @@ use Carbon\Traits\Date;
 
 class CutiService
 {
-    public static function getBatasPelaporan($month, $year)
+    public static function getBatasPelaporan(Pelaporan $pelaporan)
     {
         $batas_pelaporan = PengaturanSistem::where('key', 'batas_pelaporan')->first()->value;
-        $start_date = Carbon::now()->setMonth($month)->setYear($year)->startOfMonth();
+        $start_date = Carbon::now()->setMonth($pelaporan->month)->setYear($pelaporan->year)->startOfMonth()->addMonth();
         $cutis = Cuti::query()
-            ->whereMonth('tanggal', $month)
-            ->whereYear('tanggal', $year)
+            ->whereMonth('tanggal', $start_date->month)
+            ->whereYear('tanggal', $start_date->year)
             ->pluck('tanggal');
+
+        $start_date = $start_date->subDay();
 
         // 3. Calculate the deadline date
         $deadline_date = $start_date; // Start with the initial date
@@ -36,14 +38,16 @@ class CutiService
     }
 
 
-    public static function getBatasPembayaran($month, $year)
+    public static function getBatasPembayaran(Pelaporan $pelaporan)
     {
         $batas_pembayaran = PengaturanSistem::where('key', 'batas_pembayaran')->first()->value;
-        $start_date = self::getBatasPelaporan($month, $year);
+        $start_date = Carbon::now()->setMonth($pelaporan->month)->setYear($pelaporan->year)->startOfMonth()->addMonth();
         $cutis = Cuti::query()
-            ->whereMonth('tanggal', $month)
-            ->whereYear('tanggal', $year)
+            ->whereMonth('tanggal', $start_date->month)
+            ->whereYear('tanggal', $start_date->year)
             ->pluck('tanggal');
+
+        $start_date = $start_date->subDay(); // Adjust start date to the last day of the month before the payment deadline
 
         // 3. Calculate the deadline date
         $deadline_date = $start_date; // Start with the initial date
@@ -61,50 +65,45 @@ class CutiService
         return $deadline_date;
     }
 
-    public static function updateBatasPelaporan($month, $year)
+    public static function updateBatasPelaporan(Pelaporan $pelaporan)
     {
-        $pelaporans = Pelaporan::query()
-            ->where('bulan', $month)
-            ->where('tahun', $year)
-            // TODO : EXCLUDE FINISHED Pelaporan
-            ->get();
+        if ($pelaporan->is_paid || $pelaporan->is_expired) {
+            return;
+        }
 
-        $batas_pelaporan = self::getBatasPelaporan($month, $year);
-        $batas_pembayaran = self::getBatasPembayaran($month, $year);
+        $batas_pelaporan = self::getBatasPelaporan($pelaporan);
+        $batas_pembayaran = self::getBatasPembayaran($pelaporan);
 
-        $pelaporans->each(
-            function ($item) use ($batas_pelaporan, $batas_pembayaran) {
-                $item->update([
-                    'batas_pelaporan' => $batas_pelaporan->format('Y-m-d'),
-                    'batas_pembayaran' => $batas_pembayaran->format('Y-m-d'),
-                ]);
-            }
-        );
+        // Update the pelaporan with the new batas dates
+        $pelaporan->update([
+            'batas_pelaporan' => $batas_pelaporan->format('Y-m-d'),
+            'batas_pembayaran' => $batas_pembayaran->format('Y-m-d'),
+        ]);
     }
 
     public static function updateAllPelaporan()
     {
         $pelaporans = Pelaporan::query()
-            // TODO : EXCLUDE FINISHED Pelaporan
+            ->where('is_paid', false)
+            ->where('is_expired', false)
             ->get();
 
-        $pelaporan_by_year = $pelaporans->groupBy('tahun');
+        $pelaporans->each(function (Pelaporan $pelaporan) {
+            self::updateBatasPelaporan($pelaporan);
+        });
+    }
 
-        $pelaporan_by_year->each(function ($item, $year) {
-            $item->groupBy('bulan')
-                ->each(function ($pelaporan, $month) use ($year) {
-                    $batas_pelaporan = self::getBatasPelaporan($month, $year);
-                    $batas_pembayaran = self::getBatasPembayaran($month, $year);
+    public static function updateBatasPelaporanByMonthYear(int $month, int $year)
+    {
+        $pelaporans = Pelaporan::query()
+            ->where('bulan', $month)
+            ->where('tahun', $year)
+            ->where('is_paid', false)
+            ->where('is_expired', false)
+            ->get();
 
-                    $pelaporan->each(
-                        function ($item) use ($batas_pelaporan, $batas_pembayaran) {
-                            $item->update([
-                                'batas_pelaporan' => $batas_pelaporan->format('Y-m-d'),
-                                'batas_pembayaran' => $batas_pembayaran->format('Y-m-d'),
-                            ]);
-                        }
-                    );
-                });
+        $pelaporans->each(function (Pelaporan $pelaporan) {
+            self::updateBatasPelaporan($pelaporan);
         });
     }
 }

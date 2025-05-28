@@ -40,8 +40,8 @@ class CutiController extends Controller
                 'deskripsi' => $request->deskripsi,
             ]);
 
-            $tanggal_carbon = Carbon::createFromFormat('Y-m-d', $request->tanggal);
-            CutiService::updateBatasPelaporan($tanggal_carbon->bulan, $tanggal_carbon->tahun);
+            $tanggal_carbon = Carbon::createFromFormat('Y-m-d', $request->tanggal)->subMonth();
+            CutiService::updateBatasPelaporanByMonthYear($tanggal_carbon->month, $tanggal_carbon->year);
 
             DB::commit();
         } catch (\Exception $e) {
@@ -79,10 +79,10 @@ class CutiController extends Controller
             ]);
 
             if ($tanggal_after_carbon->month != $tanggal_before_carbon->month || $tanggal_after_carbon->year != $tanggal_before_carbon->year) {
-                CutiService::updateBatasPelaporan($tanggal_before_carbon->month, $tanggal_before_carbon->year);
-                CutiService::updateBatasPelaporan($tanggal_after_carbon->month, $tanggal_after_carbon->year);
+                CutiService::updateBatasPelaporanByMonthYear($tanggal_before_carbon->month, $tanggal_before_carbon->year);
+                CutiService::updateBatasPelaporanByMonthYear($tanggal_after_carbon->month, $tanggal_after_carbon->year);
             } else {
-                CutiService::updateBatasPelaporan($tanggal_after_carbon->month, $tanggal_after_carbon->year);
+                CutiService::updateBatasPelaporanByMonthYear($tanggal_after_carbon->month, $tanggal_after_carbon->year);
             }
 
             DB::commit();
@@ -93,5 +93,29 @@ class CutiController extends Controller
         }
 
         return redirect()->route('master-data.cuti.index')->with('success', 'Cuti berhasil diubah');
+    }
+
+    public function destroy($ulid)
+    {
+        DB::beginTransaction();
+        try {
+            $cuti = Cuti::where('ulid', $ulid)->firstOrFail();
+            $cuti->delete();
+            CutiService::updateAllPelaporan();
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage() . ' | ' . $e->getFile() . ':' . $e->getLine());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan pada sistem. Hubungi Administrator',
+            ], 500);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Cuti berhasil dihapus',
+        ]);
     }
 }

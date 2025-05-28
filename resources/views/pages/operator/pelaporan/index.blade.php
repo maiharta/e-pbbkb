@@ -19,8 +19,8 @@
                                 <tr>
                                     <th>No</th>
                                     <th class="text-start">Masa Pajak</th>
-                                    <th class="text-start">Batas Pelaporan</th>
                                     <th class="text-start">Batas Pembayaran</th>
+                                    <th class="text-start">Batas Pelaporan</th>
                                     <th class="text-start">Pembelian</th>
                                     <th class="text-start">Penjualan</th>
                                     <th class="text-start">SPTPD</th>
@@ -34,8 +34,8 @@
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td class="text-start">{{ $pelaporan->bulan_name }} {{ $pelaporan->tahun }}</td>
-                                        <td class="text-start">{{ $pelaporan->batas_pelaporan_formatted }}</td>
                                         <td class="text-start">{{ $pelaporan->batas_pembayaran_formatted }}</td>
+                                        <td class="text-start">{{ $pelaporan->batas_pelaporan_formatted }}</td>
                                         <td class="text-center">{!! $pelaporan->pembelian_badge !!}</td>
                                         <td class="text-center">{!! $pelaporan->penjualan_badge !!}</td>
                                         <td class="text-center">{!! $pelaporan->sptpd_badge !!}</td>

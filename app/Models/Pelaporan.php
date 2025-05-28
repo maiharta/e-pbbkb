@@ -182,4 +182,13 @@ class Pelaporan extends Model
     {
         return $this->batas_pembayaran ? Carbon::parse($this->batas_pembayaran)->locale('id')->isoFormat('D MMMM Y') : '-';
     }
+
+    public function getMonthAttribute($value)
+    {
+        return (int) $this->bulan;
+    }
+    public function getYearAttribute($value)
+    {
+        return (int) $this->tahun;
+    }
 }
