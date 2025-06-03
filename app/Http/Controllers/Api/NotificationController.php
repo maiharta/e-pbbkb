@@ -43,8 +43,9 @@ class NotificationController extends Controller
         }
 
         // Find the invoice by id_billing (invoice number from Sipay)
-        $invoice = Invoice::where('receipt_number', $request->kwitansi)
+        $invoice = Invoice::where('invoice_number', $request->kwitansi)
             ->where('sipay_record_id', $request->record_id)
+            ->where('sipay_invoice', $request->id_billing)
             ->where('payment_status', 'pending')
             ->first();
 
@@ -65,8 +66,6 @@ class NotificationController extends Controller
 
             // Update invoice with payment information
             $invoice->payment_status = 'paid';
-            $invoice->sipay_record_id = $request->record_id;
-            $invoice->receipt_number = $request->kwitansi;
             $invoice->sipay_payment_date_paid = Carbon::createFromFormat('Y-m-d H:i:s', $request->payment_date_paid, 'GMT+8')->setTimezone('UTC');
             $invoice->sipay_payment_date_kasda = Carbon::createFromFormat('Y-m-d H:i:s', $request->payment_date_kasda, 'GMT+8')->setTimezone('UTC');
             $invoice->sipay_status_invoice = true;
@@ -84,9 +83,12 @@ class NotificationController extends Controller
 
             // Log successful update
             Log::channel('payment_callbacks')->info('Payment processed successfully', [
+                'pelaporan_id' => $pelaporan->id ?? null,
                 'invoice_id' => $invoice->id,
-                'invoice_number' => $invoice->invoice_number,
-                'pelaporan_id' => $invoice->pelaporan_id
+                'record_id' => $invoice->sipay_record_id,
+                'kwitansi' => $invoice->no_invoice,
+                'payment_date_paid' => $invoice->sipay_payment_date_paid,
+                'payment_date_kasda' => $invoice->sipay_payment_date_kasda
             ]);
 
             return response()->json([
@@ -94,8 +96,8 @@ class NotificationController extends Controller
                 'message' => 'Payment notification processed successfully',
                 'data' => [
                     'record_id' => $invoice->sipay_record_id,
-                    'invoice_number' => $invoice->invoice_number,
-                    'receipt_number' => $invoice->receipt_number,
+                    'kwitansi' => $invoice->no_invoice,
+                    'payment_date_paid' => $invoice->sipay_payment_date_paid->toIso8601String(),
                     'status' => $invoice->payment_status
                 ]
             ]);
