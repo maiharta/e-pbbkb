@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Bunga;
 use App\Models\Pelaporan;
 use Illuminate\Support\Carbon;
+use App\Models\PengaturanSistem;
 use App\Exceptions\ServiceException;
 
 class BungaService
@@ -20,55 +21,85 @@ class BungaService
             throw new ServiceException('Pelaporan sudah kadaluarsa');
         }
 
+        // if($pelaporan->is_verified) {
+        //     throw new ServiceException('Pelaporan sudah diverifikasi, tidak bisa dikenakan bunga');
+        // }
 
-        $batas_pembayaran = $pelaporan->batas_pembayaran;
         $now = now();
-        $first_send_at = $pelaporan->first_send_at;
+        $batas_pembayaran = $pelaporan->batas_pembayaran;
 
-        if (
-            ($first_send_at && $first_send_at->isAfter($batas_pembayaran)) ||
-            (!$first_send_at && $now->isAfter($batas_pembayaran))
-        ) {
-            $existingBunga = Bunga::where('pelaporan_id', $pelaporan->id)
+        if($now->isAfter($batas_pembayaran)) {
+            // Get existing bunga records for this pelaporan
+            $existingBungas = Bunga::where('pelaporan_id', $pelaporan->id)
                 ->orderBy('bunga_ke', 'desc')
                 ->get();
 
-            if ($existingBunga->where('bunga_ke', 1)->isEmpty()) {
+            $persentaseBunga = self::getSystemSetting('bunga') / 100;
+
+            // If no bunga exists yet, create the first one
+            if($existingBungas->isEmpty()) {
                 Bunga::create([
                     'pelaporan_id' => $pelaporan->id,
-                    'waktu_bunga' => $batas_pembayaran->addDays(1),
+                    'waktu_bunga' => $batas_pembayaran->copy()->addDay(),
                     'bunga_ke' => 1,
-                    'persentase_bunga' => 1,
-                    'bunga' => 0.01 * $pelaporan->sptpd->total_pbbkb,
-                    'keterangan' => 'Bunga telat pembayaran ke-1',
+                    'persentase_bunga' => $persentaseBunga * 100,
+                    'bunga' => $persentaseBunga,
+                    'keterangan' => 'Bunga telat pembayaran ke-1'
                 ]);
-            } else {
-                // check if bunga ke 1 already exists
-                $firstBunga = $existingBunga->first();
-                if ($firstBunga && $firstBunga->bunga_ke == 1) {
-                    $batas_pembayaran = $firstBunga->waktu_bunga;
-                }
+
+                // Re-fetch after creating the first one
+                $existingBungas = Bunga::where('pelaporan_id', $pelaporan->id)
+                    ->orderBy('bunga_ke', 'desc')
+                    ->get();
             }
 
-            // loop every month between batas_pembayaran and now, check if bunga already exists dont create
-            $month_diff = $batas_pembayaran->setDay(16)->diffInMonths($now);
-            $existingBunga = Bunga::where('pelaporan_id', $pelaporan->id)
-                ->orderBy('bunga_ke', 'desc')
-                ->get();
-            if($month_diff){
-                foreach (range(1, $month_diff) as $i) {
-                    if ($existingBunga->where('bunga_ke', $i + 1)->isEmpty()) {
-                        Bunga::create([
-                            'pelaporan_id' => $pelaporan->id,
-                            'waktu_bunga' => $batas_pembayaran->addMonths($i),
-                            'bunga_ke' => $i + 1,
-                            'persentase_bunga' => 1,
-                            'bunga' => 0.01 * $pelaporan->sptpd->total_pbbkb,
-                            'keterangan' => 'Bunga telat pembayaran ke-' . ($i + 1),
-                        ]);
-                    }
+            // Get the last bunga record
+            $lastBunga = $existingBungas->first();
+            $lastBungaDate = $lastBunga ? Carbon::parse($lastBunga->waktu_bunga) : $batas_pembayaran;
+            $lastBungaKe = $lastBunga ? $lastBunga->bunga_ke : 0;
+
+            // Loop until we reach the current month
+            $currentMonthYear = now()->format('Y-m');
+            $processedMonthYear = $lastBungaDate->format('Y-m');
+
+            while ($processedMonthYear < $currentMonthYear) {
+                // Move to the next month
+                $nextMonthDate = $lastBungaDate->copy()->addMonth()->startOfMonth();
+
+                // Calculate the bunga date using CutiService to get 10 working days from the start of month
+                $nextBungaDate = CutiService::getDateAfterCuti($nextMonthDate, 10);
+
+                // If the calculated bunga date is in the future, break the loop
+                if ($nextBungaDate->isAfter($now)) {
+                    break;
                 }
+
+                $bungaKe = $lastBungaKe + 1;
+
+                // Create new bunga record
+                Bunga::create([
+                    'pelaporan_id' => $pelaporan->id,
+                    'waktu_bunga' => $nextBungaDate,
+                    'bunga_ke' => $bungaKe,
+                    'persentase_bunga' => $persentaseBunga * 100,
+                    'bunga' => $persentaseBunga,
+                    'keterangan' => 'Bunga telat pembayaran ke-' . $bungaKe
+                ]);
+
+                // Update for next iteration
+                $lastBungaDate = $nextBungaDate;
+                $lastBungaKe = $bungaKe;
+                $processedMonthYear = $lastBungaDate->format('Y-m');
             }
+
+            return true;
+        } else {
+            throw new ServiceException('Tidak ada bunga yang dikenakan karena belum melewati batas pembayaran');
         }
+    }
+
+    protected static function getSystemSetting(string $key): int
+    {
+        return (int) PengaturanSistem::where('key', $key)->first()->value;
     }
 }

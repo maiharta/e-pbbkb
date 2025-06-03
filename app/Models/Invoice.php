@@ -12,7 +12,6 @@ class Invoice extends Model
     protected $fillable = [
         'pelaporan_id',
         'invoice_number',
-        'receipt_number',
         'customer_npwpd',
         'customer_name',
         'customer_email',
@@ -34,15 +33,18 @@ class Invoice extends Model
         'sipay_status_bpd',
         'sipay_payment_date_paid',
         'sipay_payment_date_kasda',
+        'sipay_invoice',
+        'sipay_response',
         'expires_at'
     ];
 
     protected $casts = [
         'receipt_number' => 'integer',
-        'items' => 'array',
+        'items' => 'collection',
         'transaction_date' => 'datetime',
         'sipay_expired_date' => 'datetime',
         'expires_at' => 'datetime',
+        'sipay_response' => 'collection',
     ];
 
     // generate invoice number, receipt number
@@ -53,7 +55,6 @@ class Invoice extends Model
         static::creating(function ($invoice) {
             $invoice->ulid = \Illuminate\Support\Str::ulid();
             $invoice->invoice_number = 'INV-' . strtoupper(uniqid());
-            $invoice->receipt_number = now()->timestamp + rand(1000, 9999);
         });
     }
     public function pelaporan()

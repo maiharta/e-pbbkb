@@ -149,11 +149,12 @@
                                                     <span class="fw-bold fs-5 d-block text-center"
                                                           id="invoice-va"></span>
                                                 </div>
-                                                {{-- <button class="btn btn-sm btn-outline-primary ms-2"
-                                                        onclick="copyToClipboard('#invoice-va')"
-                                                        title="Copy to clipboard">
+                                                <button class="btn btn-sm btn-outline-primary ms-2"
+                                                        id="copy-va-btn"
+                                                        onclick="copyVAToClipboard()"
+                                                        title="Salin ke clipboard">
                                                     <i class="bi bi-clipboard"></i>
-                                                </button> --}}
+                                                </button>
                                             </div>
                                         </div>
                                         <p class="mb-0">
@@ -261,7 +262,8 @@
                                 `Rp ${new Intl.NumberFormat('id-ID').format(invoice.amount)}`
                             );
                             $('#invoice-status').html(getStatusBadge(invoice.payment_status));
-                            $('#invoice-created').text(formatDate(invoice.sipay_transaction_date));
+                            $('#invoice-created').text(formatDate(invoice
+                                .sipay_transaction_date));
                             $('#invoice-expires').text(formatDate(invoice.sipay_expired_date));
                             $('#invoice-va').text(invoice.sipay_virtual_account ||
                                 'Belum tersedia');
@@ -324,5 +326,41 @@
                 }
             }
         });
+
+        function copyVAToClipboard() {
+            const vaNumber = document.getElementById('invoice-va').innerText;
+
+            // Don't copy if the text is "Belum tersedia"
+            if (vaNumber === 'Belum tersedia') {
+                return;
+            }
+
+            // Create a temporary input element
+            const tempInput = document.createElement('input');
+            tempInput.value = vaNumber;
+            document.body.appendChild(tempInput);
+
+            // Select and copy the text
+            tempInput.select();
+            document.execCommand('copy');
+
+            // Remove the temporary element
+            document.body.removeChild(tempInput);
+
+            // Show success feedback
+            const copyBtn = document.getElementById('copy-va-btn');
+            const originalHTML = copyBtn.innerHTML;
+
+            copyBtn.innerHTML = '<i class="bi bi-check2"></i>';
+            copyBtn.classList.remove('btn-outline-primary');
+            copyBtn.classList.add('btn-success');
+
+            // Reset button after 2 seconds
+            setTimeout(() => {
+                copyBtn.innerHTML = originalHTML;
+                copyBtn.classList.remove('btn-success');
+                copyBtn.classList.add('btn-outline-primary');
+            }, 2000);
+        }
     </script>
 @endpush

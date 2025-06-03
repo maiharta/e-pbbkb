@@ -115,7 +115,7 @@ class SipayService
         $data = [
             'payment_type' => 'va-bpd',
             'total_amount' => (int)$invoice->amount,
-            'id_billing' => $invoice->invoice_number,
+            'id_billing' => null,
             'nama' => $invoice->customer_name,
             'ket_1_val' => 'Badan Pendapatan Daerah',
             'ket_2_val' => 'Pembayaran EPBBKB',
@@ -125,15 +125,15 @@ class SipayService
             'unit_id' => 25,
             'type' => 'langsung',
             'rincian_tagihan' => [
-                'kwitansi' => [
-                    [
-                        'nomor_kwitansi' => $invoice->receipt_number,
-                        'kode_tujuan_pelimpahan' => "0110",
-                        'nominal' => $invoice->amount,
+                'kwitansi' => $invoice->items->map(function ($item) use ($invoice) {
+                    return [
+                        'nomor_kwitansi' => $item['nomor_kwitansi'] ?? $invoice->receipt_number,
+                        'kode_tujuan_pelimpahan' => $item['kode_tujuan_pelimpahan'],
+                        'nominal' => (int)$item['nominal'],
                         'qty' => 1,
-                        'keterangan' => $invoice->description,
-                    ],
-                ],
+                        'keterangan' => $item['keterangan'] ?? $invoice->description,
+                    ];
+                })->toArray(),
             ],
             // custom attribute
             'custom_attribute' => [
@@ -185,36 +185,36 @@ class SipayService
      * @param string $invoiceId
      * @return array|null
      */
-    public function cancelInvoice(Invoice $invoice)
-    {
-        try {
-            $response = Http::withHeaders($this->getAuthHeaders())
-                ->post($this->baseUrl . '/transaction/cancel_invoice', [
-                    'invoice_id' => $invoice->invoice_id,
-                    'secret_key' => config('services.sipay.secret_key'),
-                ]);
-            // Check if the response is valid
-            $body = json_decode($response->getBody(), true);
-            if ($response->getStatusCode() == 200 && isset($body['data'])) {
-                return $body['data'];
-            }
+    // public function cancelInvoice(Invoice $invoice)
+    // {
+    //     try {
+    //         $response = Http::withHeaders($this->getAuthHeaders())
+    //             ->post($this->baseUrl . '/transaction/cancel_invoice', [
+    //                 'invoice_id' => $invoice->invoice_id,
+    //                 'secret_key' => config('services.sipay.secret_key'),
+    //             ]);
+    //         // Check if the response is valid
+    //         $body = json_decode($response->getBody(), true);
+    //         if ($response->getStatusCode() == 200 && isset($body['data'])) {
+    //             return $body['data'];
+    //         }
 
-            Log::error('Sipay cancel invoice failed', [
-                'status' => $response->getStatusCode(),
-                'response' => $body,
-                'invoice_id' => $invoiceId,
-            ]);
+    //         Log::error('Sipay cancel invoice failed', [
+    //             'status' => $response->getStatusCode(),
+    //             'response' => $body,
+    //             'invoice_id' => $invoiceId,
+    //         ]);
 
-            return null;
-        } catch (RequestException $e) {
-            Log::error('Sipay cancel invoice exception', [
-                'message' => $e->getMessage(),
-                'invoice_id' => $invoiceId,
-            ]);
+    //         return null;
+    //     } catch (RequestException $e) {
+    //         Log::error('Sipay cancel invoice exception', [
+    //             'message' => $e->getMessage(),
+    //             'invoice_id' => $invoiceId,
+    //         ]);
 
-            return null;
-        }
-    }
+    //         return null;
+    //     }
+    // }
 
     /**
      * Check transaction status
@@ -222,38 +222,38 @@ class SipayService
      * @param string $invoiceId
      * @return array|null
      */
-    public function checkTransactionStatus($invoiceId)
-    {
-        try {
-            $response = $this->client->get('/transaction/status', [
-                'headers' => $this->getAuthHeaders(),
-                'query' => [
-                    'invoice_id' => $invoiceId,
-                ],
-            ]);
+    // public function checkTransactionStatus($invoiceId)
+    // {
+    //     try {
+    //         $response = $this->client->get('/transaction/status', [
+    //             'headers' => $this->getAuthHeaders(),
+    //             'query' => [
+    //                 'invoice_id' => $invoiceId,
+    //             ],
+    //         ]);
 
-            $body = json_decode($response->getBody(), true);
+    //         $body = json_decode($response->getBody(), true);
 
-            if ($response->getStatusCode() == 200) {
-                return $body;
-            }
+    //         if ($response->getStatusCode() == 200) {
+    //             return $body;
+    //         }
 
-            Log::error('Sipay check transaction status failed', [
-                'status' => $response->getStatusCode(),
-                'response' => $body,
-                'invoice_id' => $invoiceId,
-            ]);
+    //         Log::error('Sipay check transaction status failed', [
+    //             'status' => $response->getStatusCode(),
+    //             'response' => $body,
+    //             'invoice_id' => $invoiceId,
+    //         ]);
 
-            return null;
-        } catch (RequestException $e) {
-            Log::error('Sipay check transaction status exception', [
-                'message' => $e->getMessage(),
-                'invoice_id' => $invoiceId,
-            ]);
+    //         return null;
+    //     } catch (RequestException $e) {
+    //         Log::error('Sipay check transaction status exception', [
+    //             'message' => $e->getMessage(),
+    //             'invoice_id' => $invoiceId,
+    //         ]);
 
-            return null;
-        }
-    }
+    //         return null;
+    //     }
+    // }
 
     /**
      * Clear token from cache (logout)

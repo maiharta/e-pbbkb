@@ -28,6 +28,15 @@
             border: none;
         }
 
+        /* Add this to fix the vertical alignment of the icons */
+        .section-icon {
+            margin-right: 8px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            line-height: 1;
+        }
+
         .table-container {
             background-color: #f9fafb;
             border-radius: 8px;
@@ -225,13 +234,15 @@
                                         <td>{{ $loop->iteration + count($pelaporan->denda) }}</td>
                                         <td>{{ $item->waktu_bunga->format('d-m-Y') }}</td>
                                         <td>{{ $item->keterangan }}</td>
-                                        <td>Rp {{ number_format($item->bunga, 2, ',', '.') }}</td>
+                                        <td>Rp
+                                            {{ number_format($item->bunga * $pelaporan->sptpd->total_pbbkb, 2, ',', '.') }}
+                                        </td>
                                     </tr>
                                 @endforeach
                                 <tr class="table-totals">
                                     <td colspan="3">Total</td>
                                     <td>Rp
-                                        {{ number_format($pelaporan->denda->sum('denda') + $pelaporan->bunga->sum('bunga'), 2, ',', '.') }}
+                                        {{ number_format($pelaporan->denda->sum('denda') + ($pelaporan->bunga->sum('bunga') * $pelaporan->sptpd->total_pbbkb), 2, ',', '.') }}
                                     </td>
                                 </tr>
                             </tbody>
@@ -255,7 +266,7 @@
                             <div class="summary-box">
                                 <div class="summary-title">Total Sanksi Administrasi</div>
                                 <div class="summary-value">Rp
-                                    {{ number_format($pelaporan->denda->sum('denda') + $pelaporan->bunga->sum('bunga'), 2, ',', '.') }}
+                                    {{ number_format($pelaporan->denda->sum('denda') + ($pelaporan->bunga->sum('bunga') * $pelaporan->sptpd->total_pbbkb), 2, ',', '.') }}
                                 </div>
                             </div>
                         </div>
@@ -266,13 +277,14 @@
                                 <div class="summary-value"
                                      style="color: #198754;">
                                     Rp
-                                    {{ number_format($pelaporan->total_pbbkb + $pelaporan->denda->sum('denda') + $pelaporan->bunga->sum('bunga'), 2, ',', '.') }}
+                                    {{ number_format($pelaporan->total_pbbkb + $pelaporan->denda->sum('denda') + ($pelaporan->bunga->sum('bunga') * $pelaporan->sptpd->total_pbbkb), 2, ',', '.') }}
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <a href="{{route('invoices.show', $pelaporan->ulid)}}" class="btn btn-primary payment-btn d-block w-100">
+                    <a class="btn btn-primary payment-btn d-block w-100"
+                       href="{{ route('invoices.show', $pelaporan->ulid) }}">
                         <i class="bi bi-credit-card me-2"></i>
                         Lanjutkan ke Pembayaran
                     </a>

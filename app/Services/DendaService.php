@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Denda;
 use App\Models\Pelaporan;
 use Illuminate\Support\Carbon;
+use App\Models\PengaturanSistem;
 use App\Exceptions\ServiceException;
 
 class DendaService
@@ -23,51 +24,33 @@ class DendaService
 
         $batas_pelaporan = $pelaporan->batas_pelaporan;
         $now = now();
-        $first_send_at = $pelaporan->first_send_at;
+        if ($now->isAfter($batas_pelaporan)) {
+            // Get existing denda records for this pelaporan
+            $existingDendas = Denda::where('pelaporan_id', $pelaporan->id)
+                ->first();
 
-        if (
-            ($first_send_at && $first_send_at->isAfter($batas_pelaporan)) ||
-            (!$first_send_at && $now->isAfter($batas_pelaporan))
-        ) {
-            $existingDenda = Denda::where('pelaporan_id', $pelaporan->id)
-                ->orderBy('denda_ke', 'desc')
-                ->get();
-
-            if ($existingDenda->where('denda_ke', 1)->isEmpty()) {
+            if(!$existingDendas) {
                 Denda::create([
                     'pelaporan_id' => $pelaporan->id,
-                    'waktu_denda' => $batas_pelaporan->addDays(1),
-                    'denda_ke' => 1,
+                    'waktu_denda' => $batas_pelaporan->copy()->addDay(),
+                    'persentase_denda' => 0,
                     'denda' => 1000000,
-                    'keterangan' => 'Denda keterlambatan ke-1',
+                    'keterangan' => 'Denda keterlambatan pelaporan'
                 ]);
             } else {
-                // check if denda ke 1 already exists
-                $firstDenda = $existingDenda->first();
-                if ($firstDenda && $firstDenda->denda_ke == 1) {
-                    $batas_pelaporan = $firstDenda->waktu_denda;
-                }
-            }
-
-            // loop every month between batas_pelaporan and now, check if denda already exists dont create
-            $month_diff = $batas_pelaporan->setDay(11)->diffInMonths($now);
-            echo "month_diff: $month_diff\n";
-            $existingDenda = Denda::where('pelaporan_id', $pelaporan->id)
-                ->orderBy('denda_ke', 'desc')
-                ->get();
-            if ($month_diff) {
-                foreach (range(1, $month_diff) as $i) {
-                    if ($existingDenda->where('denda_ke', $i + 1)->isEmpty()) {
-                        Denda::create([
-                            'pelaporan_id' => $pelaporan->id,
-                            'waktu_denda' => $batas_pelaporan->addMonths($i),
-                            'denda_ke' => $i + 1,
-                            'denda' => 1000000,
-                            'keterangan' => 'Denda keterlambatan ke-' . ($i + 1),
-                        ]);
-                    }
-                }
+                throw new ServiceException('Denda sudah dikenakan untuk pelaporan ini');
             }
         }
+    }
+
+    /**
+     * Get system settings value
+     *
+     * @param string $key
+     * @return int
+     */
+    protected static function getSystemSetting(string $key): int
+    {
+        return (int) PengaturanSistem::where('key', $key)->first()->value;
     }
 }

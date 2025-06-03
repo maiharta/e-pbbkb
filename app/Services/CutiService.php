@@ -6,94 +6,162 @@ use Carbon\Carbon;
 use App\Models\Cuti;
 use App\Models\Pelaporan;
 use App\Models\PengaturanSistem;
-use Carbon\Traits\Date;
 
 class CutiService
 {
-    public static function getBatasPelaporan(Pelaporan $pelaporan)
+    /**
+     * Get system settings value
+     *
+     * @param string $key
+     * @return int
+     */
+    protected static function getSystemSetting(string $key): int
     {
-        $batas_pelaporan = PengaturanSistem::where('key', 'batas_pelaporan')->first()->value;
-        $start_date = Carbon::now()->setMonth($pelaporan->month)->setYear($pelaporan->year)->startOfMonth()->addMonth();
-        $cutis = Cuti::query()
-            ->whereMonth('tanggal', $start_date->month)
-            ->whereYear('tanggal', $start_date->year)
+        return (int) PengaturanSistem::where('key', $key)->first()->value;
+    }
+
+    /**
+     * Get holidays (cuti) for a specific month and year
+     *
+     * @param Carbon $date
+     * @return \Illuminate\Support\Collection
+     */
+    protected static function getHolidaysForMonth(Carbon $date)
+    {
+        return Cuti::query()
+            ->whereMonth('tanggal', $date->month)
+            ->whereYear('tanggal', $date->year)
             ->pluck('tanggal');
+    }
 
-        $start_date = $start_date->subDay();
+    /**
+     * Calculate a deadline date by adding working days to a start date
+     *
+     * @param Carbon $startDate
+     * @param int $workingDays
+     * @param \Illuminate\Support\Collection|null $holidays
+     * @return Carbon
+     */
+    protected static function calculateDeadlineDate(Carbon $startDate, int $workingDays, $holidays = null): Carbon
+    {
+        // Clone the start date to avoid modifying the original
+        $deadlineDate = $startDate->copy();
+        $workingDaysAdded = 0;
 
-        // 3. Calculate the deadline date
-        $deadline_date = $start_date; // Start with the initial date
-        $working_days_added = 0; // Track working days added
+        // Get holidays if not provided
+        if ($holidays === null) {
+            $holidays = self::getHolidaysForMonth($startDate);
+        }
 
-        while ($working_days_added < $batas_pelaporan) {
-            $deadline_date->addDay(); // Move to the next day
+        while ($workingDaysAdded < $workingDays) {
+            $deadlineDate->addDay();
 
-            // Check if it's a weekend or a holiday
-            if (!$deadline_date->isWeekend() && !$cutis->contains($deadline_date->format('Y-m-d'))) {
-                $working_days_added++; // Increment working days if it's a weekday and not a holiday
+            // Count only weekdays that are not holidays
+            if (!$deadlineDate->isWeekend() && !$holidays->contains($deadlineDate->format('Y-m-d'))) {
+                $workingDaysAdded++;
             }
         }
 
-        return $deadline_date;
+        return $deadlineDate;
     }
 
-
-    public static function getBatasPembayaran(Pelaporan $pelaporan)
+    /**
+     * Get the reporting deadline for a pelaporan
+     *
+     * @param Pelaporan $pelaporan
+     * @return Carbon
+     */
+    public static function getBatasPelaporan(Pelaporan $pelaporan): Carbon
     {
-        $batas_pembayaran = PengaturanSistem::where('key', 'batas_pembayaran')->first()->value;
-        $start_date = Carbon::now()->setMonth($pelaporan->month)->setYear($pelaporan->year)->startOfMonth()->addMonth();
-        $cutis = Cuti::query()
-            ->whereMonth('tanggal', $start_date->month)
-            ->whereYear('tanggal', $start_date->year)
-            ->pluck('tanggal');
+        // Get the configured working days limit
+        $batasPelaporan = self::getSystemSetting('batas_pelaporan');
 
-        $start_date = $start_date->subDay(); // Adjust start date to the last day of the month before the payment deadline
+        // Create start date (last day of the reporting month)
+        $startDate = Carbon::create($pelaporan->year, $pelaporan->month)->endOfMonth();
 
-        // 3. Calculate the deadline date
-        $deadline_date = $start_date; // Start with the initial date
-        $working_days_added = 0; // Track working days added
+        // Get holidays for the following month
+        $nextMonth = $startDate->copy()->addDay();
+        $holidays = self::getHolidaysForMonth($nextMonth);
 
-        while ($working_days_added < $batas_pembayaran) {
-            $deadline_date->addDay(); // Move to the next day
-
-            // Check if it's a weekend or a holiday
-            if (!$deadline_date->isWeekend() && !$cutis->contains($deadline_date->format('Y-m-d'))) {
-                $working_days_added++; // Increment working days if it's a weekday and not a holiday
-            }
-        }
-
-        return $deadline_date;
+        // Calculate deadline date
+        return self::calculateDeadlineDate($startDate, $batasPelaporan, $holidays);
     }
 
-    public static function updateBatasPelaporan(Pelaporan $pelaporan)
+    /**
+     * Get the payment deadline for a pelaporan
+     *
+     * @param Pelaporan $pelaporan
+     * @return Carbon
+     */
+    public static function getBatasPembayaran(Pelaporan $pelaporan): Carbon
     {
+        // Get the configured working days limit
+        $batasPembayaran = self::getSystemSetting('batas_pembayaran');
+
+        // Create start date (last day of the reporting month)
+        $startDate = Carbon::create($pelaporan->year, $pelaporan->month)->endOfMonth();
+
+        // Get holidays for the following month
+        $nextMonth = $startDate->copy()->addDay();
+        $holidays = self::getHolidaysForMonth($nextMonth);
+
+        // Calculate deadline date
+        return self::calculateDeadlineDate($startDate, $batasPembayaran, $holidays);
+    }
+
+    /**
+     * Update deadline dates for a pelaporan
+     *
+     * @param Pelaporan $pelaporan
+     * @return bool
+     */
+    public static function updateBatasPelaporan(Pelaporan $pelaporan): bool
+    {
+        // Skip updates for paid or expired reports
         if ($pelaporan->is_paid || $pelaporan->is_expired) {
-            return;
+            return false;
         }
 
-        $batas_pelaporan = self::getBatasPelaporan($pelaporan);
-        $batas_pembayaran = self::getBatasPembayaran($pelaporan);
+        $batasPelaporan = self::getBatasPelaporan($pelaporan);
+        $batasPembayaran = self::getBatasPembayaran($pelaporan);
 
-        // Update the pelaporan with the new batas dates
-        $pelaporan->update([
-            'batas_pelaporan' => $batas_pelaporan->format('Y-m-d'),
-            'batas_pembayaran' => $batas_pembayaran->format('Y-m-d'),
+        return $pelaporan->update([
+            'batas_pelaporan' => $batasPelaporan->format('Y-m-d'),
+            'batas_pembayaran' => $batasPembayaran->format('Y-m-d'),
         ]);
     }
 
-    public static function updateAllPelaporan()
+    /**
+     * Update all active pelaporan deadlines
+     *
+     * @return int Number of updated records
+     */
+    public static function updateAllPelaporan(): int
     {
         $pelaporans = Pelaporan::query()
             ->where('is_paid', false)
             ->where('is_expired', false)
             ->get();
 
-        $pelaporans->each(function (Pelaporan $pelaporan) {
-            self::updateBatasPelaporan($pelaporan);
+        $updatedCount = 0;
+
+        $pelaporans->each(function (Pelaporan $pelaporan) use (&$updatedCount) {
+            if (self::updateBatasPelaporan($pelaporan)) {
+                $updatedCount++;
+            }
         });
+
+        return $updatedCount;
     }
 
-    public static function updateBatasPelaporanByMonthYear(int $month, int $year)
+    /**
+     * Update pelaporan deadlines for a specific month and year
+     *
+     * @param int $month
+     * @param int $year
+     * @return int Number of updated records
+     */
+    public static function updateBatasPelaporanByMonthYear(int $month, int $year): int
     {
         $pelaporans = Pelaporan::query()
             ->where('bulan', $month)
@@ -102,8 +170,27 @@ class CutiService
             ->where('is_expired', false)
             ->get();
 
-        $pelaporans->each(function (Pelaporan $pelaporan) {
-            self::updateBatasPelaporan($pelaporan);
+        $updatedCount = 0;
+
+        $pelaporans->each(function (Pelaporan $pelaporan) use (&$updatedCount) {
+            if (self::updateBatasPelaporan($pelaporan)) {
+                $updatedCount++;
+            }
         });
+
+        return $updatedCount;
+    }
+
+    /**
+     * Calculate a date by adding working days to a start date
+     *
+     * @param Carbon $startDate
+     * @param int $days
+     * @return Carbon
+     */
+    public static function getDateAfterCuti(Carbon $startDate, int $days): Carbon
+    {
+        $holidays = self::getHolidaysForMonth($startDate);
+        return self::calculateDeadlineDate($startDate, $days, $holidays);
     }
 }
