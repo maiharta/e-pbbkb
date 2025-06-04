@@ -111,7 +111,7 @@
                         <!-- Main Content -->
                         <div class="row g-4">
                             <!-- Left Column -->
-                            <div class="col-md-6">
+                            <div class="col-lg-6">
                                 <div class="card shadow-sm h-100">
                                     <div class="card-body">
                                         <h6 class="card-title fw-bold mb-3">
@@ -135,7 +135,7 @@
                             </div>
 
                             <!-- Right Column -->
-                            <div class="col-md-6">
+                            <div class="col-lg-6">
                                 <div class="card bg-light shadow-sm h-100">
                                     <div class="card-body">
                                         <h6 class="card-title fw-bold mb-3">
@@ -149,11 +149,13 @@
                                                     <span class="fw-bold fs-5 d-block text-center"
                                                           id="invoice-va"></span>
                                                 </div>
-                                                <button class="btn btn-sm btn-outline-primary ms-2"
+                                                <button class="btn btn-outline-primary ms-2 d-flex align-items-center justify-content-center"
                                                         id="copy-va-btn"
                                                         onclick="copyVAToClipboard()"
+                                                        style="min-width: 40px; height: 40px;"
                                                         title="Salin ke clipboard">
-                                                    <i class="bi bi-clipboard"></i>
+                                                    <i class="bi bi-clipboard"
+                                                       style="height: 1.6rem;"></i>
                                                 </button>
                                             </div>
                                         </div>
@@ -175,7 +177,7 @@
                                             Informasi Wajib Pajak
                                         </h6>
                                         <div class="row">
-                                            <div class="col-md-6">
+                                            <div class="col-lg-6">
                                                 <table class="table table-borderless table-sm mb-0">
                                                     <tr>
                                                         <td class="text-muted"
@@ -189,7 +191,7 @@
                                                     </tr>
                                                 </table>
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-lg-6">
                                                 <table class="table table-borderless table-sm mb-0">
                                                     <tr>
                                                         <td class="text-muted"
@@ -335,18 +337,50 @@
                 return;
             }
 
-            // Create a temporary input element
-            const tempInput = document.createElement('input');
-            tempInput.value = vaNumber;
-            document.body.appendChild(tempInput);
+            // Use the modern Clipboard API if available
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(vaNumber)
+                    .then(() => showCopySuccess())
+                    .catch(err => {
+                        console.error('Failed to copy: ', err);
+                        // Fallback to the older method
+                        fallbackCopyTextToClipboard(vaNumber);
+                    });
+            } else {
+                // Fallback for browsers that don't support the Clipboard API
+                fallbackCopyTextToClipboard(vaNumber);
+            }
+        }
 
-            // Select and copy the text
-            tempInput.select();
-            document.execCommand('copy');
+        function fallbackCopyTextToClipboard(text) {
+            // Create a temporary textarea element
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
 
-            // Remove the temporary element
-            document.body.removeChild(tempInput);
+            // Make the textarea out of viewport
+            textarea.style.position = 'fixed';
+            textarea.style.left = '-999999px';
+            textarea.style.top = '-999999px';
+            document.body.appendChild(textarea);
 
+            textarea.focus();
+            textarea.select();
+
+            let success = false;
+            try {
+                success = document.execCommand('copy');
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+            }
+
+            document.body.removeChild(textarea);
+
+            if (success) {
+                showCopySuccess();
+            }
+        }
+
+        function showCopySuccess() {
             // Show success feedback
             const copyBtn = document.getElementById('copy-va-btn');
             const originalHTML = copyBtn.innerHTML;
