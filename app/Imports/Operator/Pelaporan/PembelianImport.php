@@ -38,20 +38,37 @@ class PembelianImport implements ToCollection, WithHeadingRow, WithValidation, W
                 return redirect()->back()->with('error', 'Terdapat data pelaporan dengan bulan berbeda dengan bulan pelaporan pada file excel');
             }
             $jenis_bbm = $jenis_bbms->where('id', $row['jenis_bbm_id'])->first();
-            Pembelian::create([
-                'pelaporan_id' => $this->pelaporan->id,
-                'penjual' => $row['penjual'],
-                'alamat' => $row['alamat'],
-                'jenis_bbm_id' => $row['jenis_bbm_id'],
-                'kode_jenis_bbm' => $jenis_bbm->kode,
-                'nama_jenis_bbm' => $jenis_bbm->nama,
-                'is_subsidi' => $jenis_bbm->is_subsidi,
-                'persentase_tarif_jenis_bbm' => $jenis_bbm->persentase_tarif,
-                'sisa_volume' => $row['sisa_volume'],
-                'volume' => $row['volume'],
-                'nomor_kuitansi' => $row['nomor_kuitansi'],
-                'tanggal' => $tanggal_carbon->format('Y-m-d'),
-            ]);
+            $pembelian = Pembelian::where('nomor_kuitansi', $row['nomor_kuitansi'])->where('pelaporan_id', $this->pelaporan->id)->first();
+            if ($pembelian) {
+                $pembelian->update([
+                    'penjual' => $row['penjual'],
+                    'alamat' => $row['alamat'],
+                    'jenis_bbm_id' => $row['jenis_bbm_id'],
+                    'kode_jenis_bbm' => $jenis_bbm->kode,
+                    'nama_jenis_bbm' => $jenis_bbm->nama,
+                    'is_subsidi' => $jenis_bbm->is_subsidi,
+                    'persentase_tarif_jenis_bbm' => $jenis_bbm->persentase_tarif,
+                    'sisa_volume' => $row['sisa_volume'],
+                    'volume' => $row['volume'],
+                    'nomor_kuitansi' => $row['nomor_kuitansi'],
+                    'tanggal' => $tanggal_carbon->format('Y-m-d'),
+                ]);
+            }else{
+                Pembelian::create([
+                    'pelaporan_id' => $this->pelaporan->id,
+                    'penjual' => $row['penjual'],
+                    'alamat' => $row['alamat'],
+                    'jenis_bbm_id' => $row['jenis_bbm_id'],
+                    'kode_jenis_bbm' => $jenis_bbm->kode,
+                    'nama_jenis_bbm' => $jenis_bbm->nama,
+                    'is_subsidi' => $jenis_bbm->is_subsidi,
+                    'persentase_tarif_jenis_bbm' => $jenis_bbm->persentase_tarif,
+                    'sisa_volume' => $row['sisa_volume'],
+                    'volume' => $row['volume'],
+                    'nomor_kuitansi' => $row['nomor_kuitansi'],
+                    'tanggal' => $tanggal_carbon->format('Y-m-d'),
+                ]);
+            }
         }
         DB::commit();
     }
