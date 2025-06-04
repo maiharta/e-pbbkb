@@ -118,9 +118,10 @@
     <div class="header">
         <h2>KOP PERANGKAT DAERAH/UPTD PEMUNGUT</h2>
         <h3>SURAT SETORAN PAJAK DAERAH (SSPD)</h3>
+        <h2>SSPD ADA YANG BELUM FIX, MOHON KONFIRMASI</h2>
     </div>
 
-    <div class="section">
+    {{-- <div class="section">
         <table>
             <tr>
                 <td width="25%"><strong>Nama Wajib Pajak</strong></td>
@@ -251,7 +252,7 @@
 
     <div style="margin-top: 20px; font-size: 10px; text-align: center;">
         <p>Surat Setoran Pajak Daerah ini dicetak secara elektronik melalui Aplikasi E-PBBKB Provinsi Bali</p>
-    </div>
+    </div> --}}
 </body>
 
 </html>
