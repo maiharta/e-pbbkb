@@ -127,7 +127,7 @@ class SipayService
             'rincian_tagihan' => [
                 'kwitansi' => $invoice->items->map(function ($item) use ($invoice) {
                     return [
-                        'nomor_kwitansi' => $item['nomor_kwitansi'] ?? $invoice->receipt_number,
+                        'nomor_kwitansi' => $item['nomor_kwitansi'],
                         'kode_tujuan_pelimpahan' => $item['kode_tujuan_pelimpahan'],
                         'nominal' => (int)$item['nominal'],
                         'qty' => 1,

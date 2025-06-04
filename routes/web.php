@@ -71,6 +71,7 @@ Route::middleware(['guest'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     // Dashboard
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/api/dashboard/stats', [App\Http\Controllers\DashboardController::class, 'getStats']);
 
     // ADMINISTRATOR
     Route::middleware(['role:administrator'])->group(function () {

@@ -39,7 +39,6 @@ class Invoice extends Model
     ];
 
     protected $casts = [
-        'receipt_number' => 'integer',
         'items' => 'collection',
         'transaction_date' => 'datetime',
         'sipay_expired_date' => 'datetime',
