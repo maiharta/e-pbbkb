@@ -12,7 +12,9 @@ class PelaporanController extends Controller
 {
     public function index()
     {
-        $pelaporans = Pelaporan::where('user_id', auth()->user()->id)->get();
+        $pelaporans = Pelaporan::where('user_id', auth()->user()->id)->orderBy('tahun', 'desc')
+            ->orderBy('bulan', 'desc')
+            ->get();
         return view('pages.operator.pelaporan.index', compact(
             'pelaporans'
         ));
