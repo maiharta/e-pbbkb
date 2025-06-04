@@ -24,6 +24,10 @@ class UserDetail extends Model
         'verified_at',
     ];
 
+    protected $casts = [
+        'verified_at' => 'datetime',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
