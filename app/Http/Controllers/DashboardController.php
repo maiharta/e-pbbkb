@@ -44,7 +44,7 @@ class DashboardController extends Controller
         $verifiedInputs = Pelaporan::where('is_verified', true)->count();
 
         // Get count of ongoing inputs
-        $ongoingInputs = Pelaporan::where('is_sent_to_admin', true)
+        $ongoingInputs = Pelaporan::where('is_expired', false)
             ->where('is_verified', false)
             ->count();
 

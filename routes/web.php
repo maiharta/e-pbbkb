@@ -184,6 +184,8 @@ Route::middleware(['auth'])->group(function () {
                 // SSPD
                 Route::prefix('sspd')->name('sspd.')->group(function () {
                     Route::get('/{ulid}', [SspdController::class, 'index'])->name('index');
+                    Route::get('/download/bukti-bayar/{ulid}', [SspdController::class, 'downloadBuktiBayar'])->name('download-bukti-bayar');
+                    Route::get('/download/sspd/{ulid}', [SspdController::class, 'downloadSspd'])->name('download-sspd');
                 });
             });
         });

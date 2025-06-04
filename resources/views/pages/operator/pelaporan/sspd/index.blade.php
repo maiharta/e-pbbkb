@@ -117,6 +117,31 @@
             margin-right: 8px;
             font-size: 1.2rem;
         }
+
+        /* Add watermark styles */
+        .card-body.paid-invoice {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 12rem;
+            font-weight: 900;
+            color: rgba(25, 135, 84, 0.08);
+            pointer-events: none;
+            z-index: 1;
+            white-space: nowrap;
+            text-transform: uppercase;
+        }
+
+        /* Ensure all content is above the watermark */
+        .card-body.paid-invoice>* {
+            z-index: 2;
+        }
     </style>
 @endpush
 
@@ -144,7 +169,11 @@
         </div>
         <section class="section">
             <div class="card">
-                <div class="card-body">
+                <div class="card-body {{ $pelaporan->is_paid ? 'paid-invoice' : '' }}">
+                    @if ($pelaporan->is_paid)
+                        <div class="watermark">LUNAS</div>
+                    @endif
+
                     <h4 class="section-title">
                         <i class="bi bi-fuel-pump section-icon"></i>
                         1. Data Objek Pajak
@@ -242,7 +271,7 @@
                                 <tr class="table-totals">
                                     <td colspan="3">Total</td>
                                     <td>Rp
-                                        {{ number_format($pelaporan->denda->sum('denda') + ($pelaporan->bunga->sum('bunga') * $pelaporan->sptpd->total_pbbkb), 2, ',', '.') }}
+                                        {{ number_format($pelaporan->denda->sum('denda') + $pelaporan->bunga->sum('bunga') * $pelaporan->sptpd->total_pbbkb, 2, ',', '.') }}
                                     </td>
                                 </tr>
                             </tbody>
@@ -266,7 +295,7 @@
                             <div class="summary-box">
                                 <div class="summary-title">Total Sanksi Administrasi</div>
                                 <div class="summary-value">Rp
-                                    {{ number_format($pelaporan->denda->sum('denda') + ($pelaporan->bunga->sum('bunga') * $pelaporan->sptpd->total_pbbkb), 2, ',', '.') }}
+                                    {{ number_format($pelaporan->denda->sum('denda') + $pelaporan->bunga->sum('bunga') * $pelaporan->sptpd->total_pbbkb, 2, ',', '.') }}
                                 </div>
                             </div>
                         </div>
@@ -277,19 +306,85 @@
                                 <div class="summary-value"
                                      style="color: #198754;">
                                     Rp
-                                    {{ number_format($pelaporan->total_pbbkb + $pelaporan->denda->sum('denda') + ($pelaporan->bunga->sum('bunga') * $pelaporan->sptpd->total_pbbkb), 2, ',', '.') }}
+                                    {{ number_format($pelaporan->total_pbbkb + $pelaporan->denda->sum('denda') + $pelaporan->bunga->sum('bunga') * $pelaporan->sptpd->total_pbbkb, 2, ',', '.') }}
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <a class="btn btn-primary payment-btn d-block w-100"
-                       href="{{ route('invoices.show', $pelaporan->ulid) }}">
-                        <i class="bi bi-credit-card me-2"></i>
-                        Lanjutkan ke Pembayaran
-                    </a>
+                    <div class="d-flex gap-2 mt-4">
+                        @if ($pelaporan->is_paid)
+                            <button class="btn btn-primary payment-btn d-block w-100"
+                                    data-bs-target="#cetakBuktiModal"
+                                    data-bs-toggle="modal"
+                                    type="button">
+                                <i class="bi bi-printer me-2"></i>
+                                Cetak Bukti Bayar Pembeli
+                            </button>
+
+                            {{-- cetak sspd --}}
+                            <a class="btn btn-secondary payment-btn d-block w-100"
+                               href="{{ route('pelaporan.sspd.download-sspd', $pelaporan->ulid) }}"
+                               target="_blank">
+                                <i class="bi bi-file-earmark-text me-2"></i>
+                                Cetak SSPD
+                            </a>
+                        @else
+                            <a class="btn btn-primary payment-btn d-block w-100"
+                               href="{{ route('invoices.show', $pelaporan->ulid) }}">
+                                <i class="bi bi-credit-card me-2"></i>
+                                Lanjutkan ke Pembayaran
+                            </a>
+                        @endif
+                    </div>
                 </div>
             </div>
         </section>
+    </div>
+    <div aria-hidden="true"
+         aria-labelledby="cetakBuktiModalLabel"
+         class="modal fade"
+         id="cetakBuktiModal"
+         tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="{{ route('pelaporan.sspd.download-bukti-bayar', $pelaporan->ulid) }}"
+                      method="GET">
+                    <div class="modal-header">
+                        <h5 class="modal-title"
+                            id="cetakBuktiModalLabel">Cetak Bukti Bayar</h5>
+                        <button aria-label="Close"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                type="button"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label"
+                                   for="nama_perusahaan">Nama Perusahaan</label>
+                            <select class="form-select"
+                                    id="nama_perusahaan"
+                                    name="nama_perusahaan"
+                                    required>
+                                <option value="">Pilih Nama Perusahaan</option>
+                                @foreach ($list_nama_pembeli as $pembeli)
+                                    <option value="{{ $pembeli }}">{{ $pembeli }}</option>
+                                @endforeach
+                            </select>
+                            <div class="form-text">Pilih nama perusahaan yang akan digunakan pada bukti pembayaran</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary"
+                                data-bs-dismiss="modal"
+                                type="button">Batal</button>
+                        <button class="btn btn-primary"
+                                type="submit">
+                            <i class="bi bi-download me-1"></i> Unduh Bukti Bayar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 @endsection
