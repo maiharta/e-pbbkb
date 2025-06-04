@@ -32,7 +32,7 @@
                         </li>
                         <li class="submenu-item {{ request()->routeIs('verifikasi.pelaporan*') ? 'active' : '' }}">
                             <a class="submenu-link"
-                               href="{{ route('verifikasi.pelaporan.index') }}">Pelaporan</a>
+                               href="{{ route('verifikasi.pelaporan.index') }}">Penginputan</a>
                         </li>
                     </ul>
                 </li>
@@ -71,7 +71,7 @@
                     <a class="sidebar-link"
                        href="{{ route('pelaporan.index') }}">
                         <i class="isax isax-receipt"></i>
-                        <span>Pelaporan</span>
+                        <span>Penginputan</span>
                     </a>
                 </li>
                 <li class="sidebar-item {{ request()->routeIs('invoices*') ? 'active' : '' }}">
