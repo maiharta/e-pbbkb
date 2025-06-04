@@ -31,7 +31,14 @@ class DatabaseSeeder extends Seeder
         ], ['password' => bcrypt('password')])->assignRole('administrator');
 
         $kabupaten = [
-            'Kabupaten Badung', 'Kabupaten Bangli', 'Kabupaten Buleleng', 'Kabupaten Gianyar', 'Kabupaten Jembrana', 'Kabupaten Karangasem', 'Kabupaten Klungkung', 'Kabupaten Tabanan',
+            'Kabupaten Badung',
+            'Kabupaten Bangli',
+            'Kabupaten Buleleng',
+            'Kabupaten Gianyar',
+            'Kabupaten Jembrana',
+            'Kabupaten Karangasem',
+            'Kabupaten Klungkung',
+            'Kabupaten Tabanan',
             'Kota Denpasar'
         ];
 
@@ -52,9 +59,10 @@ class DatabaseSeeder extends Seeder
                 OperatorSeeder::class
             ]);
 
-            UserApi::create([
-                'name' => 'API User',
+            UserApi::firstOrCreate([
                 'email' => 'api@example.com',
+            ], [
+                'name' => 'API User',
                 'email_verified_at' => now(),
                 'password' => Hash::make('password'), // Set a secure password
                 'api_key' => Str::random(64),
