@@ -69,4 +69,9 @@ class Penjualan extends Model
     {
         return Carbon::parse($this->tanggal)->locale('id')->isoFormat('D MMMM Y');
     }
+
+    public function getIsPbbkbMatchAttribute()
+    {
+        return $this->pbbkb == $this->pbbkb_sistem;
+    }
 }

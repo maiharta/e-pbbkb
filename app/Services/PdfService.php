@@ -8,7 +8,7 @@ use Barryvdh\DomPDF\PDF;
 
 class PdfService
 {
-    public static function generateBuktiBayar(Pelaporan $pelaporan, $nama_perusahaan)
+    public static function generateBuktiBayar(Pelaporan $pelaporan, $nama_perusahaan, $npwp = null)
     {
         if (!$pelaporan->is_paid) {
             throw new ServiceException('Pelaporan belum dibayar.');
@@ -34,6 +34,7 @@ class PdfService
         $pdf = app(PDF::class)->loadView('pdf.bukti-bayar', [
             'pelaporan' => $pelaporan,
             'invoice' => $invoice,
+            'npwp' => $npwp,
         ]);
 
         $pdf->setPaper('A4');

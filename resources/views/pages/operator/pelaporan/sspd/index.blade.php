@@ -373,6 +373,16 @@
                             </select>
                             <div class="form-text">Pilih nama perusahaan yang akan digunakan pada bukti pembayaran</div>
                         </div>
+                        <div class="mb-3">
+                            <label class="form-label"
+                                   for="npwp">NPWP</label>
+                            <input class="form-control"
+                                      id="npwp"
+                                      name="npwp"
+                                      type="text"
+                                      placeholder="Masukkan NPWP">
+                            <div class="form-text">Masukkan NPWP yang akan digunakan pada bukti pembayaran</div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-secondary"

@@ -111,20 +111,42 @@ class Pelaporan extends Model
 
     public function getPembelianBadgeAttribute()
     {
-        if (!$this->is_sent_to_admin) {
+        // If already sent to admin, show green checkmark
+        // if ($this->is_sent_to_admin) {
+        //     return "<span class='fw-bold isax isax-document-upload text-success'></span>";
+        // }
+
+        // Check if pembelian data exists
+        $hasPembelianData = $this->pembelian()->count() > 0;
+
+        if (!$hasPembelianData) {
+            // No data yet - show yellow warning
+            $link = route('pelaporan.pembelian.index', ['ulid' => $this->ulid]);
+            return "<a href='{$link}' class='fw-bold'><span class='fw-bold isax isax-document-upload text-warning'></span></a>";
+        } else {
+            // Has data but not sent - show blue icon
             $link = route('pelaporan.pembelian.index', ['ulid' => $this->ulid]);
             return "<a href='{$link}' class='fw-bold'><span class='fw-bold isax isax-document-upload text-primary'></span></a>";
-        } else {
-            return "<span class='fw-bold isax isax-document-upload text-success'></span>";
         }
     }
     public function getPenjualanBadgeAttribute()
     {
-        if (!$this->is_sent_to_admin) {
+        // If already sent to admin, show green checkmark
+        // if ($this->is_sent_to_admin) {
+        //     return "<span class='fw-bold isax isax-document-download text-success'></span>";
+        // }
+
+        // Check if penjualan data exists
+        $hasPenjualanData = $this->penjualan()->count() > 0;
+
+        if (!$hasPenjualanData) {
+            // No data yet - show yellow warning
+            $link = route('pelaporan.penjualan.index', ['ulid' => $this->ulid]);
+            return "<a href='{$link}' class='fw-bold'><span class='fw-bold isax isax-document-download text-warning'></span></a>";
+        } else {
+            // Has data but not sent - show blue icon
             $link = route('pelaporan.penjualan.index', ['ulid' => $this->ulid]);
             return "<a href='{$link}' class='fw-bold'><span class='fw-bold isax isax-document-download text-primary'></span></a>";
-        } else {
-            return "<span class='fw-bold isax isax-document-download text-success'></span>";
         }
     }
 
@@ -150,8 +172,15 @@ class Pelaporan extends Model
 
     public function getSendBadgeAttribute()
     {
+         // Check if penjualan data exists
+         $hasPenjualanData = $this->penjualan()->count() > 0;
+
         if (!$this->is_sent_to_admin) {
-            return "<button class='btn' type='button' onclick='sendPelaporan(\"{$this->ulid}\")'><span class='fw-bold isax isax-direct-right text-primary'></span></button>";
+            if($hasPenjualanData){
+                return "<button class='btn' type='button' onclick='sendPelaporan(\"{$this->ulid}\")'><span class='fw-bold isax isax-direct-right text-primary'></span></button>";
+            }else{
+                return "<span class='fw-bold isax isax-direct-right text-success'></span>";
+            }
         } else {
             return "<span class='fw-bold isax isax-direct-right text-success'></span>";
         }

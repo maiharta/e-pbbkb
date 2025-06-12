@@ -40,19 +40,21 @@
                 </div>
             @endif
             <div class="d-flex gap-2 align-items-center mb-3">
-                <a class="btn btn-primary"
-                   href="{{ route('pelaporan.penjualan.create', $pelaporan->ulid) }}">+ Tambah Data</a>
-                <button class="btn btn-primary"
-                        data-bs-target="#importModal"
-                        data-bs-toggle="modal"
-                        type="button">
-                    <i class="isax isax-import"></i>Import Data
-                </button>
+                @if (!$pelaporan->is_sent_to_admin)
+                    <a class="btn btn-primary"
+                       href="{{ route('pelaporan.penjualan.create', $pelaporan->ulid) }}">+ Tambah Data</a>
+                    <button class="btn btn-primary"
+                            data-bs-target="#importModal"
+                            data-bs-toggle="modal"
+                            type="button">
+                        <i class="isax isax-import"></i>Import Data
+                    </button>
+                @endif
             </div>
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-striped table-bordered"
+                        <table class="table table-bordered"
                                id="penjualan-table">
                             <thead>
                                 <tr>
@@ -71,7 +73,8 @@
                             <tbody>
                                 @foreach ($penjualans as $penjualan)
                                     {{-- @dd($penjualan) --}}
-                                    <tr>
+                                    <tr
+                                        class="{{ $pelaporan->catatan_revisi && !$penjualan->is_pbbkb_match ? 'bg-danger text-white' : '' }}">
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $penjualan->pembeli }}</td>
                                         <td>{{ $penjualan->nomor_kuitansi }}</td>
@@ -83,27 +86,31 @@
                                         <td class="text-start">Rp. {{ number_format($penjualan->dpp, 2, ',', '.') }}</td>
                                         <td class="text-start">Rp. {{ number_format($penjualan->pbbkb, 2, ',', '.') }}</td>
                                         <td>
-                                            <div class="dropdown">
-                                                <button aria-expanded="false"
-                                                        class="btn"
-                                                        data-bs-toggle="dropdown"
-                                                        id="dropdownMenuButton1"
-                                                        type="button">
-                                                    <i class="isax isax-more"></i>
-                                                </button>
-                                                <ul aria-labelledby="dropdownMenuButton1"
-                                                    class="dropdown-menu">
-                                                    <li><a class="dropdown-item"
-                                                           href="{{ route('pelaporan.penjualan.edit', ['penjualan' => $penjualan->ulid, 'ulid' => $pelaporan->ulid]) }}">Edit</a>
-                                                    </li>
-                                                    <li>
-                                                        <button class="dropdown-item"
-                                                                onclick="hapus('{{ route('pelaporan.penjualan.destroy', ['penjualan' => $penjualan->ulid, 'ulid' => $pelaporan->ulid]) }}')">
-                                                            Hapus
-                                                        </button>
-                                                    </li>
-                                                </ul>
-                                            </div>
+                                            @if (!$pelaporan->is_sent_to_admin)
+                                                <div class="dropdown">
+                                                    <button aria-expanded="false"
+                                                            class="btn"
+                                                            data-bs-toggle="dropdown"
+                                                            id="dropdownMenuButton1"
+                                                            type="button">
+                                                        <i class="isax isax-more"></i>
+                                                    </button>
+                                                    <ul aria-labelledby="dropdownMenuButton1"
+                                                        class="dropdown-menu">
+                                                        <li><a class="dropdown-item"
+                                                               href="{{ route('pelaporan.penjualan.edit', ['penjualan' => $penjualan->ulid, 'ulid' => $pelaporan->ulid]) }}">Edit</a>
+                                                        </li>
+                                                        <li>
+                                                            <button class="dropdown-item"
+                                                                    onclick="hapus('{{ route('pelaporan.penjualan.destroy', ['penjualan' => $penjualan->ulid, 'ulid' => $pelaporan->ulid]) }}')">
+                                                                Hapus
+                                                            </button>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            @else
+                                                Tidak ada aksi
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach

@@ -145,12 +145,13 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/', [PelaporanController::class, 'index'])->name('index');
             Route::post('/{ulid?}', [PelaporanController::class, 'send'])->name('send');
 
-            Route::middleware('ensure_pelaporan_is_not_send_to_admin')->group(function () {
-                // Pembelian
-                Route::prefix('pembelian')->name('pembelian.')->group(function () {
-                    Route::get('/{ulid}', [PembelianController::class, 'index'])->name('index');
+
+            // Pembelian
+            Route::prefix('pembelian')->name('pembelian.')->group(function () {
+                Route::get('/{ulid}', [PembelianController::class, 'index'])->name('index');
+                Route::get('/{ulid}/show', [PembelianController::class, 'show'])->name('show');
+                Route::middleware('ensure_pelaporan_is_not_send_to_admin')->group(function () {
                     Route::get('/{ulid}/create', [PembelianController::class, 'create'])->name('create');
-                    Route::get('/{ulid}/show', [PembelianController::class, 'show'])->name('show');
                     Route::post('/{ulid}/store', [PembelianController::class, 'store'])->name('store');
                     Route::get('/{ulid}/edit/{pembelian}', [PembelianController::class, 'edit'])->name('edit');
                     Route::put('/{ulid}/{pembelian}', [PembelianController::class, 'update'])->name('update');
@@ -158,12 +159,14 @@ Route::middleware(['auth'])->group(function () {
                     Route::post('/{ulid}/import', [PembelianController::class, 'import'])->name('import');
                     Route::get('/download/template-import', [PembelianController::class, 'downloadTemplateImport'])->name('download-template-import');
                 });
+            });
 
-                // Penjualan
-                Route::prefix('penjualan')->name('penjualan.')->group(function () {
-                    Route::get('/{ulid}', [PenjualanController::class, 'index'])->name('index');
+            // Penjualan
+            Route::prefix('penjualan')->name('penjualan.')->group(function () {
+                Route::get('/{ulid}', [PenjualanController::class, 'index'])->name('index');
+                Route::get('/{ulid}/show', [PenjualanController::class, 'show'])->name('show');
+                Route::middleware(['ensure_pelaporan_is_not_send_to_admin'])->group(function () {
                     Route::get('/{ulid}/create', [PenjualanController::class, 'create'])->name('create');
-                    Route::get('/{ulid}/show', [PenjualanController::class, 'show'])->name('show');
                     Route::post('/{ulid}/store', [PenjualanController::class, 'store'])->name('store');
                     Route::get('/{ulid}/edit/{penjualan}', [PenjualanController::class, 'edit'])->name('edit');
                     Route::put('/{ulid}/{penjualan}', [PenjualanController::class, 'update'])->name('update');

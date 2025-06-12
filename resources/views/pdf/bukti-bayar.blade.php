@@ -77,7 +77,7 @@
             <td>Alamat : {{ $pelaporan->penjualan->first()->alamat }}</td>
         </tr>
         <tr>
-            <td>NPWP : {{ $pelaporan->penjualan->first()->npwp }}</td>
+            <td>NPWP : {{ $npwp }}</td>
         </tr>
     </table>
     <table style=""

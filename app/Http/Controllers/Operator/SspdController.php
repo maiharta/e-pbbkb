@@ -57,6 +57,7 @@ class SspdController extends Controller
     {
         $request->validate([
             'nama_perusahaan' => 'required|string|max:255',
+            'npwp' => 'nullable|string|max:255'
         ]);
 
         $pelaporan = Pelaporan::where('ulid', $ulid)
@@ -66,7 +67,8 @@ class SspdController extends Controller
 
         $pdf = PdfService::generateBuktiBayar(
             $pelaporan,
-            $request->nama_perusahaan
+            $request->nama_perusahaan,
+            $request->npwp
         );
 
         return $pdf->download('bukti-bayar-' . $pelaporan->ulid . '-' . $request->nama_perusahaan . '.pdf');
