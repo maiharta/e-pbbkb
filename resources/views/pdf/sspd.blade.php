@@ -83,31 +83,31 @@
         <table style="margin-top: 20px;"
                width="100%">
             <tr>
-                <td style="font-weight: bold;">No</td>
-                <td style="font-weight: bold;">Jenis Penerimaan</td>
-                <td style="font-weight: bold;">Kuantitas</td>
-                <td style="font-weight: bold;">Jumlah (Rp)</td>
+                <td style="font-weight: bold; text-align: center;">No</td>
+                <td style="font-weight: bold; text-align: center;">Jenis Penerimaan</td>
+                <td style="font-weight: bold; text-align: center;">Kuantitas</td>
+                <td style="font-weight: bold; text-align: center;">Jumlah (Rp)</td>
             </tr>
             @foreach ($pelaporan->penjualan as $penjualan)
                 <tr>
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $penjualan->get('nama_jenis_bbm') }}</td>
-                    <td>{{ $penjualan->get('volume') }}</td>
-                    <td>{{ number_format($penjualan->get('pbbkb'), 0, ',', '.') }}</td>
+                    <td>{{ number_format($penjualan->get('volume'), 0, ',', '.') }} Liter</td>
+                    <td style="text-align: right;">{{ number_format($penjualan->get('pbbkb'), 0, ',', '.') }}</td>
                 </tr>
             @endforeach
             {{-- total --}}
             <tr>
                 <td colspan="3" style="text-align: right;">Jumlah</td>
-                <td>{{ number_format($pelaporan->penjualan->sum('pbbkb'), 0, ',', '.') }}</td>
+                <td style="text-align: right;">{{ number_format($pelaporan->penjualan->sum('pbbkb'), 0, ',', '.') }}</td>
             </tr>
             <tr>
                 <td colspan="3" style="text-align: right;">Denda</td>
-                <td>{{ number_format($pelaporan->denda->sum('denda') + $pelaporan->bunga->sum('bunga') * $pelaporan->sptpd->total_pbbkb, 0, ',', '.') }}</td>
+                <td style="text-align: right;">{{ number_format($pelaporan->denda->sum('denda') + $pelaporan->bunga->sum('bunga') * $pelaporan->sptpd->total_pbbkb, 0, ',', '.') }}</td>
             </tr>
             <tr>
                 <td colspan="3" style="text-align: right;">Total</td>
-                <td>{{ number_format($pelaporan->penjualan->sum('pbbkb') + $pelaporan->denda->sum('denda') + $pelaporan->bunga->sum('bunga') * $pelaporan->sptpd->total_pbbkb, 0, ',', '.') }}</td>
+                <td style="text-align: right;">{{ number_format($pelaporan->penjualan->sum('pbbkb') + $pelaporan->denda->sum('denda') + $pelaporan->bunga->sum('bunga') * $pelaporan->sptpd->total_pbbkb, 0, ',', '.') }}</td>
             </tr>
         </table>
     </div>
