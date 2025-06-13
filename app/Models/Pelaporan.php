@@ -35,6 +35,8 @@ class Pelaporan extends Model
         'first_send_at',
         'is_expired',
         'is_paid',
+        'sptpd_number',
+        'sspd_number',
     ];
 
     protected $casts = [

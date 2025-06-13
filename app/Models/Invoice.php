@@ -42,6 +42,8 @@ class Invoice extends Model
         'items' => 'collection',
         'transaction_date' => 'datetime',
         'sipay_expired_date' => 'datetime',
+        'sipay_payment_date_paid' => 'datetime',
+        'sipay_payment_date_kasda' => 'datetime',
         'expires_at' => 'datetime',
         'sipay_response' => 'collection',
     ];

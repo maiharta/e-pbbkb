@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Exceptions\ServiceException;
 use App\Models\Pelaporan;
 use Barryvdh\DomPDF\PDF;
+use Illuminate\Support\Facades\Storage;
 
 class PdfService
 {
@@ -50,50 +51,25 @@ class PdfService
 
         // Format data for the PDF
         $pelaporan->load(['penjualan', 'sptpd', 'user.userDetail']);
-        $pelaporan->data_formatted = $pelaporan
-            ->penjualan
-            ->groupBy('kode_jenis_bbm')
-            ->mapWithKeys(function ($penjualan, $jenis_bbm_id) {
-                $nama_jenis_bbm = $penjualan->first()->nama_jenis_bbm;
 
-                $volume = 0;
-                $dpp = 0;
-                $pbbkb = 0;
-
-                $penjualan->each(function ($item) use (&$volume, &$dpp, &$pbbkb) {
-                    $volume += $item->volume;
-                    $dpp += $item->dpp;
-                    $pbbkb += $item->pbbkb_sistem;
-                });
-
-                return collect([
-                    $nama_jenis_bbm => collect([
-                        'volume' => $volume,
-                        'dpp' => $dpp,
-                        'pbbkb' => $pbbkb
-                    ])
-                ]);
-            });
-
-        $pelaporan->total_volume = $pelaporan->data_formatted->values()->sum('volume');
-        $pelaporan->total_dpp = $pelaporan->data_formatted->values()->sum('dpp');
-        $pelaporan->total_pbbkb = $pelaporan->data_formatted->values()->sum('pbbkb');
-
-        // Calculate total sanctions
-        $total_sanksi = $pelaporan->denda->sum('denda') +
-            ($pelaporan->bunga->sum('bunga') * $pelaporan->sptpd->total_pbbkb);
-
-        // Calculate grand total
-        $grand_total = $pelaporan->total_pbbkb + $total_sanksi;
+        $pelaporan->penjualan = $pelaporan->penjualan->groupBy('kode_jenis_bbm')->map(function ($items, $kode_jenis_bbm) {
+            $firstItem = $items->first();
+            return collect([
+                'nama_jenis_bbm' => $firstItem->nama_jenis_bbm,
+                'volume' => $items->sum('volume'),
+                'dpp' => $items->sum('dpp'),
+                'pbbkb' => $items->sum('pbbkb_sistem'),
+            ]);
+        });
 
         $pdf = app(PDF::class)->loadView('pdf.sspd', [
             'pelaporan' => $pelaporan,
-            'total_sanksi' => $total_sanksi,
-            'grand_total' => $grand_total,
         ]);
 
         // Set to landscape orientation
-        $pdf->setPaper('A4', 'landscape');
+        $pdf->setPaper('A4', 'potrait');
+
+        $pdf->save(Storage::disk('public')->path( 'sspd.pdf'));
 
         return $pdf;
     }
