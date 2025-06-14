@@ -73,4 +73,36 @@ class PdfService
 
         return $pdf;
     }
+
+    public static function generateSptpd(Pelaporan $pelaporan)
+    {
+        if (!$pelaporan->is_sptpd_approved) {
+            throw new ServiceException('SPTPD belum disetujui.');
+        }
+
+        // Load necessary relationships
+        $pelaporan->load(['penjualan', 'sptpd', 'user.userDetail']);
+
+        // Format data for the PDF
+        $pelaporan->penjualan = $pelaporan->penjualan->groupBy('kode_jenis_bbm')->map(function ($items, $kode_jenis_bbm) {
+            $firstItem = $items->first();
+            return collect([
+                'nama_jenis_bbm' => $firstItem->nama_jenis_bbm,
+                'volume' => $items->sum('volume'),
+                'dpp' => $items->sum('dpp'),
+                'pbbkb' => $items->sum('pbbkb_sistem'),
+            ]);
+        });
+
+        $pdf = app(PDF::class)->loadView('pdf.sptpd', [
+            'pelaporan' => $pelaporan,
+        ]);
+
+        // Set to landscape orientation
+        // $pdf->setPaper('A4', 'potrait');
+
+        $pdf->save(Storage::disk('public')->path('sptpd.pdf'));
+
+        return $pdf;
+    }
 }

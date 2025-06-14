@@ -27,6 +27,6 @@ class Dev extends Command
      */
     public function handle()
     {
-        PdfService::generateSspd(Pelaporan::first());
+        PdfService::generateSptpd(Pelaporan::first());
     }
 }

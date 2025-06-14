@@ -180,6 +180,7 @@ Route::middleware(['auth'])->group(function () {
                 // SPTPD
                 Route::prefix('sptpd')->name('sptpd.')->group(function () {
                     Route::get('/{ulid}', [SptpdController::class, 'index'])->name('index');
+                    Route::get('/download/sptpd/{ulid}', [SptpdController::class, 'downloadSptpd'])->name('download-sptpd');
                     // ajax
                     Route::post('/cancel/{ulid?}', [SptpdController::class, 'cancel'])->name('cancel');
                     Route::post('/approve/{ulid?}', [SptpdController::class, 'approve'])->name('approve');

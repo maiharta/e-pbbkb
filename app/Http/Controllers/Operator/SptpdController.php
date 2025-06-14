@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Services\PdfService;
 
 class SptpdController extends Controller
 {
@@ -62,6 +63,23 @@ class SptpdController extends Controller
             });
 
         return view('pages.operator.pelaporan.sptpd.index', compact('pelaporan'));
+    }
+
+    public function downloadSptpd(Request $request, $ulid)
+    {
+        $pelaporan = Pelaporan::where('ulid', $ulid)
+            ->where('user_id', auth()->user()->id)
+            ->where('is_sptpd_approved', true)
+            ->whereNotNull('sptpd_number')
+            ->firstOrFail();
+
+        $pdf = PdfService::generateSptpd(
+            $pelaporan,
+            auth()->user()->nama,
+            auth()->user()->npwpd
+        );
+
+        return $pdf->download('bukti-bayar-' . $pelaporan->ulid . '.pdf');
     }
 
     public function cancel(Request $request, $ulid)
