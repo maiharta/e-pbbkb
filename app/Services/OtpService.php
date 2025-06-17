@@ -45,7 +45,7 @@ class OtpService
             ->where('token_name', $token_name)
             ->where('is_valid', true)
             ->where('expired_at', '>', now())
-            ->where('ip_address', $ip_address)
+            // ->where('ip_address', $ip_address)
             ->latest()
             ->first();
 
