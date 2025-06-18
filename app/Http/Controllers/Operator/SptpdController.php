@@ -70,16 +70,11 @@ class SptpdController extends Controller
         $pelaporan = Pelaporan::where('ulid', $ulid)
             ->where('user_id', auth()->user()->id)
             ->where('is_sptpd_approved', true)
-            ->whereNotNull('sptpd_number')
             ->firstOrFail();
 
-        $pdf = PdfService::generateSptpd(
-            $pelaporan,
-            auth()->user()->nama,
-            auth()->user()->npwpd
-        );
+        $pdf = PdfService::generateSptpd($pelaporan);
 
-        return $pdf->download('bukti-bayar-' . $pelaporan->ulid . '.pdf');
+        return $pdf->download('SPTPD-' . $pelaporan->ulid . '.pdf');
     }
 
     public function cancel(Request $request, $ulid)

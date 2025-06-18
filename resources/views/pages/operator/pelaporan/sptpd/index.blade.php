@@ -326,6 +326,16 @@
                                 <i class="bi bi-file-earmark-check btn-icon"></i> Surat Pernyataan
                             </button>
                         </div>
+                    @else
+                        {{-- download sptpd button --}}
+                        <div class="d-flex justify-content-center mt-4">
+                            <a class="btn btn-primary"
+                               href="{{ route('pelaporan.sptpd.download', $pelaporan->ulid) }}"
+                               target="_blank">
+                                <i class="isax isax-document"></i>
+                                Unduh Dokumen SPTPD
+                            </a>
+                        </div>
                     @endif
                 </div>
             </div>

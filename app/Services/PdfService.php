@@ -84,7 +84,7 @@ class PdfService
         $pelaporan->load(['penjualan', 'sptpd', 'user.userDetail']);
 
         // Format data for the PDF
-        $pelaporan->penjualan = $pelaporan->penjualan->groupBy('kode_jenis_bbm')->map(function ($items, $kode_jenis_bbm) {
+        $pelaporan->penjualan_by_jenis = $pelaporan->penjualan->groupBy('kode_jenis_bbm')->map(function ($items, $kode_jenis_bbm) {
             $firstItem = $items->first();
             return collect([
                 'nama_jenis_bbm' => $firstItem->nama_jenis_bbm,
@@ -94,12 +94,28 @@ class PdfService
             ]);
         });
 
+        $pelaporan->penjualan_by_sektor = $pelaporan->penjualan->groupBy('kode_sektor')->map(function ($items, $kode_sektor) {
+            return $items->groupBy('kode_jenis_bbm')->map(function ($jenisItems, $kode_jenis_bbm) {
+                $firstItem = $jenisItems->first();
+                return collect([
+                    'nama_sektor' => $firstItem->nama_sektor,
+                    'nama_jenis_bbm' => $firstItem->nama_jenis_bbm,
+                    'persentase_pengenaan_sektor' => $firstItem->persentase_pengenaan_sektor,
+                    'volume' => $jenisItems->sum('volume'),
+                    'dpp' => $jenisItems->sum('dpp'),
+                    'pbbkb' => $jenisItems->sum('pbbkb_sistem'),
+                ]);
+            })->values();
+        });
+
+        // dd($pelaporan->penjualan_by_sektor);
+
         $pdf = app(PDF::class)->loadView('pdf.sptpd', [
             'pelaporan' => $pelaporan,
         ]);
 
         // Set to landscape orientation
-        // $pdf->setPaper('A4', 'potrait');
+        $pdf->setPaper('A4', 'landscape');
 
         $pdf->save(Storage::disk('public')->path('sptpd.pdf'));
 
