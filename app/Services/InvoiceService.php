@@ -49,7 +49,7 @@ class InvoiceService
                     'nomor_kwitansi' => 'S-' . $pelaporan->bulan . '-' . $pelaporan->tahun . '-' . now()->format('His'),
                     'nominal' => $pelaporan->denda->sum('denda') + ($pelaporan->bunga->sum('bunga') * $pelaporan->sptpd->total_pbbkb),
                     'keterangan' => 'Sanksi Periode ' . Carbon::create($pelaporan->tahun, $pelaporan->bulan)->translatedFormat('F Y'),
-                    'kode_tujuan_pelimpahan' => '0110',
+                    'kode_tujuan_pelimpahan' => '700',
                     'items' => [
                         'denda' => $pelaporan->denda->map(function ($denda) {
                             return [
