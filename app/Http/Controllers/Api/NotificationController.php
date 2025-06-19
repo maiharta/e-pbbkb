@@ -27,7 +27,7 @@ class NotificationController extends Controller
                 'record_id' => 'required|string',
                 'kwitansi' => 'required|string',
                 'payment_date_paid' => 'required|date_format:Y-m-d H:i:s',
-                'payment_date_kasda' => 'required|date_format:Y-m-d H:i:s',
+                'payment_date_kasda' => 'required|date_format:Y-m-d',
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             Log::channel('payment_callbacks')->error('Validation failed', [
