@@ -102,7 +102,7 @@
                 <td style="text-align: right;">{{ number_format($pelaporan->penjualan->sum('pbbkb'), 0, ',', '.') }}</td>
             </tr>
             <tr>
-                <td colspan="3" style="text-align: right;">Denda</td>
+                <td colspan="3" style="text-align: right;">Sanksi Administratif</td>
                 <td style="text-align: right;">{{ number_format($pelaporan->denda->sum('denda') + $pelaporan->bunga->sum('bunga') * $pelaporan->sptpd->total_pbbkb, 0, ',', '.') }}</td>
             </tr>
             <tr>
