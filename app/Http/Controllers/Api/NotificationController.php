@@ -67,7 +67,7 @@ class NotificationController extends Controller
             // Update invoice with payment information
             $invoice->payment_status = 'paid';
             $invoice->sipay_payment_date_paid = Carbon::createFromFormat('Y-m-d H:i:s', $request->payment_date_paid, 'GMT+8')->setTimezone('UTC');
-            $invoice->sipay_payment_date_kasda = Carbon::createFromFormat('Y-m-d H:i:s', $request->payment_date_kasda, 'GMT+8')->setTimezone('UTC');
+            $invoice->sipay_payment_date_kasda = Carbon::createFromFormat('Y-m-d', $request->payment_date_kasda, 'GMT+8')->setTimezone('UTC');
             $invoice->sipay_status_invoice = true;
             $invoice->sipay_status_bpd = true;
             $invoice->save();
