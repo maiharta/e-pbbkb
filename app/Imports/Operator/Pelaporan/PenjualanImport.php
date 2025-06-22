@@ -5,6 +5,7 @@ namespace App\Imports\Operator\Pelaporan;
 use Carbon\Carbon;
 use App\Models\Sektor;
 use App\Models\JenisBbm;
+use App\Models\Kabupaten;
 use App\Models\Pelaporan;
 use App\Models\Penjualan;
 use Illuminate\Support\Collection;
@@ -46,6 +47,7 @@ class PenjualanImport implements ToCollection, WithHeadingRow, WithValidation, W
                 $penjualan->update([
                     'pembeli' => $row['pembeli'],
                     'alamat' => $row['alamat'],
+                    'kabupaten_id' => $row['kabupaten_id'],
                     'sektor_id' => $row['sektor_id'],
                     'kode_sektor' => $sektor->kode,
                     'nama_sektor' => $sektor->nama,
@@ -67,6 +69,7 @@ class PenjualanImport implements ToCollection, WithHeadingRow, WithValidation, W
                     'pelaporan_id' => $this->pelaporan->id,
                     'pembeli' => $row['pembeli'],
                     'alamat' => $row['alamat'],
+                    'kabupaten_id' => $row['kabupaten_id'],
                     'sektor_id' => $row['sektor_id'],
                     'kode_sektor' => $sektor->kode,
                     'nama_sektor' => $sektor->nama,
@@ -94,6 +97,7 @@ class PenjualanImport implements ToCollection, WithHeadingRow, WithValidation, W
         return [
             'pembeli' => 'required',
             'alamat' => 'required',
+            'kabupaten_id' => 'required|exists:kabupatens,id',
             'lokasi_penyaluran_id' => 'required|in:1,2',
             'status_pajak_id' => 'required|in:1,2',
             'sektor_id' => 'required|exists:sektors,id',

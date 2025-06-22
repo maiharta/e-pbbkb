@@ -25,6 +25,7 @@ class ExampleImportPenjualanExport implements FromCollection, ShouldAutoSize, Wi
             1,
             1,
             1,
+            1,
             500,
             150000,
             15000,
@@ -60,6 +61,7 @@ class ExampleImportPenjualanExport implements FromCollection, ShouldAutoSize, Wi
         return [
             'pembeli',
             'alamat',
+            'kabupaten_id',
             'sektor_id',
             'jenis_bbm_id',
             'lokasi_penyaluran_id',

@@ -37,6 +37,7 @@ class TemplateImportPenjualanExport implements FromCollection, ShouldAutoSize, W
             'Jenis BBM' => new JenisBbmExport(),
             'Lokasi Penyaluran' => new LokasiPenyaluranExport(),
             'Status Pajak' => new StatusPajakExport(),
+            'Kabupaten' => new KabupatenExport(),
             'Contoh Data' => new ExampleImportPenjualanExport(),
         ];
 
@@ -70,6 +71,7 @@ class TemplateImportPenjualanExport implements FromCollection, ShouldAutoSize, W
         return [
             'pembeli',
             'alamat',
+            'kabupaten_id',
             'sektor_id',
             'jenis_bbm_id',
             'lokasi_penyaluran_id',

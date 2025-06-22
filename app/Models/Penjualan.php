@@ -18,6 +18,7 @@ class Penjualan extends Model
         'pelaporan_id',
         'jenis_bbm_id',
         'sektor_id',
+        'kabupaten_id',
         'kode_jenis_bbm',
         'nama_jenis_bbm',
         'is_subsidi',

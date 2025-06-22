@@ -40,6 +40,11 @@
                                       name="alamat"
                                       placeholder="Masukkan nama alamat"
                                       value="{{ old('alamat', $penjualan->alamat) }}" />
+                        <x-input.select :options="$kabupatens->map(fn($item) => ['key' => $item->id, 'value' => $item->nama])"
+                                        label="Kabupaten"
+                                        name="kabupaten_id"
+                                        placeholder="Pilih kabupaten"
+                                        value="{{ old('kabupaten_id', $penjualan->kabupaten_id) }}" />
                         <x-input.select :options="$sektors->map(fn($item) => ['key' => $item->id, 'value' => $item->nama])"
                                         label="Sektor"
                                         name="sektor_id"
@@ -72,7 +77,7 @@
                                       name="tanggal"
                                       placeholder="Masukkan tanggal penjualan"
                                       settings="minDate: moment().set('month', {{ $pelaporan->bulan }} - 1).startOf('month').format('YYYY-MM-DD'),maxDate: moment().set('month', {{ $pelaporan->bulan }} - 1).endOf('month').format('YYYY-MM-DD'),"
-                                      value="{{ old('tanggal', $penjualan->tanggal) }}"/>
+                                      value="{{ old('tanggal', $penjualan->tanggal) }}" />
                         <x-input.number :currency="true"
                                         :is_currency="true"
                                         label="PBBKB"
@@ -83,7 +88,7 @@
                                         label="Lokasi Penyaluran"
                                         name="lokasi_penyaluran"
                                         placeholder="Pilih lokasi penyaluran"
-                                        value="{{ old('lokasi_penyaluran',$penjualan->lokasi_penyaluran) }}" />
+                                        value="{{ old('lokasi_penyaluran', $penjualan->lokasi_penyaluran) }}" />
                         <x-input.select :options="[
                             ['key' => '1', 'value' => 'Wajib Pajak'],
                             ['key' => '0', 'value' => 'Tidak Wajib Pajak'],
@@ -91,7 +96,7 @@
                                         label="Status Pajak"
                                         name="is_wajib_pajak"
                                         placeholder="Pilih status pajak pembeli"
-                                        value="{{ old('is_wajib_pajak',$penjualan->is_wajib_pajak) }}" />
+                                        value="{{ old('is_wajib_pajak', $penjualan->is_wajib_pajak) }}" />
                         <button class="btn btn-primary d-block w-100">Simpan</button>
                     </form>
                 </div>

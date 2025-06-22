@@ -57,6 +57,13 @@
                         </li>
                     </ul>
                 </li>
+                <li class="sidebar-item {{ request()->routeIs('laporan*') ? 'active' : '' }}">
+                    <a class="sidebar-link"
+                       href="{{ route('laporan.index') }}">
+                        <i class="isax isax-document-text"></i>
+                        <span>Laporan</span>
+                    </a>
+                </li>
                 <li class="sidebar-item {{ request()->routeIs('pengaturan-sistem*') ? 'active' : '' }}">
                     <a class="sidebar-link"
                        href="{{ route('pengaturan-sistem.index') }}">

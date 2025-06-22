@@ -39,6 +39,11 @@
                                       name="alamat"
                                       placeholder="Masukkan nama alamat"
                                       value="{{ old('alamat') }}" />
+                        <x-input.select :options="$kabupatens->map(fn($item) => ['key' => $item->id, 'value' => $item->nama])"
+                                        label="Kabupaten"
+                                        name="kabupaten_id"
+                                        placeholder="Pilih kabupaten"
+                                        value="{{ old('kabupaten_id') }}" />
                         <x-input.select :options="$sektors->map(fn($item) => ['key' => $item->id, 'value' => $item->nama])"
                                         label="Sektor"
                                         name="sektor_id"

@@ -131,6 +131,10 @@ Route::middleware(['auth'])->group(function () {
                 Route::delete('/{ulid}', [CutiController::class, 'destroy'])->name('destroy');
             });
         });
+        // Laporan
+        Route::prefix('laporan')->name('laporan.')->group(function () {
+            Route::get('/', [App\Http\Controllers\Admin\LaporanController::class, 'index'])->name('index');
+        });
         // Pengaturan Sistem
         Route::prefix('pengaturan-sistem')->name('pengaturan-sistem.')->group(function () {
             Route::get('/', [PengaturanSistemController::class, 'index'])->name('index');

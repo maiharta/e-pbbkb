@@ -31,10 +31,12 @@ class PenjualanController extends Controller
         $pelaporan = Pelaporan::where('user_id', auth()->user()->id)->where('ulid', $ulid)->firstOrFail();
         $sektors = Sektor::all();
         $jenis_bbms = JenisBbm::all();
+        $kabupatens = Kabupaten::all();
         return view('pages.operator.pelaporan.penjualan.create', compact(
             'pelaporan',
             'sektors',
-            'jenis_bbms'
+            'jenis_bbms',
+            'kabupatens'
         ));
     }
 
@@ -43,6 +45,7 @@ class PenjualanController extends Controller
         $pelaporan = Pelaporan::where('user_id', auth()->user()->id)->where('ulid', $ulid)->firstOrFail();
         $request->validate([
             'pembeli' => 'required',
+            'kabupaten_id' => 'required|exists:kabupatens,id',
             'sektor_id' => 'required|exists:sektors,id',
             'jenis_bbm_id' => 'required|exists:jenis_bbms,id',
             'volume' => 'required',
@@ -62,6 +65,7 @@ class PenjualanController extends Controller
             $pelaporan->penjualan()->create([
                 'sektor_id' => $request->sektor_id,
                 'jenis_bbm_id' => $request->jenis_bbm_id,
+                'kabupaten_id' => $request->kabupaten_id,
                 'kode_jenis_bbm' => $jenis_bbm->kode,
                 'nama_jenis_bbm' => $jenis_bbm->nama,
                 'is_subsidi' => $jenis_bbm->is_subsidi,
@@ -103,7 +107,8 @@ class PenjualanController extends Controller
             'pelaporan',
             'penjualan',
             'sektors',
-            'jenis_bbms'
+            'jenis_bbms',
+            'kabupatens'
         ));
     }
     public function update(Request $request, $ulid, $penjualan)
@@ -118,6 +123,7 @@ class PenjualanController extends Controller
         $request->validate([
             'pembeli' => 'required',
             'sektor_id' => 'required|exists:sektors,id',
+            'kabupaten_id' => 'required|exists:kabupatens,id',
             'jenis_bbm_id' => 'required|exists:jenis_bbms,id',
             'volume' => 'required',
             'dpp' => 'required',
@@ -136,6 +142,7 @@ class PenjualanController extends Controller
             $penjualan->update([
                 'sektor_id' => $request->sektor_id,
                 'jenis_bbm_id' => $request->jenis_bbm_id,
+                'kabupaten_id' => $request->kabupaten_id,
                 'kode_jenis_bbm' => $jenis_bbm->kode,
                 'nama_jenis_bbm' => $jenis_bbm->nama,
                 'is_subsidi' => $jenis_bbm->is_subsidi,
