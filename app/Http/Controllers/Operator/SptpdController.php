@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Services\NumberGeneratorService;
 use App\Services\PdfService;
 
 class SptpdController extends Controller
@@ -115,7 +116,9 @@ class SptpdController extends Controller
                 'is_sptpd_approved' => true,
                 'sptpd_approved_at' => now()
             ]);
-            $pelaporan->sptpd->update([
+            NumberGeneratorService::generateSptpdNumber($pelaporan);
+            $pelaporan->sptpd()->create([
+                'nomor_sptpd' => $pelaporan->sptpd_number,
                 'tanggal' => now()->format('Y-m-d'),
                 'total_pbbkb' => $pelaporan->penjualan->sum('pbbkb_sistem')
             ]);

@@ -191,7 +191,7 @@
                         </tr>
                         <tr>
                             <td>Nomor SPTPD</td>
-                            <td>: {{ $pelaporan->sptpd->nomor }}</td>
+                            <td>: {{ $pelaporan->sptpd_number }}</td>
                         </tr>
                         <tr>
                             <td>NPWPD</td>
@@ -418,17 +418,6 @@
                                        value="{{ auth()->user()->userDetail->npwpd }}">
                             </div>
 
-                            <div class="form-group mb-3">
-                                <label class="form-label fw-bold"
-                                       for="nomor_sptpd">Nomor SPTPD<span class="text-danger">*</span></label>
-                                <input class="form-control"
-                                       id="nomor_sptpd"
-                                       placeholder="Masukkan nomor SPTPD perusahaan"
-                                       type="text"
-                                       value="{{ $pelaporan->sptpd->nomor }}">
-                                <small class="text-muted">Nomor SPTPD wajib diisi</small>
-                            </div>
-
                             <div class="alert alert-danger mt-4 mb-0">
                                 <div class="d-flex">
                                     <i class="bi bi-exclamation-triangle-fill me-3 fs-5"></i>
@@ -510,14 +499,6 @@
         }
 
         function approveSptpd(ulid) {
-            const nomor_sptpd = $('#nomor_sptpd').val();
-            if (nomor_sptpd == null || nomor_sptpd == '') {
-                Toast.fire({
-                    'icon': 'error',
-                    'text': 'Semua kolom dengan tanda (*) wajib diisi'
-                });
-                return;
-            }
             Swal.fire({
                 'title': 'Apakah anda yakin?',
                 'showCancelButton': true,
@@ -528,32 +509,6 @@
                     confirmButton: 'btn btn-primary ms-2',
                     cancelButton: 'btn btn-outline-secondary'
                 },
-                'html': '<p class="text-start fw-bold mb-3">Silahkan konfirmasi data di bawah ini:</p>' +
-                    '<table class="table table-sm table-bordered">' +
-                    '<tr>' +
-                    '<td class="text-muted">Wajib Pungut</td>' +
-                    '<th> {{ auth()->user()->name }}</th>' +
-                    '</tr>' +
-                    '<tr>' +
-                    '<td class="text-muted">NPWPD</td>' +
-                    '<th> {{ auth()->user()->userDetail->npwpd }}</th>' +
-                    '</tr>' +
-                    '<tr>' +
-                    '<td class="text-muted">Periode</td>' +
-                    '<th> {{ $pelaporan->bulan_name }} - {{ $pelaporan->tahun }}</th>' +
-                    '</tr>' +
-                    '<tr>' +
-                    '<td class="text-muted">Jumlah Pemungutan PBBKB</td>' +
-                    '<th> Rp {{ number_format($pelaporan->data_formatted->values()->map(fn($item) => $item->values()->pluck('subtotal')->sum('pbbkb'))->sum(), 2, ',', '.') }}</th>' +
-                    '</tr>' +
-                    '<tr>' +
-                    '<td class="text-muted">Nomor SPTPD</td>' +
-                    '<th> ' + nomor_sptpd + '</th>' +
-                    '</tr>' +
-                    '</table>' +
-                    '<div class="alert alert-danger mt-3 text-start">' +
-                    '<p class="mb-0 small"><strong>Perhatian:</strong> Dengan menyadari sepenuhnya akan segala akibat termasuk sanksi sesuai dengan ketentuan perundang-undangan yang berlaku, saya atau yang saya beri kuasa menyatakan bahwa apa yang telah kami beritahu tersebut beserta lampiran-lampirannya adalah benar, lengkap, dan jelas.</p>' +
-                    '</div>',
             }).then((result) => {
                 if (result.isConfirmed) {
                     // ajax
@@ -561,8 +516,7 @@
                         'url': '{{ route('pelaporan.sptpd.approve') }}/' + ulid,
                         'type': 'POST',
                         'data': {
-                            '_token': '{{ csrf_token() }}',
-                            'nomor_sptpd': nomor_sptpd
+                            '_token': '{{ csrf_token() }}'
                         },
                         'success': function(data) {
                             if (data.status == 'success') {

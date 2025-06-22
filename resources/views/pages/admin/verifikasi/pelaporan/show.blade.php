@@ -519,60 +519,38 @@
                     confirmButtonText: `Ya`,
                     cancelButtonText: `Tidak`,
                 }).then((result) => {
-                    if (result.isConfirmed) {
-                        Swal.fire({
-                            icon: 'info',
-                            title: 'Masukkan Nomor SPTPD',
-                            input: 'text',
-                            // input required
-                            inputAttributes: {
-                                required: true
-                            },
-                            inputValidator: (value) => {
-                                if (!value) {
-                                    return 'Nomor SPTPD tidak boleh kosong!'
-                                }
-                            },
-                            showCancelButton: true,
-                            confirmButtonText: `Kirim`,
-                            cancelButtonText: `Batal`,
-                            preConfirm: (nomor_sptpd) => {
-                                $.ajax({
-                                    url: "{{ route('verifikasi.pelaporan.approve') }}",
-                                    type: "POST",
-                                    data: {
-                                        _token: "{{ csrf_token() }}",
-                                        ulid: getUlid(),
-                                        nomor_sptpd: nomor_sptpd
-                                    },
-                                    success: function(response) {
-                                        if (response.status == 'success') {
-                                            Swal.fire(
-                                                'Berhasil!',
-                                                response.message,
-                                                'success'
-                                            ).then((result) => {
-                                                window.location.href =
-                                                    "{{ route('verifikasi.pelaporan.index') }}";
-                                            });
-                                        } else {
-                                            Toast.fire({
-                                                icon: 'error',
-                                                title: response.message,
-                                            });
-                                        }
-                                    },
-                                    error: function(response) {
-                                        Swal.fire(
-                                            'Gagal!',
-                                            'Form permohonan gagal divalidasi. Hubungi administrator',
-                                            'error'
-                                        );
-                                    }
+                    $.ajax({
+                        url: "{{ route('verifikasi.pelaporan.approve') }}",
+                        type: "POST",
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            ulid: getUlid(),
+                        },
+                        success: function(response) {
+                            if (response.status == 'success') {
+                                Swal.fire(
+                                    'Berhasil!',
+                                    response.message,
+                                    'success'
+                                ).then((result) => {
+                                    window.location.href =
+                                        "{{ route('verifikasi.pelaporan.index') }}";
+                                });
+                            } else {
+                                Toast.fire({
+                                    icon: 'error',
+                                    title: response.message,
                                 });
                             }
-                        })
-                    }
+                        },
+                        error: function(response) {
+                            Swal.fire(
+                                'Gagal!',
+                                'Form permohonan gagal divalidasi. Hubungi administrator',
+                                'error'
+                            );
+                        }
+                    });
                 });
             @endif
         }

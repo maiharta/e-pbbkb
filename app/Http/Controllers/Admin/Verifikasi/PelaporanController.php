@@ -7,6 +7,7 @@ use App\Models\Penjualan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 
 class PelaporanController extends Controller
 {
@@ -81,7 +82,6 @@ class PelaporanController extends Controller
     {
         $request->validate([
             'ulid' => 'required',
-            'nomor_sptpd' => 'required'
         ]);
 
         $pelaporan = Pelaporan::with('pelaporanNote')
@@ -97,6 +97,7 @@ class PelaporanController extends Controller
             ]);
         }
 
+        DB::beginTransaction();
         try {
             $pelaporan->update([
                 'catatan_revisi' => null,
@@ -105,15 +106,13 @@ class PelaporanController extends Controller
                 'is_sptpd_canceled' => false,
             ]);
 
-            $pelaporan->sptpd()->create([
-                'nomor' => $request->nomor_sptpd
-            ]);
-
+            DB::commit();
             return response()->json([
                 'status' => 'success',
                 'message' => 'Berhasil melakukan validasi permohonan'
             ]);
         } catch (\Exception $e) {
+            DB::rollBack();
             Log::error($e->getMessage() . ' | ' . $e->getFile() . ':' . $e->getLine());
             return response()->json([
                 'status' => 'error',
@@ -176,10 +175,10 @@ class PelaporanController extends Controller
                         'is_wajib_pajak' => $is_wajib_pajak,
                         'pbbkb' => 'Rp. ' . number_format($order->pbbkb, 2, ',', '.'),
                         'pbbkb_sistem' => 'Rp. ' . number_format($order->pbbkb_sistem, 2, ',', '.'),
-                        'is_pbbkb_match' => $order->pbbkb == $order->pbbkb_sistem 
+                        'is_pbbkb_match' => $order->pbbkb == $order->pbbkb_sistem
                     ];
                 });
-            
+
             // JSON response
             return response()->json([
                 'draw' => intval($draw),
