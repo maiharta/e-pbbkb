@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Carbon\Carbon;
 use App\Models\Cuti;
+use App\Models\Invoice;
 use App\Models\Pelaporan;
 use App\Models\PengaturanSistem;
 
@@ -152,6 +153,25 @@ class CutiService
         });
 
         return $updatedCount;
+    }
+
+    public static function updateAllInvoices()
+    {
+        $invoices = Invoice::query()
+            ->where('is_paid', false)
+            ->where('payment_status', 'pending')
+            ->get();
+
+        $invoices->each(function (Invoice $invoice) {
+            // Update invoice based on pelaporan
+            $expires_at = CutiService::getDateAfterCuti(
+                $invoice->created_at->startOfMonth()->addMonth(),
+                10,
+            );
+
+            $invoice->expires_at = $expires_at;
+            $invoice->save();
+        });
     }
 
     /**

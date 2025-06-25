@@ -27,6 +27,11 @@ class InvoiceService
             'sptpd',
         ]);
 
+        $expires_at = CutiService::getDateAfterCuti(
+            now()->startOfMonth()->addMonth(),
+            10,
+        );
+
         $invoice = $pelaporan->invoices()->create([
             'customer_npwpd' => $pelaporan->user->userDetail->npwpd,
             'customer_name' => $pelaporan->user->name,
@@ -35,6 +40,7 @@ class InvoiceService
             'customer_address' => $pelaporan->user->userDetail->alamat,
             'month' => $pelaporan->bulan,
             'year' => $pelaporan->tahun,
+            'expires_at' => $expires_at,
             'description' => 'Periode ' . Carbon::create($pelaporan->tahun, $pelaporan->bulan)->translatedFormat('F Y'),
             'amount' => $pelaporan->sptpd->total_pbbkb + $pelaporan->denda->sum('denda') +
                 ($pelaporan->bunga->sum('bunga') * $pelaporan->sptpd->total_pbbkb),
@@ -86,7 +92,6 @@ class InvoiceService
                 'sipay_nomor_tagihan' => $sipay['detail_invoice'][0]['nomor_tagihan'],
                 'sipay_status_invoice' => $sipay['status_invoice'],
                 'sipay_status_bpd' => $sipay['status_bpd'],
-                'expires_at' => now()->addDays(3),
                 'sipay_invoice' => $sipay['no_invoice'],
                 'sipay_response' => $sipay,
             ]);

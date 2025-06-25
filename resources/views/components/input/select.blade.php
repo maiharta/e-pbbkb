@@ -10,16 +10,21 @@
     'disabled' => false,
     'readonly' => false,
     'options' => collect(),
+    'multiple' => false,
 ])
 
 
 <div class="form-group mb-3">
     <label class="col-form-label fw-bold"
            for="{{ $name }}">{{ $label }}</label>
-    <select class="form-select @error($name) is-invalid @enderror"
+    <select @if ($multiple) multiple @endif
+            class="form-select @error($name) is-invalid @enderror"
             id="{{ $name }}"
-            name="{{ $name }}">
-        <option value=""></option>
+            name="{{ $name }}{{ $multiple ? '[]' : '' }}">
+
+        @if (!$multiple)
+            <option value=""></option>
+        @endif
         @foreach ($options as $option)
             <option value="{{ $option['key'] }}">{{ $option['value'] }}</option>
         @endforeach

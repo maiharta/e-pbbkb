@@ -7,6 +7,7 @@ use App\Models\PengaturanSistem;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Models\Cuti;
 use App\Services\CutiService;
 use Illuminate\Support\Facades\Artisan;
 
@@ -41,6 +42,7 @@ class PengaturanSistemController extends Controller
             // update seluruh pelaporan when batas not same
             if ($old_values->where('key', 'batas_pembayaran')->first()->value != $request->batas_pembayaran || $old_values->where('key', 'batas_pelaporan')->first()->value != $request->batas_pelaporan) {
                 CutiService::updateAllPelaporan();
+                CutiService::updateAllInvoices();
             }
 
             if ($old_values->where('key',))
