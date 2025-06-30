@@ -32,18 +32,20 @@
 
 @push('scripts')
     <script>
-        flatpickr('#{{ $name }}', {
-            enableTime: false,
-            dateFormat: 'Y-m-d',
-            locale: 'id',
-            altInput: true,
-            altFormat: 'd F Y',
-            @if ($value)
-                defaultDate: '{{ $value }}',
-            @endif
-            @if ($settings)
-                {!! $settings !!}
-            @endif
+        $(document).ready(function() {
+            flatpickr('#{{ $name }}', {
+                enableTime: false,
+                dateFormat: 'Y-m-d',
+                locale: 'id',
+                altInput: true,
+                altFormat: 'd F Y',
+                @if ($value)
+                    defaultDate: '{{ $value }}',
+                @endif
+                @if ($settings)
+                    {!! $settings !!}
+                @endif
+            });
         });
     </script>
 @endpush

@@ -77,8 +77,8 @@
     {{-- dateragepicker --}}
     <script src="{{ asset('assets/vendors/daterangepicker/daterangepicker.min.js') }}"></script>
     {{-- flatpickr --}}
-    {{-- <script src="{{ asset('assets/vendors/flatpickr/flatpickr.min.js') }}"></script>
-    <script src="{{ asset('assets/vendors/flatpickr/id.js') }}"></script> --}}
+    <script src="{{ asset('assets/vendors/flatpickr/flatpickr.min.js') }}"></script>
+    <script src="{{ asset('assets/vendors/flatpickr/id.js') }}"></script>
     {{-- @yield('content') --}}
     @vite(['resources/js/app.js'])
     @stack('scripts')
