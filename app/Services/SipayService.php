@@ -193,6 +193,7 @@ class SipayService
                 'no_invoice' => $invoice->sipay_invoice,
                 'record_id' => $invoice->sipay_record_id,
                 'unit_id' => 25,
+                'keterangan' => 'Pembatalan invoice',
             ];
             $response = Http::withHeaders($this->getAuthHeaders())
                 ->post($this->baseUrl . '/transaction/cancel_invoice', $data);
