@@ -30,6 +30,8 @@ class DendaService
                 ->first();
 
             if(!$existingDendas) {
+                // cancel the invoice
+                InvoiceService::cancelAllInvoices($pelaporan);
                 Denda::create([
                     'pelaporan_id' => $pelaporan->id,
                     'waktu_denda' => $batas_pelaporan->copy()->addDay(),

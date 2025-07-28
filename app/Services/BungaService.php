@@ -6,6 +6,7 @@ use App\Models\Bunga;
 use App\Models\Pelaporan;
 use Illuminate\Support\Carbon;
 use App\Models\PengaturanSistem;
+use App\Services\InvoiceService;
 use App\Exceptions\ServiceException;
 
 class BungaService
@@ -38,6 +39,9 @@ class BungaService
 
             // If no bunga exists yet, create the first one
             if($existingBungas->isEmpty()) {
+                // cancel the invoice
+                InvoiceService::cancelAllInvoices($pelaporan);
+                // Create the first bunga record
                 Bunga::create([
                     'pelaporan_id' => $pelaporan->id,
                     'waktu_bunga' => $batas_pembayaran->copy()->addDay(),
@@ -63,6 +67,9 @@ class BungaService
             $processedMonthYear = $lastBungaDate->format('Y-m');
 
             while ($processedMonthYear < $currentMonthYear) {
+                // cancel the invoice
+                InvoiceService::cancelAllInvoices($pelaporan);
+
                 // Move to the next month
                 $nextMonthDate = $lastBungaDate->copy()->addMonth()->startOfMonth();
 

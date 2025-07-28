@@ -185,75 +185,41 @@ class SipayService
      * @param string $invoiceId
      * @return array|null
      */
-    // public function cancelInvoice(Invoice $invoice)
-    // {
-    //     try {
-    //         $response = Http::withHeaders($this->getAuthHeaders())
-    //             ->post($this->baseUrl . '/transaction/cancel_invoice', [
-    //                 'invoice_id' => $invoice->invoice_id,
-    //                 'secret_key' => config('services.sipay.secret_key'),
-    //             ]);
-    //         // Check if the response is valid
-    //         $body = json_decode($response->getBody(), true);
-    //         if ($response->getStatusCode() == 200 && isset($body['data'])) {
-    //             return $body['data'];
-    //         }
+    public function cancelInvoice(Invoice $invoice)
+    {
+        try {
+            $data['secret_key'] = $this->getSecretKey();
+            $data = [
+                'no_invoice' => $invoice->sipay_invoice,
+                'record_id' => $invoice->sipay_record_id,
+                'unit_id' => 25,
+            ];
+            $response = Http::withHeaders($this->getAuthHeaders())
+                ->post($this->baseUrl . '/transaction/cancel_invoice', $data);
+            // Check if the response is valid
+            $body = json_decode($response->getBody(), true);
+            if ($response->getStatusCode() == 200 && isset($body['data'])) {
+                return $body['data'];
+            }
 
-    //         Log::error('Sipay cancel invoice failed', [
-    //             'status' => $response->getStatusCode(),
-    //             'response' => $body,
-    //             'invoice_id' => $invoiceId,
-    //         ]);
+            Log::error('Sipay cancel invoice failed', [
+                'status' => $response->getStatusCode(),
+                'response' => $body,
+                'invoice_id' => $invoice->id,
+                'request_data' => $data,
+            ]);
 
-    //         return null;
-    //     } catch (RequestException $e) {
-    //         Log::error('Sipay cancel invoice exception', [
-    //             'message' => $e->getMessage(),
-    //             'invoice_id' => $invoiceId,
-    //         ]);
+            return null;
+        } catch (RequestException $e) {
+            Log::error('Sipay cancel invoice exception', [
+                'message' => $e->getMessage(),
+                'invoice_id' => $invoice->id,
+                'request_data' => $data,
+            ]);
 
-    //         return null;
-    //     }
-    // }
-
-    /**
-     * Check transaction status
-     *
-     * @param string $invoiceId
-     * @return array|null
-     */
-    // public function checkTransactionStatus($invoiceId)
-    // {
-    //     try {
-    //         $response = $this->client->get('/transaction/status', [
-    //             'headers' => $this->getAuthHeaders(),
-    //             'query' => [
-    //                 'invoice_id' => $invoiceId,
-    //             ],
-    //         ]);
-
-    //         $body = json_decode($response->getBody(), true);
-
-    //         if ($response->getStatusCode() == 200) {
-    //             return $body;
-    //         }
-
-    //         Log::error('Sipay check transaction status failed', [
-    //             'status' => $response->getStatusCode(),
-    //             'response' => $body,
-    //             'invoice_id' => $invoiceId,
-    //         ]);
-
-    //         return null;
-    //     } catch (RequestException $e) {
-    //         Log::error('Sipay check transaction status exception', [
-    //             'message' => $e->getMessage(),
-    //             'invoice_id' => $invoiceId,
-    //         ]);
-
-    //         return null;
-    //     }
-    // }
+            return null;
+        }
+    }
 
     /**
      * Clear token from cache (logout)

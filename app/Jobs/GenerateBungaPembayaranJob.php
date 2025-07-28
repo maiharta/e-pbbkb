@@ -2,11 +2,14 @@
 
 namespace App\Jobs;
 
+use App\Models\Pelaporan;
 use Illuminate\Bus\Queueable;
+use App\Services\BungaService;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 
 class GenerateBungaPembayaranJob implements ShouldQueue
 {
@@ -25,6 +28,18 @@ class GenerateBungaPembayaranJob implements ShouldQueue
      */
     public function handle(): void
     {
-        //
+        $pelaporans = Pelaporan::where('is_paid', false)
+            ->where('is_expired', false)
+            ->get();
+
+        $pelaporans->each(function ($pelaporan) {
+            try {
+                BungaService::generateBunga($pelaporan);
+            } catch (\Exception $e) {
+                Log::error('Failed to generate bunga for Pelaporan ID: ' . $pelaporan->id, [
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        });
     }
 }
