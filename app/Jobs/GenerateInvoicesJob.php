@@ -32,6 +32,7 @@ class GenerateInvoicesJob implements ShouldQueue
     {
         $pelaporans = Pelaporan::where('is_paid', false)
             ->where('is_expired', false)
+            ->whereNotNull('sptpd_approved_at')
             ->get();
 
         $pelaporans->each(function ($pelaporan) {
