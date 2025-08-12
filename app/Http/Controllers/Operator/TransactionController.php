@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Operator;
 
+use App\Models\Bunga;
+use App\Models\Invoice;
 use App\Models\Pelaporan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
-use App\Models\Invoice;
 
 class TransactionController extends Controller
 {
@@ -29,15 +31,42 @@ class TransactionController extends Controller
 
     public function showInvoice($ulid)
     {
-        $invoice = Invoice::whereHas('pelaporan', function ($query) use ($ulid) {
+        // $existingBungas = Bunga::where('pelaporan_id', $pelaporan->id)
+        //             ->orderBy('bunga_ke', 'desc')
+        //             ->get();
+        $invoice = Invoice::with(['pelaporan.bunga' => function ($query) use ($ulid) {
+            $query->orderBy('bunga_ke', 'desc');
+        }])
+            ->whereHas('pelaporan', function ($query) use ($ulid) {
             $query->where('user_id', auth()->user()->id);
         })
             ->where('ulid', $ulid)
             ->where('payment_status', 'pending')
             ->firstOrFail();
+
+        $lastBunga = $invoice->pelaporan->bunga->first();
+        $lastBungaDate = $lastBunga ? Carbon::parse($lastBunga->waktu_bunga) : $invoice->pelaporan->batas_pembayaran;
+        $invoice->next_due_date = $lastBungaDate->addMonthsNoOverflow(1);
+        //format the next_due_date to a string not including time in indonesian format
+        $invoice->next_due_date = $invoice->next_due_date->locale('id')->isoFormat('D MMMM YYYY');
         return response()->json([
             'success' => true,
-            'data' => $invoice
+            'data' => $invoice->only([
+                'ulid',
+                'invoice_number',
+                'customer_npwpd',
+                'customer_name',
+                'customer_email',
+                'customer_phone',
+                'amount',
+                'description',
+                'items.*',
+                'sipay_transaction_date',
+                'payment_status',
+                'sipay_invoice',
+                'sipay_virtual_account',
+                'next_due_date',
+            ]),
         ]);
     }
 }

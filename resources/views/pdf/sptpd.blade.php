@@ -80,7 +80,7 @@
                         <td>Yth:</td>
                     </tr>
                     <tr>
-                        <td>KELAPA BADAN PENDAPATAN DAERAH</td>
+                        <td>KEPALA BADAN PENDAPATAN DAERAH</td>
                     </tr>
                     <tr>
                         <td>PROVINSI BALI</td>
@@ -100,7 +100,7 @@
             <li>Harap diisi dalam rangap 2 (dua)</li>
             <li>Setelah diisi dan ditandatangani, harap diserahkan kembali kepada Badan Pendapatan Daerah Provinsi Bali,
                 paling lambat 10 (sepuluh) hari kerja bulan berikutnya (Self Assesment)</li>
-            <li>Apabila pembayaran dilakukan setelah jatuh tempo, dikenakan sanki administratif berupa bunga 1% per
+            <li>Apabila pembayaran dilakukan setelah jatuh tempo, dikenakan sanksi administratif berupa bunga 1% per
                 bulan
             </li>
         </ol>

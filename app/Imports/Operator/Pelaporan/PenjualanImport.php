@@ -36,7 +36,7 @@ class PenjualanImport implements ToCollection, WithHeadingRow, WithValidation, W
         DB::beginTransaction();
         foreach ($collection as $row) {
             $tanggal_carbon = is_string($row['tanggal_penjualan']) ? Carbon::parse($row['tanggal_penjualan']) : Carbon::instance(Date::excelToDateTimeObject($row['tanggal_penjualan']));
-            if ((int) $tanggal_carbon->format('m') != $this->pelaporan->bulan) {
+            if (((int) $tanggal_carbon->format('m') != $this->pelaporan->bulan) || ((int) $tanggal_carbon->format('Y') != $this->pelaporan->tahun)) {
                 DB::rollBack();
                 return redirect()->back()->with('error', 'Terdapat data pelaporan dengan bulan berbeda dengan bulan pelaporan pada file excel');
             }

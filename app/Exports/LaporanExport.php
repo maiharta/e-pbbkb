@@ -33,13 +33,17 @@ class LaporanExport implements FromView, ShouldAutoSize
 
         $data = Pelaporan::with([
             'pembelian',
-            'penjualan',
+            'penjualan' => function ($query) {
+                if (!empty($this->kabupaten_ids)) {
+                    $query->whereIn('kabupaten_id', $this->kabupaten_ids);
+                }
+            },
             'user',
             'denda',
             'bunga',
             'sptpd'
         ])
-        ->where('is_paid', true);
+            ->where('is_paid', true);
 
         // Apply date filtering logic
         if ($this->periode_awal) {
@@ -53,7 +57,7 @@ class LaporanExport implements FromView, ShouldAutoSize
                 // Filter between periode_awal and periode_akhir
                 $data->where(function ($query) use ($startMonth, $startYear, $endMonth, $endYear) {
                     $query->whereBetween('tahun', [$startYear, $endYear])
-                        ->orWhere(function ($query) use ($startYear, $startMonth, $endYear, $endMonth) {
+                        ->where(function ($query) use ($startYear, $startMonth, $endYear, $endMonth) {
                             // For same year, filter by month
                             if ($startYear == $endYear) {
                                 $query->where('tahun', $startYear)
@@ -107,10 +111,6 @@ class LaporanExport implements FromView, ShouldAutoSize
                         });
                 });
             }
-        }
-
-        if (!empty($this->kabupaten_ids)) {
-            $data->whereIn('kabupaten_id', $this->kabupaten_ids);
         }
 
         $this->data = $data->get()
@@ -214,7 +214,7 @@ class LaporanExport implements FromView, ShouldAutoSize
 
                             // Calculate total sanksi for this pelaporan
                             $totalSanksi = $pelaporan->denda->sum('denda') +
-                                ($pelaporan->bunga->sum('bunga') * ($pelaporan->sptpd ? $pelaporan->sptpd->total_pbbkb : 0));
+                                $pelaporan->bunga->sum('bunga');
 
                             // Calculate total PBBKB for this pelaporan
                             $totalPbbkb = $pelaporan->sptpd ? $pelaporan->sptpd->total_pbbkb : 0;
@@ -274,8 +274,8 @@ class LaporanExport implements FromView, ShouldAutoSize
                         }),
                 ];
             });
-            // })
-            // ->dd();
+        // })
+        // ->dd();
         // Removed the ->dd() to allow export to proceed
     }
 

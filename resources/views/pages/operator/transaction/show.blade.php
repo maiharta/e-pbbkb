@@ -159,11 +159,17 @@
                                                 </button>
                                             </div>
                                         </div>
-                                        <p class="mb-0">
+                                        <p class="mb-3">
                                             <span class="text-muted">Bank:</span>
                                             <span class="fw-bold"
                                                   id="invoice-bank">Bank Pembangunan Daerah Bali</span>
                                         </p>
+                                        <button class="btn btn-info btn-sm w-100"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#paymentInstructionsModal">
+                                            <i class="bi bi-info-circle me-2"></i>
+                                            Tata Cara Pembayaran
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -234,6 +240,201 @@
             </div>
         </div>
     </div>
+
+    <!-- Payment Instructions Modal -->
+    <div aria-hidden="true"
+         aria-labelledby="paymentInstructionsModalLabel"
+         class="modal fade"
+         id="paymentInstructionsModal"
+         tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title text-white" id="paymentInstructionsModalLabel">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Tata Cara Pembayaran E-PBBKB Provinsi Bali
+                    </h5>
+                    <button aria-label="Close"
+                            class="btn-close btn-close-white"
+                            data-bs-dismiss="modal"
+                            type="button"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <!-- Virtual Account Format -->
+                    <div class="card mb-2">
+                        <div class="card-header bg-info text-white">
+                            <h6 class="mb-0 fw-bold">
+                                <i class="bi bi-credit-card me-2"></i>
+                                FORMAT VIRTUAL ACCOUNT E-PBBKB PROVINSI BALI
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row align-items-center py-2">
+                                <div class="col-md-6">
+                                    <p class="mb-2"><strong>Format:</strong> 129 + 5325 + Nomor ID/TAGIHAN</p>
+                                    <p class="mb-0"><strong>Nomor ID/TAGIHAN:</strong> <span id="sample-invoice-id" class="fw-bold text-primary"></span></p>
+                                </div>
+                                {{-- <div class="col-md-6">
+                                    <div class="bg-light p-3 rounded text-center">
+                                        <small class="text-muted d-block">Virtual Account Anda:</small>
+                                        <span class="fs-4 fw-bold text-primary" id="full-va-example"></span>
+                                    </div>
+                                </div> --}}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Methods with Accordion/Collapse -->
+                    <div class="accordion" id="paymentMethodsAccordion">
+                        <!-- Method A -->
+                        <div class="accordion-item mb-3">
+                            <h2 class="accordion-header" id="headingMethodA">
+                                <button class="accordion-button collapsed bg-success text-white fw-bold"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#collapseMethodA"
+                                        aria-expanded="false"
+                                        aria-controls="collapseMethodA">
+                                    A. MOBILE / INTERNET BANKING BANK BPD BALI
+                                </button>
+                            </h2>
+                            <div id="collapseMethodA"
+                                 class="accordion-collapse collapse"
+                                 aria-labelledby="headingMethodA"
+                                 data-bs-parent="#paymentMethodsAccordion">
+                                <div class="accordion-body">
+                                    <ol class="list-unstyled">
+                                        <li class="mb-2"><span class="badge bg-success me-2">1</span>Masukkan username dan password / PIN pada aplikasi Mobile / Internet Banking.</li>
+                                        <li class="mb-2"><span class="badge bg-success me-2">2</span>Pilih menu <strong>"Pembayaran"</strong></li>
+                                        <li class="mb-2"><span class="badge bg-success me-2">3</span>Pilih <strong>"Pembayaran Retribusi"</strong></li>
+                                        <li class="mb-2"><span class="badge bg-success me-2">4</span>Pilih Input Nomor ID lalu Pilih <strong>"Retribusi OPD Pemprov Bali"</strong></li>
+                                        <li class="mb-2"><span class="badge bg-success me-2">5</span>Input Nomor ID/tagihan <strong><span class="sample-id"></span></strong></li>
+                                        <li class="mb-2"><span class="badge bg-success me-2">6</span>Input PIN untuk melanjutkan transaksi.</li>
+                                        <li class="mb-0"><span class="badge bg-success me-2">7</span>Selesai.</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Method B -->
+                        <div class="accordion-item mb-3">
+                            <h2 class="accordion-header" id="headingMethodB">
+                                <button class="accordion-button collapsed bg-success text-white fw-bold"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#collapseMethodB"
+                                        aria-expanded="false"
+                                        aria-controls="collapseMethodB">
+                                    B. PEMBAYARAN DARI ATM BERSAMA
+                                </button>
+                            </h2>
+                            <div id="collapseMethodB"
+                                 class="accordion-collapse collapse"
+                                 aria-labelledby="headingMethodB"
+                                 data-bs-parent="#paymentMethodsAccordion">
+                                <div class="accordion-body">
+                                    <ol class="list-unstyled">
+                                        <li class="mb-2"><span class="badge bg-success me-2">1</span>Pilih Bahasa</li>
+                                        <li class="mb-2"><span class="badge bg-success me-2">2</span>Masukkan PIN</li>
+                                        <li class="mb-2"><span class="badge bg-success me-2">3</span>Pilih <strong>"Transaksi Lainnya"</strong></li>
+                                        <li class="mb-2"><span class="badge bg-success me-2">4</span>Pilih <strong>"Transfer"</strong></li>
+                                        <li class="mb-2"><span class="badge bg-success me-2">5</span>Pilih <strong>"Ke Rekening Bank Lain"</strong></li>
+                                        <li class="mb-2"><span class="badge bg-success me-2">6</span>Masukkan nomor rekening tujuan <strong><span class="full-va"></span></strong> (No Virtual Account), lalu tekan "Benar/Lanjut"</li>
+                                        <li class="mb-2"><span class="badge bg-success me-2">7</span>Input nominal yang ingin ditransfer sesuai tagihan yang ingin dibayar, lalu tekan "Benar/Lanjut".</li>
+                                        <li class="mb-2"><span class="badge bg-success me-2">8</span>Silakan isi atau kosongkan nomor referensi transfer kemudian tekan "Benar"</li>
+                                        <li class="mb-2"><span class="badge bg-success me-2">9</span>Muncul Layar Konfirmasi Transfer yang berisi nomor rekening tujuan bank beserta jumlah yang dibayar.</li>
+                                        <li class="mb-2"><span class="badge bg-success me-2">10</span>Jika sudah benar, Tekan "Benar".</li>
+                                        <li class="mb-0"><span class="badge bg-success me-2">11</span>Selesai</li>
+                                    </ol>
+                                    <div class="alert alert-info mt-3">
+                                        <small><strong>Note:</strong> Tata cara tiap bank mungkin ada sedikit berbeda namun secara gambaran umum sama seperti penjelasan diatas.</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Method C -->
+                        <div class="accordion-item mb-3">
+                            <h2 class="accordion-header" id="headingMethodC">
+                                <button class="accordion-button collapsed bg-success text-white fw-bold"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#collapseMethodC"
+                                        aria-expanded="false"
+                                        aria-controls="collapseMethodC">
+                                    C. PEMBAYARAN DARI KLIRING BANK LAIN
+                                </button>
+                            </h2>
+                            <div id="collapseMethodC"
+                                 class="accordion-collapse collapse"
+                                 aria-labelledby="headingMethodC"
+                                 data-bs-parent="#paymentMethodsAccordion">
+                                <div class="accordion-body">
+                                    <ol class="list-unstyled">
+                                        <li class="mb-2"><span class="badge bg-success me-2">1</span>Pilih <strong>"Bank BPD Bali"</strong> sebagai bank tujuan.</li>
+                                        <li class="mb-2"><span class="badge bg-success me-2">2</span>Masukkan nomor rekening tujuan <strong><span class="full-va"></span></strong> (No Virtual Account).</li>
+                                        <li class="mb-2"><span class="badge bg-success me-2">3</span>Input nominal yang ingin ditransfer sesuai tagihan yang ingin dibayar. Mohon dipastikan nominal yang akan ditransfer sama dengan jumlah tagihan yang harus dibayar agar proses bisa berjalan sukses.</li>
+                                        <li class="mb-2"><span class="badge bg-success me-2">4</span>Lanjutkan transaksi.</li>
+                                        <li class="mb-0"><span class="badge bg-success me-2">5</span>Selesai</li>
+                                    </ol>
+                                    <div class="alert alert-info mt-3">
+                                        <small><strong>Note:</strong> Tata cara tiap bank mungkin ada sedikit berbeda namun secara gambaran umum sama seperti penjelasan diatas.</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Method D -->
+                        <div class="accordion-item mb-3">
+                            <h2 class="accordion-header" id="headingMethodD">
+                                <button class="accordion-button collapsed bg-success text-white fw-bold"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#collapseMethodD"
+                                        aria-expanded="false"
+                                        aria-controls="collapseMethodD">
+                                    D. MOBILE / INTERNET BANKING BANK LAIN
+                                </button>
+                            </h2>
+                            <div id="collapseMethodD"
+                                 class="accordion-collapse collapse"
+                                 aria-labelledby="headingMethodD"
+                                 data-bs-parent="#paymentMethodsAccordion">
+                                <div class="accordion-body">
+                                    <ol class="list-unstyled">
+                                        <li class="mb-2"><span class="badge bg-success me-2">1</span>Login pada aplikasi Mobile / Internet Banking Anda</li>
+                                        <li class="mb-2"><span class="badge bg-success me-2">2</span>Pilih menu <strong>"Transfer"</strong></li>
+                                        <li class="mb-2"><span class="badge bg-success me-2">3</span>Pilih menu <strong>"Transfer Antar Bank"</strong></li>
+                                        <li class="mb-2"><span class="badge bg-success me-2">4</span>Pilih menu <strong>"Transfer Online Antar Bank (Biaya Rp 6.500,-)"</strong> bukan BIFAST</li>
+                                        <li class="mb-2"><span class="badge bg-success me-2">5</span>Pilih bank tujuan <strong>"Bank BPD Bali"</strong></li>
+                                        <li class="mb-2"><span class="badge bg-success me-2">6</span>Masukkan nomor rekening tujuan <strong><span class="shortened-va"></span></strong> (No Virtual Account).</li>
+                                        <li class="mb-2"><span class="badge bg-success me-2">7</span>Input nominal yang ingin ditransfer sesuai tagihan yang ingin dibayar, lalu tekan "Benar"</li>
+                                        <li class="mb-2"><span class="badge bg-success me-2">8</span>Muncul Layar Konfirmasi Transfer yang berisi nomor rekening tujuan bank beserta jumlah yang dibayar</li>
+                                        <li class="mb-2"><span class="badge bg-success me-2">9</span>Masukkan Password atau PIN</li>
+                                        <li class="mb-0"><span class="badge bg-success me-2">10</span>Selesai</li>
+                                    </ol>
+                                    <div class="alert alert-info mt-3">
+                                        <small><strong>Note:</strong> Tata cara tiap bank mungkin ada sedikit berbeda namun secara gambaran umum sama seperti penjelasan diatas.</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer with Back Button -->
+                    <div class="d-flex justify-content-between align-items-center mt-4 pt-4 border-top">
+                        <button type="button"
+                                class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal"
+                                onclick="showInvoiceDetail()">
+                            <i class="bi bi-arrow-left me-2"></i>
+                            Kembali ke Detail Invoice
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
@@ -266,7 +467,7 @@
                             $('#invoice-status').html(getStatusBadge(invoice.payment_status));
                             $('#invoice-created').text(formatDate(invoice
                                 .sipay_transaction_date));
-                            $('#invoice-expires').text(formatDate(invoice.sipay_expired_date));
+                            $('#invoice-expires').text(invoice.next_due_date);
                             $('#invoice-va').text(invoice.sipay_virtual_account ||
                                 'Belum tersedia');
                             $('#invoice-description').text(invoice.description ||
@@ -282,6 +483,9 @@
                             $('#paymentInstructionsBtn').attr('href',
                                 `/operator/transactions/${invoice.pelaporan_id}/invoice/${invoice.id}/payment-instructions`
                             );
+
+                            // Populate payment instructions modal
+                            populatePaymentInstructions(invoice);
 
                             // Show content
                             $('#loadingSpinner').addClass('d-none');
@@ -326,6 +530,21 @@
                     default:
                         return '<span class="badge bg-secondary">Tidak Diketahui</span>';
                 }
+            }
+
+            function populatePaymentInstructions(invoice) {
+                const invoiceId = invoice.sipay_invoice || '-';
+                const fullVA = `1295325${invoice.sipay_invoice || invoiceId}`;
+                const shortenedVA = `5325${invoice.sipay_invoice || invoiceId}`;
+
+                // Populate invoice ID examples
+                $('#sample-invoice-id').text(invoiceId);
+                $('#full-va-example').text(fullVA);
+
+                // Populate all VA references in payment instructions
+                $('.sample-id').text(invoiceId);
+                $('.full-va').text(fullVA);
+                $('.shortened-va').text(shortenedVA);
             }
         });
 
@@ -395,6 +614,20 @@
                 copyBtn.classList.remove('btn-success');
                 copyBtn.classList.add('btn-outline-primary');
             }, 2000);
+        }
+
+        function showInvoiceDetail() {
+            // Close payment instructions modal and show invoice detail modal
+            const paymentModal = bootstrap.Modal.getInstance(document.getElementById('paymentInstructionsModal'));
+            if (paymentModal) {
+                paymentModal.hide();
+            }
+
+            // Show invoice detail modal after a brief delay to ensure smooth transition
+            setTimeout(() => {
+                const invoiceModal = new bootstrap.Modal(document.getElementById('invoiceDetailModal'));
+                invoiceModal.show();
+            }, 300);
         }
     </script>
 @endpush

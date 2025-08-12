@@ -70,11 +70,13 @@ class BungaService
                 // cancel the invoice
                 InvoiceService::cancelAllInvoices($pelaporan);
 
-                // Move to the next month
-                $nextMonthDate = $lastBungaDate->copy()->addMonth()->startOfMonth();
+                // // Move to the next month
+                // $nextMonthDate = $lastBungaDate->copy()->addMonth()->startOfMonth();
 
-                // Calculate the bunga date using CutiService to get 10 working days from the start of month
-                $nextBungaDate = CutiService::getDateAfterCuti($nextMonthDate, 10);
+                // // Calculate the bunga date using CutiService to get 10 working days from the start of month
+                // $nextBungaDate = CutiService::getDateAfterCuti($nextMonthDate, 10);
+
+                $nextBungaDate = $lastBungaDate->copy()->addMonthsNoOverflow(1);
 
                 // If the calculated bunga date is in the future, break the loop
                 if ($nextBungaDate->isAfter($now)) {
