@@ -188,8 +188,8 @@ class SipayService
     public function cancelInvoice(Invoice $invoice)
     {
         try {
-            $data['secret_key'] = $this->getSecretKey();
             $data = [
+                'secret_key' => $this->getSecretKey(),
                 'no_invoice' => $invoice->sipay_invoice,
                 'record_id' => $invoice->sipay_record_id,
                 'unit_id' => 25,
