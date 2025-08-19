@@ -44,9 +44,7 @@ class TransactionController extends Controller
             ->where('payment_status', 'pending')
             ->firstOrFail();
 
-        $lastBunga = $invoice->pelaporan->bunga->first();
-        $lastBungaDate = $lastBunga ? Carbon::parse($lastBunga->waktu_bunga) : $invoice->pelaporan->batas_pembayaran;
-        $invoice->next_due_date = $lastBungaDate->addMonthsNoOverflow(1);
+        $invoice->next_due_date = $invoice->expires_at;
         //format the next_due_date to a string not including time in indonesian format
         $invoice->next_due_date = $invoice->next_due_date->locale('id')->isoFormat('D MMMM YYYY');
         return response()->json([
