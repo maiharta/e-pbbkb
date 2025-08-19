@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Services\NumberGeneratorService;
 use App\Services\PdfService;
+use App\Services\InvoiceService;
 
 class SptpdController extends Controller
 {
@@ -122,6 +123,7 @@ class SptpdController extends Controller
                 'tanggal' => now()->format('Y-m-d'),
                 'total_pbbkb' => $pelaporan->penjualan->sum('pbbkb_sistem')
             ]);
+            InvoiceService::generateInvoice($pelaporan);
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();

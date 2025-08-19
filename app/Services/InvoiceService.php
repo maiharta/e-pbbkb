@@ -58,7 +58,12 @@ class InvoiceService
             $existingInvoice = $pelaporan->invoices()->where('payment_status', 'pending')->first();
 
             if ($existingInvoice) {
-                return $existingInvoice;
+                // check expires at
+                if (now()->greaterThan($existingInvoice->expires_at)) {
+                    $existingInvoice->update(['payment_status' => 'expired']);
+                }else{
+                    return $existingInvoice;
+                }
             }
 
             $pelaporan->load([
@@ -67,10 +72,14 @@ class InvoiceService
                 'sptpd',
             ]);
 
-            $expires_at = CutiService::getDateAfterCuti(
-                now()->startOfMonth()->addMonth(),
-                10,
-            );
+            if(now()->lessThan($pelaporan->batas_pembayaran)) {
+                $expires_at = $pelaporan->batas_pembayaran;
+            }else{
+                $expires_at = CutiService::getDateAfterCuti(
+                    now()->startOfMonth()->addMonth(),
+                    10,
+                );
+            }
 
             $invoice = $pelaporan->invoices()->create([
                 'customer_npwpd' => $pelaporan->user->userDetail->npwpd,
