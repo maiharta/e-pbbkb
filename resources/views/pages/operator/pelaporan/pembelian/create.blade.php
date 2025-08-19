@@ -97,7 +97,7 @@
                                    type="text"
                                    value="{{ old('nomor_kuitansi') }}">
                         </div>
-                        <div class="form-group mb-3">
+                        {{-- <div class="form-group mb-3">
                             <label class="col-form-label fw-bold"
                                    for="tanggal">Tanggal Pembelian</label>
                             <input class="form-control"
@@ -106,7 +106,12 @@
                                    placeholder="Pilih Tanggal Referensi Pembayaran"
                                    required
                                    type="text">
-                        </div>
+                        </div> --}}
+                        <x-input.date label="Tanggal Penjualan"
+                                      name="tanggal"
+                                      placeholder="Masukkan tanggal penjualan"
+                                      settings="minDate: moment().set('month', {{ $pelaporan->bulan }} - 1).startOf('month').format('YYYY-MM-DD'),maxDate: moment().set('month', {{ $pelaporan->bulan }} - 1).endOf('month').format('YYYY-MM-DD'),"
+                                      value="{{ old('tanggal') }}" />
                         <button class="btn btn-primary d-block w-100">Tambah</button>
                     </form>
                 </div>
@@ -135,19 +140,6 @@
             digitGroupSeparator: '.',
             decimalPlaces: 0,
             unformatOnSubmit: true,
-        });
-
-        flatpickr('#tanggal', {
-            enableTime: false,
-            dateFormat: 'Y-m-d',
-            locale: 'id',
-            altInput: true,
-            altFormat: 'd F Y',
-            @if (old('tanggal'))
-                defaultDate: '{{ old('tanggal') }}',
-            @endif
-            minDate: moment().set('month', {{ $pelaporan->bulan }} - 1).startOf('bulan').format("YYYY-MM-DD"),
-            maxDate: moment().set('month', {{ $pelaporan->bulan }} - 1).endOf('month').format("YYYY-MM-DD"),
         });
 
         @if (old('jenis_bbm_id'))
