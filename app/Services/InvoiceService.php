@@ -75,10 +75,8 @@ class InvoiceService
             if(now()->lessThan($pelaporan->batas_pembayaran)) {
                 $expires_at = $pelaporan->batas_pembayaran;
             }else{
-                $expires_at = CutiService::getDateAfterCuti(
-                    now()->startOfMonth()->addMonth(),
-                    10,
-                );
+                $monthDiffBetweenBatasPembayaran = $pelaporan->batas_pembayaran->diffInMonths(now());
+                $expires_at = $pelaporan->batas_pembayaran->copy()->addMonthsNoOverflow($monthDiffBetweenBatasPembayaran);
             }
 
             $invoice = $pelaporan->invoices()->create([
