@@ -19,6 +19,7 @@ class InvoiceService
             $pelaporan->invoices()->where('payment_status', '!=', 'paid')->each(function ($invoice) use ($sipayService) {
                 // Cancel the invoice in Sipay
                 $sipayService->cancelInvoice($invoice);
+                $invoice->update(['payment_status' => 'expired']);
             });
         } catch (Exception $e) {
             Log::error('Failed to cancel invoices for Pelaporan', [
@@ -35,8 +36,8 @@ class InvoiceService
             $sipayService = new SipayService();
             // Cancel the invoice in Sipay
             $sipayService->cancelInvoice($invoice);
-            // Update the invoice status to cancelled
-            $invoice->update(['payment_status' => 'cancelled']);
+            // Update the invoice status to expired
+            $invoice->update(['payment_status' => 'expired']);
         } catch (Exception $e) {
             Log::error('Failed to cancel invoice', [
                 'invoice_id' => $invoice->id,
