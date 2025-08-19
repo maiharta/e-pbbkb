@@ -107,9 +107,9 @@
                                    required
                                    type="text">
                         </div> --}}
-                        <x-input.date label="Tanggal Penjualan"
+                        <x-input.date label="Tanggal Pembelian"
                                       name="tanggal"
-                                      placeholder="Masukkan tanggal penjualan"
+                                      placeholder="Masukkan tanggal referensi pembayaran"
                                       settings="minDate: moment().set('month', {{ $pelaporan->bulan }} - 1).startOf('month').format('YYYY-MM-DD'),maxDate: moment().set('month', {{ $pelaporan->bulan }} - 1).endOf('month').format('YYYY-MM-DD'),"
                                       value="{{ old('tanggal') }}" />
                         <button class="btn btn-primary d-block w-100">Tambah</button>
