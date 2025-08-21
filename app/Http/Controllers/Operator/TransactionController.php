@@ -45,6 +45,7 @@ class TransactionController extends Controller
             ->firstOrFail();
 
         $invoice->next_due_date = $invoice->expires_at;
+        $invoice->sipay_transaction_date = Carbon::parse($invoice->sipay_transaction_date)->setTimezone('GMT+8');
         //format the next_due_date to a string not including time in indonesian format
         $invoice->next_due_date = $invoice->next_due_date->locale('id')->isoFormat('D MMMM YYYY');
         return response()->json([
