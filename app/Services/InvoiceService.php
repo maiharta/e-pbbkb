@@ -79,8 +79,7 @@ class InvoiceService
                 $expires_at = $pelaporan->batas_pembayaran;
             }else{
                 $monthDiffBetweenBatasPembayaran = $pelaporan->batas_pembayaran->diffInMonths(now());
-                $monthDiff = $monthDiffBetweenBatasPembayaran == 0 ? 1 : $monthDiffBetweenBatasPembayaran;
-                $expires_at = $pelaporan->batas_pembayaran->copy()->addMonthsNoOverflow($monthDiff);
+                $expires_at = $pelaporan->batas_pembayaran->copy()->addMonthsNoOverflow($monthDiffBetweenBatasPembayaran+1);
             }
 
             $invoice = $pelaporan->invoices()->create([
