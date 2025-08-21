@@ -36,9 +36,9 @@ class SipayService
     public function login()
     {
         // Check if we have a cached token
-        if (Cache::has($this->tokenCacheKey)) {
-            return decrypt(Cache::get($this->tokenCacheKey));
-        }
+        // if (Cache::has($this->tokenCacheKey)) {
+        //     return decrypt(Cache::get($this->tokenCacheKey));
+        // }
 
         try {
             $response = Http::withHeaders([
