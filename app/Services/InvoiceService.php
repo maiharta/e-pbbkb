@@ -59,7 +59,7 @@ class InvoiceService
 
             if ($existingInvoice) {
                 // check expires at
-                if (now()->greaterThan($existingInvoice->expires_at)) {
+                if (now()->greaterThanOrEqualTo($existingInvoice->expires_at)) {
                     $sipayService = new SipayService();
                     // Cancel the invoice in Sipay
                     $sipayService->cancelInvoice($existingInvoice);
