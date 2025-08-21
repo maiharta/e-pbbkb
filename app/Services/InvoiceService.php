@@ -75,7 +75,7 @@ class InvoiceService
                 'sptpd',
             ]);
 
-            if(now()->lessThan($pelaporan->batas_pembayaran)) {
+            if(now()->lessThan($pelaporan->batas_pembayaran) && !$pelaporan->invoices()->exists()) {
                 $expires_at = $pelaporan->batas_pembayaran;
             }else{
                 $monthDiffBetweenBatasPembayaran = $pelaporan->batas_pembayaran->diffInMonths(now());
