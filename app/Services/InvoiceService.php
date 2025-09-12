@@ -5,6 +5,7 @@ namespace App\Services;
 use Exception;
 use App\Models\Invoice;
 use App\Models\Pelaporan;
+use App\Services\BungaService;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use App\Exceptions\ServiceException;
@@ -75,11 +76,12 @@ class InvoiceService
                 'sptpd',
             ]);
 
-            if(now()->lessThan($pelaporan->batas_pembayaran)) {
+            if(now()->lessThan($pelaporan->batas_pembayaran)){
+                // if before batas pembayaran, cancel all existing invoices
                 $expires_at = $pelaporan->batas_pembayaran;
             }else{
-                $monthDiffBetweenBatasPembayaran = $pelaporan->batas_pembayaran->diffInMonths(now());
-                $expires_at = $pelaporan->batas_pembayaran->copy()->addMonthsNoOverflow($monthDiffBetweenBatasPembayaran+1);
+                // Set invoice expiration to align with next recurring bunga date
+                $expires_at = BungaService::getNextRecurringBungaDate($pelaporan);
             }
 
             $invoice = $pelaporan->invoices()->create([
