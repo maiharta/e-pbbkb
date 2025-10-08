@@ -3,7 +3,7 @@
         <div class="d-flex justify-content-evenly align-items-center">
             <div class="logo">
                 <a href="#">
-                    <img src="{{ asset('assets/images/logo.png') }}">
+                    <img src="{{ asset('assets/images/logo.png') }}" width="250px">
                 </a>
             </div>
         </div>
