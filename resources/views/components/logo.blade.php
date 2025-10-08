@@ -13,6 +13,6 @@
         </div>
     @endif
     </div>
-    <img src="{{ asset('assets/images/logo.svg') }}" alt="logo" width="{{ $width }}">
+    <img src="{{ asset('assets/images/logo.png') }}" alt="logo" width="{{ $width }}">
 </div>
 
