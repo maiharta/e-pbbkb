@@ -121,7 +121,7 @@
                                                for="berkas">Berkas</label>
                                         @if ($user_detail)
                                             <a class="d-block text-decoration-underline mb-2"
-                                               href="{{ route('download-file', ['uid' => auth()->user()->ulid, 'type' => 'profile_syarat']) }}"
+                                               href="{{ route('download', ['uid' => auth()->user()->ulid, 'type' => 'profile_syarat']) }}"
                                                target="_blank">Lihat berkas sebelumnya</a>
                                         @endif
                                         @if (!$is_user_readonly)
