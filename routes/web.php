@@ -208,6 +208,9 @@ Route::middleware(['auth'])->group(function () {
         });
     });
 
+    // Download File
+    Route::get('/download', [App\Http\Controllers\DownloadFileController::class, 'download'])->name('download');
+
 
     // Profile
     Route::prefix('profile')->name('profile.')->group(function () {
