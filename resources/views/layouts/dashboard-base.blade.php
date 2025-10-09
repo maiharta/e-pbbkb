@@ -84,6 +84,45 @@
     @stack('scripts')
     @include('components.toastr')
 
+    {{-- Prevent back navigation after logout --}}
+    <script>
+        // Disable back button functionality
+        window.addEventListener('load', function() {
+            // Push a new state to prevent back navigation
+            window.history.pushState(null, null, window.location.href);
+            
+            // Listen for popstate event (back button)
+            window.onpopstate = function() {
+                // Push state again to prevent going back
+                window.history.pushState(null, null, window.location.href);
+            };
+        });
+
+        // Additional security: Clear browser cache on page unload
+        window.addEventListener('beforeunload', function() {
+            // Clear any sensitive data from memory
+            if (typeof(Storage) !== "undefined") {
+                sessionStorage.clear();
+            }
+        });
+
+        // Prevent right-click context menu (optional security measure)
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        // Prevent common keyboard shortcuts for developer tools (optional)
+        document.addEventListener('keydown', function(e) {
+            // Disable F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
+            if (e.keyCode === 123 || 
+                (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) ||
+                (e.ctrlKey && e.keyCode === 85)) {
+                e.preventDefault();
+                return false;
+            }
+        });
+    </script>
+
 </body>
 
 </html>

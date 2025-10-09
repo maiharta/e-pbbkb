@@ -68,7 +68,7 @@ Route::middleware(['guest'])->group(function () {
 
 
 // auth
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'prevent_back_history'])->group(function () {
     // Dashboard
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/api/dashboard/stats', [App\Http\Controllers\DashboardController::class, 'getStats']);

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kabupaten;
+use App\Rules\SafePdfRule;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -30,7 +31,7 @@ class ProfileController extends Controller
             'npwpd' => 'required',
             'nomor_telepon' => 'required',
             'alamat' => 'required',
-            'berkas' => 'required|max:2048',
+            'berkas' => ['required', 'max:2048', 'mimes:pdf', new SafePdfRule()],
         ],[
             'max' => 'Berkas yang diunggah tidak boleh lebih dari 2MB'
         ])->validate();
