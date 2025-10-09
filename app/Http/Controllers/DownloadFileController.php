@@ -25,13 +25,15 @@ class DownloadFileController extends Controller
                 $user = User::where('ulid', $request->uid)->firstOrFail();
                 $file = $user->userDetail->filepath_berkas_persyaratan;
 
-                if (!file_exists(storage_path($file))) {
-                    return response()->json(['message' => 'File not found'], 404);
+                $fullPath = storage_path('app/public/' . $file);
+
+                if (!file_exists($fullPath)) {
+                    return abort(404);
                 }
-                if(request()->user()->isAdmin() || request()->user()->id === $user->id){
-                    return response()->download(storage_path($file));
-                }else{
-                    return response()->json(['message' => 'Unauthorized'], 403);
+                if (request()->user()->isAdmin() || request()->user()->id === $user->id) {
+                    return response()->download($fullPath);
+                } else {
+                    return abort(403);
                 }
             default:
                 return response()->json(['message' => 'Invalid type'], 400);
