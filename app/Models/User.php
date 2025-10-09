@@ -91,4 +91,14 @@ class User extends Authenticatable
     {
         return $this->hasRole('operator');
     }
+
+    public function isAdmin()
+    {
+        return $this->hasRole('administrator');
+    }
+
+    public function isOperator()
+    {
+        return $this->hasRole('operator');
+    }
 }
