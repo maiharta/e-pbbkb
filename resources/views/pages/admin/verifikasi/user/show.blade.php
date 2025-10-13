@@ -54,7 +54,7 @@
                             <td class="pb-1 pe-4">File Berkas Persyaratan</td>
                             <th>:
                                 <a class="text-decoration-underline"
-                                   href="{{ Storage::url($user->userDetail->filepath_berkas_persyaratan) }}"
+                                   href="{{ route('download', ['uid' => $user->ulid, 'type' => 'profile_syarat']) }}"
                                    target="_blank">Lihat Berkas</a>
                             </th>
                         </tr>
