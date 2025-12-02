@@ -16,11 +16,18 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
     {{-- VENDORS --}}
     <link rel="stylesheet" href="{{ asset('assets/vendors/iconsax/style.css') }}">
+    {{-- favicon --}}
+    <link rel="icon" href="{{ asset('assets/images/favicon.png') }}" type="image/png">
+    {{-- custom css --}}
     @stack('styles')
-    @vite(['resources/scss/auth/style.scss'])
+    @vite(['resources/scss/auth/style.scss','resources/scss/app.scss'])
+    {!! ReCaptcha::htmlScriptTagJsApi() !!}
 </head>
 
 <body>
+    <div class="loader-container">
+        <div class="loader"></div>
+    </div>
     {{-- left 40%, right is bg with 60%, height 100vh --}}
     <div class="container-fluid h-100 px-0">
         <div class="row align-items-center justify-content-center h-100 h-md-auto">
@@ -36,8 +43,9 @@
     </script>
     {{-- Jquery --}}
     <script src="{{ asset('assets/js/jquery-3.4.1.min.js') }}"></script>
-    <script src="{{ asset('assets/vendors/sweetalert2/sweetalert2@11.js') }}"></script>
-    <script src="{{ asset('assets/js/toastr.min.js') }}"></script>
+    {{-- <script src="{{ asset('assets/vendors/sweetalert2/sweetalert2@11.js') }}"></script> --}}
+    {{-- <script src="{{ asset('assets/js/toastr.min.js') }}"></script> --}}
+    <x-toastr/>
     @vite(['resources/js/app.js', 'resources/js/auth.js'])
     @stack('scripts')
 </body>

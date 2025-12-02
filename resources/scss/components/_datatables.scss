@@ -1,0 +1,31 @@
+@import '../variables';
+
+table.dataTable td {
+    padding: 10px 8px !important;
+}
+
+div.dataTables_wrapper{
+    padding: 10px 10px;
+}
+
+.page-item.active .page-link {
+    color: white !important;
+}
+
+.datatable-minimal div.dataTables_wrapper div.dataTables_paginate ul.pagination {
+    justify-content: flex-end !important;
+}
+
+.datatable-minimal div.dataTables_wrapper div.dataTables_filter {
+    text-align: right;
+}
+
+.dataTables-length.form-select option:hover{
+    background-color: $primary !important;
+    color: $black;
+}
+
+div.dataTables_wrapper div.dataTables_info {
+    padding-top: .4em
+}
+

@@ -31,4 +31,10 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'sipay' => [
+        'base_url' => env('SIPAY_BASE_URL', 'https://payment.baliprov.dev'),
+        'username' => env('SIPAY_USERNAME'),
+        'password' => env('SIPAY_PASSWORD'),
+        'app_code' => env('SIPAY_APP_CODE'),
+    ],
 ];

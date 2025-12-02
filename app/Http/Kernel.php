@@ -64,5 +64,12 @@ class Kernel extends HttpKernel
         'signed' => \App\Http\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
+        'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+        'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+        'is_berkas_persyaratan_verified' => \App\Http\Middleware\IsBerkasPersyaratanVerified::class,
+        'ensure_pelaporan_is_not_send_to_admin' => \App\Http\Middleware\EnsurePelaporanIsNotSendToAdminMiddleware::class,
+        'ensure_pelaporan_is_verified' => \App\Http\Middleware\EnsurePelaporanIsVerified::class,
+        'prevent_back_history' => \App\Http\Middleware\PreventBackHistory::class,
     ];
 }

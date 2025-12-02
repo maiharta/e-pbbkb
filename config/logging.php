@@ -58,6 +58,13 @@ return [
             'ignore_exceptions' => false,
         ],
 
+        'payment_callbacks' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/payment_callbacks.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'days' => 30,
+        ],
+
         'single' => [
             'driver' => 'single',
             'path' => storage_path('logs/laravel.log'),

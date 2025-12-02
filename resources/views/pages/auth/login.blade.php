@@ -13,25 +13,28 @@
         <x-input-group :autofocus=true
                        :required=true
                        icon="user"
-                       name="username"
-                       placeholder="Username"
-                       type="username" />
+                       name="email"
+                       placeholder="Email"
+                       type="email" />
         <x-input-group :required=true
                        icon="lock"
                        name="password"
                        placeholder="Password"
                        type="password" />
-        <a class="forgot-password d-block"
-           href="#">
+        <a class="forgot-password d-block mb-2"
+           href="{{ route('password.request') }}">
             Lupa Password?
         </a>
+        <div class="form-group mb-4">
+            {!! htmlFormSnippet() !!}
+        </div>
         <button class="btn w-100 shadow""
                 type="submit">
             Login
         </button>
         <p class="text-center mt-3 footer-caption">
             Belum punya akun? <a class="footer-link"
-               href="#">Register</a>
+               href="{{ route('register.index') }}">Register</a>
         </p>
     </form>
 @endsection

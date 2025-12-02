@@ -12,7 +12,12 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        // 00.01 at gmt+8
+        $schedule->command('generate:denda-bunga')->timezone('GMT+8')->dailyAt('00:01');
+        $schedule->command('generate:data-pelaporan-operator')->timezone('GMT+8')->dailyAt('00:02');
+        // 00.03 at gmt+8
+        $schedule->command('generate:invoices')->timezone('GMT+8')->dailyAt('00:03');
+        // Add other scheduled commands here as needed
     }
 
     /**
