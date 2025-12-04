@@ -251,6 +251,35 @@ class SipayService
         }
     }
 
+    // POST master/pelimpahan
+    public function getPelimpahanCodes()
+    {
+        try {
+            $response = Http::withHeaders($this->getAuthHeaders())
+                ->post($this->baseUrl . '/master/pelimpahan', [
+                    'secret_key' => $this->getSecretKey(),
+                ]);
+            // Check if the response is valid
+            $body = json_decode($response->getBody(), true);
+            if ($response->getStatusCode() == 200 && isset($body['data'])) {
+                return $body['data'];
+            }
+
+            Log::error('Sipay get pelimpahan codes failed', [
+                'status' => $response->getStatusCode(),
+                'response' => $body,
+            ]);
+
+            return null;
+        } catch (RequestException $e) {
+            Log::error('Sipay get pelimpahan codes exception', [
+                'message' => $e->getMessage(),
+            ]);
+
+            return null;
+        }
+    }
+
     /**
      * Clear token from cache (logout)
      */

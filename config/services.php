@@ -37,5 +37,7 @@ return [
         'password' => env('SIPAY_PASSWORD'),
         'app_code' => env('SIPAY_APP_CODE'),
         'unit_id' => env('SIPAY_UNIT_ID'),
+        'pbbkb_pelimpahan_id' => env('SIPAY_PBBKB_PELIMPAHAN_ID'),
+        'sanksi_pelimpahan_id' => env('SIPAY_SANKSI_PELIMPAHAN_ID'),
     ],
 ];
