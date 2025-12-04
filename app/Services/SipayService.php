@@ -122,7 +122,7 @@ class SipayService
             'ket_3_val' => 'va-bpd',
             'ket_4_val' => $invoice->invoice_number,
             'ket_5_val' => 'SISTEM EPBBKB',
-            'unit_id' => 25,
+            'unit_id' => config('services.sipay.unit_id'),
             'type' => 'langsung',
             'rincian_tagihan' => [
                 'kwitansi' => $invoice->items->map(function ($item) use ($invoice) {
@@ -216,6 +216,35 @@ class SipayService
                 'message' => $e->getMessage(),
                 'invoice_id' => $invoice->id,
                 'request_data' => $data,
+            ]);
+
+            return null;
+        }
+    }
+
+    // POST get api/v1/master/unit
+    public function getUnits()
+    {
+        try {
+            $response = Http::withHeaders($this->getAuthHeaders())
+                ->post($this->baseUrl . '/master/unit', [
+                    'secret_key' => $this->getSecretKey(),
+                ]);
+            // Check if the response is valid
+            $body = json_decode($response->getBody(), true);
+            if ($response->getStatusCode() == 200 && isset($body['data'])) {
+                return $body['data'];
+            }
+
+            Log::error('Sipay get units failed', [
+                'status' => $response->getStatusCode(),
+                'response' => $body,
+            ]);
+
+            return null;
+        } catch (RequestException $e) {
+            Log::error('Sipay get units exception', [
+                'message' => $e->getMessage(),
             ]);
 
             return null;
