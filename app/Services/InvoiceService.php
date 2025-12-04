@@ -100,14 +100,14 @@ class InvoiceService
                     'pbbkb' => [
                         'nomor_kwitansi' => 'P-' . $pelaporan->bulan . '-' . $pelaporan->tahun . '-' . now()->format('His'),
                         'nominal' => $pelaporan->sptpd->total_pbbkb,
-                        'kode_tujuan_pelimpahan' => '0110',
+                        'kode_tujuan_pelimpahan' => config('services.sipay.pbbkb_pelimpahan_id'),
                         'keterangan' => 'PBBKB Periode ' . Carbon::create($pelaporan->tahun, $pelaporan->bulan)->translatedFormat('F Y'),
                     ],
                     'sanksi' => [
                         'nomor_kwitansi' => 'S-' . $pelaporan->bulan . '-' . $pelaporan->tahun . '-' . now()->format('His'),
                         'nominal' => $pelaporan->denda->sum('denda') + ($pelaporan->bunga->sum('bunga') * $pelaporan->sptpd->total_pbbkb),
                         'keterangan' => 'Sanksi Periode ' . Carbon::create($pelaporan->tahun, $pelaporan->bulan)->translatedFormat('F Y'),
-                        'kode_tujuan_pelimpahan' => '700',
+                        'kode_tujuan_pelimpahan' => config('services.sipay.sanksi_pelimpahan_id'),
                         'items' => [
                             'denda' => $pelaporan->denda->map(function ($denda) {
                                 return [
