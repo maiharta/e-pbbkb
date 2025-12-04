@@ -258,6 +258,7 @@ class SipayService
             $response = Http::withHeaders($this->getAuthHeaders())
                 ->post($this->baseUrl . '/master/pelimpahan', [
                     'secret_key' => $this->getSecretKey(),
+                    'unit_id' => config('services.sipay.unit_id'),
                 ]);
             // Check if the response is valid
             $body = json_decode($response->getBody(), true);
