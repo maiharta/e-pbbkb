@@ -36,5 +36,6 @@ return [
         'username' => env('SIPAY_USERNAME'),
         'password' => env('SIPAY_PASSWORD'),
         'app_code' => env('SIPAY_APP_CODE'),
+        'unit_id' => env('SIPAY_UNIT_ID'),
     ],
 ];
