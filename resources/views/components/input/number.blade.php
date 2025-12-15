@@ -58,6 +58,8 @@
             decimalCharacter: ',',
             digitGroupSeparator: '.',
             unformatOnSubmit: true,
+            modifyValueOnWheel: false,
+            wheelOnFocus: false,
         })
     </script>
 @endpush
