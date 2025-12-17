@@ -55,7 +55,7 @@
                     <x-input.text label="Nomor Kuitansi Pembelian" name="nomor_kuitansi"
                         placeholder="Masukkan nomor kuitansi pembelian" value="{{ old('nomor_kuitansi') }}" />
                     <x-input.date label="Tanggal Penjualan" name="tanggal" placeholder="Masukkan tanggal penjualan"
-                        settings="minDate: moment().set('month', {{ $pelaporan->bulan }} - 1).startOf('month').format('YYYY-MM-DD'),maxDate: moment().set('month', {{ $pelaporan->bulan }} - 1).endOf('month').format('YYYY-MM-DD'),"
+                        settings="minDate: moment().set('month', {{ $pelaporan->bulan }} - 1).set('year', {{ $pelaporan->tahun }}).startOf('month').format('YYYY-MM-DD'),maxDate: moment().set('month', {{ $pelaporan->bulan }} - 1).set('year', {{ $pelaporan->tahun }}).endOf('month').format('YYYY-MM-DD'),"
                         value="{{ old('tanggal') }}" />
                     <x-input.number :currency="true" :is_currency="true" label="PBBKB" name="pbbkb"
                         placeholder="Masukkan total PBBKB" value="{{ old('pbbkb') }}" />
