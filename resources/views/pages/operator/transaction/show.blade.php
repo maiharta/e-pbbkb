@@ -271,7 +271,7 @@
                         <div class="card-body">
                             <div class="row align-items-center py-2">
                                 <div class="col-md-6">
-                                    <p class="mb-2"><strong>Format:</strong> 129 + 5325 + Nomor ID/TAGIHAN</p>
+                                    <p class="mb-2"><strong>Format:</strong> 129 + 5396 + Nomor ID/TAGIHAN</p>
                                     <p class="mb-0"><strong>Nomor ID/TAGIHAN:</strong> <span id="sample-invoice-id" class="fw-bold text-primary"></span></p>
                                 </div>
                                 {{-- <div class="col-md-6">
@@ -534,8 +534,8 @@
 
             function populatePaymentInstructions(invoice) {
                 const invoiceId = invoice.sipay_invoice || '-';
-                const fullVA = `1295325${invoice.sipay_invoice || invoiceId}`;
-                const shortenedVA = `5325${invoice.sipay_invoice || invoiceId}`;
+                const fullVA = `1295396${invoice.sipay_invoice || invoiceId}`;
+                const shortenedVA = `5396${invoice.sipay_invoice || invoiceId}`;
 
                 // Populate invoice ID examples
                 $('#sample-invoice-id').text(invoiceId);
