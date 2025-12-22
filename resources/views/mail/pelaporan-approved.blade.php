@@ -6,7 +6,7 @@ Halo **{{ $pelaporan->user->name }}**,
 Kami dengan senang hati memberitahukan bahwa pelaporan Anda telah berhasil diverifikasi dan disetujui oleh admin.
 
 <x-mail::panel>
-**Periode Pelaporan:** {{ $pelaporan->periode_formatted ?? $pelaporan->periode }}
+**Periode Pelaporan:** {{ $pelaporan->bulan_name }} {{ $pelaporan->tahun }}
 
 **Status:** Terverifikasi ✓
 

@@ -5,7 +5,7 @@ Halo **{{ $pelaporan->user->name }}**,
 
 Kami telah meninjau pelaporan Anda dan menemukan beberapa hal yang perlu diperbaiki.
 
-**Periode Pelaporan:** {{ $pelaporan->periode_formatted ?? $pelaporan->periode }}
+**Periode Pelaporan:** {{ $pelaporan->bulan_name }} {{ $pelaporan->tahun }}
 
 ## Catatan Revisi:
 
