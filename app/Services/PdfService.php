@@ -57,7 +57,9 @@ class PdfService
             return collect([
                 'nama_jenis_bbm' => $firstItem->nama_jenis_bbm,
                 'volume' => $items->sum('volume'),
-                'dpp' => $items->sum('dpp'),
+                'dpp' => $items->sum(function ($i) {
+                    return $i->dpp * $i->volume;
+                }),
                 'pbbkb' => $items->sum('pbbkb_sistem'),
             ]);
         });
@@ -89,7 +91,9 @@ class PdfService
             return collect([
                 'nama_jenis_bbm' => $firstItem->nama_jenis_bbm,
                 'volume' => $items->sum('volume'),
-                'dpp' => $items->sum('dpp'),
+                'dpp' => $items->sum(function ($i) {
+                    return $i->dpp * $i->volume;
+                }),
                 'pbbkb' => $items->sum('pbbkb_sistem'),
             ]);
         });
@@ -100,9 +104,11 @@ class PdfService
                 return collect([
                     'nama_sektor' => $firstItem->nama_sektor,
                     'nama_jenis_bbm' => $firstItem->nama_jenis_bbm,
-                    'persentase_pengenaan_sektor' => $firstItem->persentase_pengenaan_sektor,
+                    'persentase_pengenaan_sektor' => $firstItem->persentase_tarif_jenis_bbm,
                     'volume' => $jenisItems->sum('volume'),
-                    'dpp' => $jenisItems->sum('dpp'),
+                    'dpp' => $jenisItems->sum(function ($i) {
+                        return $i->dpp * $i->volume;
+                    }),
                     'pbbkb' => $jenisItems->sum('pbbkb_sistem'),
                 ]);
             })->values();

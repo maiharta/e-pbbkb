@@ -50,7 +50,7 @@
                         <input autocomplete="off" class="form-control" id="volume" name="volume"
                             placeholder="Masukkan total volume" type="text" value="{{ old('volume') }}">
                     </div>
-                    <x-input.number :is_currency="true" label="Total DPP" name="dpp" placeholder="Masukkan total DPP"
+                    <x-input.number :is_currency="true" label="Harga per Liter" name="dpp" placeholder="Masukkan Harga per Liter"
                         value="{{ old('dpp') }}" />
                     <x-input.text label="Nomor Kuitansi Pembelian" name="nomor_kuitansi"
                         placeholder="Masukkan nomor kuitansi pembelian" value="{{ old('nomor_kuitansi') }}" />

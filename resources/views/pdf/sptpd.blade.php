@@ -115,7 +115,7 @@
                 <th>Nama BBKB</th>
                 <th>Volume (Ltr)</th>
                 <th>Bulan</th>
-                <th>Harga Jual(Rp)</th>
+                <th>Total DPP(Rp)</th>
             </tr>
             @foreach ($pelaporan->penjualan_by_jenis as $penjualan)
                 <tr>
@@ -139,7 +139,7 @@
                 <th>No.</th>
                 <th>Masa Pajak</th>
                 <th>Nama BBKB</th>
-                <th>Harga Jual (Rp)</th>
+                <th>Total DPP (Rp)</th>
                 <th>Tarif PBBKB (Sesuai Perda)</th>
                 <th>Pajak Terutang (Rp)</th>
             </tr>
@@ -155,7 +155,7 @@
                 <th>No.</th>
                 <th>Masa Pajak</th>
                 <th>Nama BBKB</th>
-                <th>Harga Jual (Rp)</th>
+                <th>Total DPP (Rp)</th>
                 <th>Tarif PBBKB (Sesuai Perda)</th>
                 <th>Pajak Terutang (Rp)</th>
             </tr>
@@ -169,7 +169,7 @@
                             {{ $penjualan->get('nama_sektor') }}</td>
                         <td style="text-align: center;">{{ number_format($penjualan->get('dpp'), 0, ',', '.') }}</td>
                         <td style="text-align: center;">
-                            {{ number_format($penjualan->get('persentase_pengenaan_sektor'), 0, ',', '.') }} %</td>
+                            {{ number_format($penjualan->get('persentase_pengenaan_sektor'), 2, ',', '.') }} %</td>
                         <td style="text-align: center;">{{ number_format($penjualan->get('pbbkb'), 0, ',', '.') }}</td>
                     </tr>
                     @php $counter++; @endphp

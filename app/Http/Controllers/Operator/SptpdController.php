@@ -35,15 +35,19 @@ class SptpdController extends Controller
                     foreach ($category->groupBy('jenis_bbm_id') as $item) {
                         $item_unique = $item->first();
 
-                        $subtotal_volume += $item->sum('volume');
-                        $subtotal_dpp += $item->sum('dpp');
-                        $subtotal_pbbkb += $item->sum('pbbkb_sistem');
+                        $item->map(function ($i) use (&$subtotal_volume, &$subtotal_dpp, &$subtotal_pbbkb) {
+                            $subtotal_volume += $i->volume;
+                            $subtotal_dpp += $i->dpp * $i->volume;
+                            $subtotal_pbbkb += $i->pbbkb_sistem;
+                        });
 
                         $items->push(collect([
                             'nama_jenis_bbm' => $item_unique->nama_jenis_bbm,
                             'persentase_tarif' => $item_unique->persentase_tarif_jenis_bbm / 100 * $item_unique->persentase_pengenaan_sektor / 100,
                             'volume' => $item->sum('volume'),
-                            'dpp' => $item->sum('dpp'),
+                            'dpp' => $item->sum(function ($i) {
+                                return $i->dpp * $i->volume;
+                            }),
                             'pbbkb' => $item->sum('pbbkb_sistem')
                         ]));
                     }

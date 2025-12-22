@@ -65,7 +65,7 @@
                                     <th>Jenis BBM</th>
                                     <th>Sektor</th>
                                     <th>Total Volume (liter)</th>
-                                    <th>Total DPP</th>
+                                    <th>Harga Per Liter</th>
                                     <th>PBBKB</th>
                                     <th>Aksi</th>
                                 </tr>
