@@ -6,7 +6,10 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\Controller;
+use App\Mail\UserApprovedMail;
+use App\Mail\UserRevisionMail;
 
 class UserController extends Controller
 {
@@ -56,6 +59,10 @@ class UserController extends Controller
                 'catatan_revisi' => $request->catatan_revisi,
                 'is_user_readonly' => false
             ]);
+            
+            // Send email notification
+            Mail::to($user->email)->send(new UserRevisionMail($user, $request->catatan_revisi));
+            
             DB::commit();
             return response()->json([
                 'status' => 'success',
@@ -94,6 +101,10 @@ class UserController extends Controller
                 'is_verified' => true,
                 'verified_at' => now()
             ]);
+            
+            // Send email notification
+            Mail::to($user->email)->send(new UserApprovedMail($user));
+            
             DB::commit();
             return response()->json([
                 'status' => 'success',
