@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\PelaporanApprovedMail;
+use App\Mail\PelaporanRevisionMail;
 
 class PelaporanController extends Controller
 {
@@ -65,6 +68,9 @@ class PelaporanController extends Controller
                 'is_sptpd_canceled' => false,
             ]);
 
+            // Send email notification
+            Mail::to($pelaporan->user->email)->send(new PelaporanRevisionMail($pelaporan, $request->catatan_revisi));
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Berhasil melakukan revisi permohonan'
@@ -105,6 +111,9 @@ class PelaporanController extends Controller
                 'verified_at' => now(),
                 'is_sptpd_canceled' => false,
             ]);
+
+            // Send email notification
+            Mail::to($pelaporan->user->email)->send(new PelaporanApprovedMail($pelaporan));
 
             DB::commit();
             return response()->json([
