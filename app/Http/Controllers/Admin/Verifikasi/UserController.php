@@ -4,12 +4,13 @@ namespace App\Http\Controllers\Admin\Verifikasi;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
-use App\Http\Controllers\Controller;
 use App\Mail\UserApprovedMail;
 use App\Mail\UserRevisionMail;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Artisan;
 
 class UserController extends Controller
 {
@@ -104,6 +105,9 @@ class UserController extends Controller
             
             // Send email notification
             Mail::to($user->email)->send(new UserApprovedMail($user));
+
+            // artisan generate:pelaporan
+            Artisan::call('generate:data-pelaporan-operator');
             
             DB::commit();
             return response()->json([
