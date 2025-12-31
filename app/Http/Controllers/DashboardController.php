@@ -25,27 +25,31 @@ class DashboardController extends Controller
         // Get the requested year or default to current year
         $year = $request->input('year', date('Y'));
 
-        // Get total PBBKB from paid invoices for the selected year
-        $totalPbbkb = Sptpd::whereHas('pelaporan', function ($query) {
-            $query->where('is_paid', true);
+        // Get total PBBKB from paid invoices for the selected year (filtered by pelaporan->tahun)
+        $totalPbbkb = Sptpd::whereHas('pelaporan', function ($query) use ($year) {
+            $query->where('is_paid', true)
+                  ->where('tahun', $year);
         })
-            // ->whereYear('tanggal', $year)
             ->sum('total_pbbkb');
 
         // Format total PBBKB in Indonesian "juta/miliar" format
         $formattedPbbkb = $this->formatToIndonesianScale($totalPbbkb);
 
-        // Get total verified Wapu
-        $totalWapu = User::whereHas('userDetail', function ($query) {
-            $query->where('is_verified', true);
+        // Get total verified Wapu (filtered by userDetail->verified_at year)
+        $totalWapu = User::whereHas('userDetail', function ($query) use ($year) {
+            $query->where('is_verified', true)
+                  ->whereYear('verified_at', $year);
         })->count();
 
-        // Get count of verified inputs
-        $verifiedInputs = Pelaporan::where('is_verified', true)->count();
+        // Get count of verified inputs (filtered by pelaporan->tahun)
+        $verifiedInputs = Pelaporan::where('is_verified', true)
+            ->where('tahun', $year)
+            ->count();
 
-        // Get count of ongoing inputs
+        // Get count of ongoing inputs (filtered by pelaporan->tahun)
         $ongoingInputs = Pelaporan::where('is_expired', false)
             ->where('is_verified', false)
+            ->where('tahun', $year)
             ->count();
 
         // Generate chart data for paid PBBKB by month for the selected year
