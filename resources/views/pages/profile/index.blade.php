@@ -33,6 +33,58 @@
                             </div>
                         </div>
                     </div>
+
+                    {{-- change password --}}
+                    <div class="card mt-3">
+                        <div class="card-body">
+                            <h5 class="card-title mb-3">Ubah Password</h5>
+                            <form action="{{ route('profile.update-password') }}"
+                                  method="POST">
+                                @csrf
+                                <div class="form-group mb-3">
+                                    <label class="col-form-label fw-bold"
+                                           for="current_password">Password Saat Ini</label>
+                                    <input class="form-control"
+                                           id="current_password"
+                                           name="current_password"
+                                           placeholder="Masukkan password saat ini"
+                                           required
+                                           type="password">
+                                    @error('current_password')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label class="col-form-label fw-bold"
+                                           for="new_password">Password Baru</label>
+                                    <input class="form-control"
+                                           id="new_password"
+                                           name="new_password"
+                                           placeholder="Masukkan password baru"
+                                           required
+                                           type="password">
+                                    @error('new_password')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label class="col-form-label fw-bold"
+                                           for="new_password_confirmation">Konfirmasi Password Baru</label>
+                                    <input class="form-control"
+                                           id="new_password_confirmation"
+                                           name="new_password_confirmation"
+                                           placeholder="Konfirmasi password baru"
+                                           required
+                                           type="password">
+                                    @error('new_password_confirmation')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </div>
+                                <button class="btn btn-primary w-100 d-block"
+                                        type="submit">Ubah Password</button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-lg-8">
                     <div class="card">

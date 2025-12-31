@@ -218,6 +218,8 @@ Route::middleware(['auth', 'prevent_back_history'])->group(function () {
             ->name('index');
         Route::post('/', [ProfileController::class, 'store'])
             ->name('store');
+        Route::post('/update-password', [ProfileController::class, 'updatePassword'])
+            ->name('update-password');
     });
 
     // Logout

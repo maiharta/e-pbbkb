@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
 
 class ProfileController extends Controller
 {
@@ -81,6 +82,38 @@ class ProfileController extends Controller
             DB::rollBack();
             Log::error($e->getMessage() . ' | ' . $e->getFile() . ':' . $e->getLine());
             return redirect()->back()->with('error', 'Profile gagal dibuat');
+        }
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'current_password' => 'required',
+            'new_password' => 'required|min:8|confirmed',
+        ], [
+            'current_password.required' => 'Password saat ini harus diisi',
+            'new_password.required' => 'Password baru harus diisi',
+            'new_password.min' => 'Password baru minimal 8 karakter',
+            'new_password.confirmed' => 'Konfirmasi password tidak cocok',
+        ])->validate();
+
+        $user = auth()->user();
+
+        // Check if current password matches
+        if (!Hash::check($request->current_password, $user->password)) {
+            return redirect()->back()->withErrors(['current_password' => 'Password saat ini tidak sesuai']);
+        }
+
+        // Update password
+        try {
+            $user->update([
+                'password' => Hash::make($request->new_password)
+            ]);
+
+            return redirect()->back()->with('success', 'Password berhasil diubah');
+        } catch (\Exception $e) {
+            Log::error($e->getMessage() . ' | ' . $e->getFile() . ':' . $e->getLine());
+            return redirect()->back()->with('error', 'Password gagal diubah');
         }
     }
 }
