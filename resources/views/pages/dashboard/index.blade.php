@@ -205,16 +205,19 @@
         });
 
         function populateYearDropdown() {
-            const currentYear = new Date().getFullYear()+1;
+            const currentYear = new Date().getFullYear();
             const select = $('#yearFilter');
 
             // Add past 5 years and current year
-            for (let year = currentYear; year >= currentYear - 5; year--) {
+            for (let year = currentYear+1; year >= currentYear - 5; year--) {
                 select.append($('<option>', {
                     value: year,
                     text: year
                 }));
             }
+
+            // Set current year as selected
+            select.val(currentYear);
         }
 
         function initPbbkbChart() {
