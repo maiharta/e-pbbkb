@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Operator;
 
+use App\Models\User;
 use App\Models\Pelaporan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Services\PelaporanService;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\NewPelaporanSubmittedMail;
 
 class PelaporanController extends Controller
 {
@@ -40,6 +43,12 @@ class PelaporanController extends Controller
             $pelaporan->update([
                 'is_sent_to_admin' => true,
             ]);
+
+            // Send email to all admins
+            $admins = User::role('administrator')->get();
+            foreach ($admins as $admin) {
+                Mail::to($admin->email)->send(new NewPelaporanSubmittedMail($pelaporan));
+            }
 
             return response()->json([
                 'status' => 'success',
