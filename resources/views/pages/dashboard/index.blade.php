@@ -205,7 +205,7 @@
         });
 
         function populateYearDropdown() {
-            const currentYear = new Date().getFullYear();
+            const currentYear = new Date().getFullYear()+1;
             const select = $('#yearFilter');
 
             // Add past 5 years and current year
