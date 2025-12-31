@@ -11,7 +11,7 @@
             </div>
         </div>
         <section class="section">
-            @if ($user_detail)
+            @if ($user_detail && !$user_detail->is_verified)
                 @if ($is_user_readonly)
                     <h5 class="p-3 text-white w-100 bg-success mb-3">Profil sedang diverifikasi oleh admin</h5>
                 @endif
