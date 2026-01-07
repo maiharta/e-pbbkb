@@ -37,8 +37,7 @@ class DashboardController extends Controller
 
         // Get total verified Wapu (filtered by userDetail->verified_at year)
         $totalWapu = User::whereHas('userDetail', function ($query) use ($year) {
-            $query->where('is_verified', true)
-                  ->whereYear('verified_at', $year);
+            $query->where('is_verified', true);
         })->count();
 
         // Get count of verified inputs (filtered by pelaporan->tahun)

@@ -98,13 +98,13 @@
                     <div class="card dashboard-card h-100">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <div class="card-icon bg-soft-primary">
-                                    <i class="isax isax-money fs-3 text-primary"></i>
+                                <div class="card-icon bg-soft-success">
+                                    <i class="isax isax-people fs-3 text-primary"></i>
                                 </div>
                             </div>
                             <h5 class="text-value"
-                                id="totalPBBKB">Rp 5,8 M</h5>
-                            <p class="text-label mb-0">Total PBBKB Terkumpul</p>
+                                id="totalPelaporan">342</h5>
+                            <p class="text-label mb-0">Wapu Terverifikasi</p>
                         </div>
                     </div>
                 </div>
@@ -113,13 +113,12 @@
                     <div class="card dashboard-card h-100">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <div class="card-icon bg-soft-success">
-                                    <i class="isax isax-people fs-3 text-primary"></i>
+                                <div class="card-icon bg-soft-primary">
+                                    <i class="isax isax-money fs-3 text-primary"></i>
                                 </div>
                             </div>
-                            <h5 class="text-value"
-                                id="totalPelaporan">342</h5>
-                            <p class="text-label mb-0">Wapu Terverifikasi</p>
+                            <h5 class="text-value" id="totalPBBKB">Rp 5,8 M</h5>
+                            <p class="text-label mb-0">Total PBBKB Terkumpul</p>
                         </div>
                     </div>
                 </div>
