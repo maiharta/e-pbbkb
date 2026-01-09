@@ -55,6 +55,10 @@
                             <a class="submenu-link"
                                href="{{ route('master-data.cuti.index') }}">Cuti</a>
                         </li>
+                        <li class="submenu-item {{ request()->routeIs('master-data.user*') ? 'active' : '' }}">
+                            <a class="submenu-link"
+                               href="{{ route('master-data.user.index') }}">User</a>
+                        </li>
                     </ul>
                 </li>
                 <li class="sidebar-item {{ request()->routeIs('laporan*') ? 'active' : '' }}">

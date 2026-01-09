@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\Verifikasi\UserController;
 use App\Http\Controllers\Admin\PengaturanSistemController;
 use App\Http\Controllers\Admin\MasterData\SektorController;
 use App\Http\Controllers\Admin\MasterData\JenisBbmController;
+use App\Http\Controllers\Admin\MasterData\UserController as MasterDataUserController;
 use App\Http\Controllers\Admin\Verifikasi\PelaporanController as AdminPelaporanController;
 
 /*
@@ -129,6 +130,10 @@ Route::middleware(['auth', 'prevent_back_history'])->group(function () {
                 Route::get('/{ulid}/edit', [CutiController::class, 'edit'])->name('edit');
                 Route::put('/{ulid}', [CutiController::class, 'update'])->name('update');
                 Route::delete('/{ulid}', [CutiController::class, 'destroy'])->name('destroy');
+            });
+            // User
+            Route::prefix('user')->name('user.')->group(function () {
+                Route::get('/', [MasterDataUserController::class, 'index'])->name('index');
             });
         });
         // Laporan
