@@ -140,6 +140,7 @@ Route::middleware(['auth', 'prevent_back_history'])->group(function () {
         Route::prefix('laporan')->name('laporan.')->group(function () {
             Route::get('/', [App\Http\Controllers\Admin\LaporanController::class, 'index'])->name('index');
             Route::get('/export-excel', [App\Http\Controllers\Admin\LaporanController::class, 'exportExcel'])->name('export-excel');
+            Route::get('/export-pelaporan-excel', [App\Http\Controllers\Admin\LaporanController::class, 'exportPelaporanExcel'])->name('export-pelaporan-excel');
         });
         // Pengaturan Sistem
         Route::prefix('pengaturan-sistem')->name('pengaturan-sistem.')->group(function () {
