@@ -141,6 +141,18 @@ Route::middleware(['auth', 'prevent_back_history'])->group(function () {
             Route::get('/', [App\Http\Controllers\Admin\LaporanController::class, 'index'])->name('index');
             Route::get('/export-excel', [App\Http\Controllers\Admin\LaporanController::class, 'exportExcel'])->name('export-excel');
             Route::get('/export-pelaporan-excel', [App\Http\Controllers\Admin\LaporanController::class, 'exportPelaporanExcel'])->name('export-pelaporan-excel');
+
+            // Penginputan
+            Route::prefix('penginputan')->name('penginputan.')->group(function () {
+                Route::get('/', [App\Http\Controllers\Admin\Laporan\PenginputanController::class, 'index'])->name('index');
+                Route::get('/{ulid}/sptpd', [App\Http\Controllers\Admin\Laporan\PenginputanController::class, 'showSptpd'])->name('sptpd.show');
+                Route::get('/{ulid}/sptpd/download', [App\Http\Controllers\Admin\Laporan\PenginputanController::class, 'downloadSptpd'])->name('sptpd.download');
+                Route::get('/{ulid}/sspd', [App\Http\Controllers\Admin\Laporan\PenginputanController::class, 'showSspd'])->name('sspd.show');
+                Route::get('/{ulid}/sspd/download', [App\Http\Controllers\Admin\Laporan\PenginputanController::class, 'downloadSspd'])->name('sspd.download');
+                Route::get('/{ulid}/penjualan', [App\Http\Controllers\Admin\Laporan\PenginputanController::class, 'showPenjualan'])->name('penjualan.show');
+                Route::get('/{ulid}/pembelian', [App\Http\Controllers\Admin\Laporan\PenginputanController::class, 'showPembelian'])->name('pembelian.show');
+                Route::get('/{ulid}/invoices', [App\Http\Controllers\Admin\Laporan\PenginputanController::class, 'showInvoices'])->name('invoices.show');
+            });
         });
         // Pengaturan Sistem
         Route::prefix('pengaturan-sistem')->name('pengaturan-sistem.')->group(function () {

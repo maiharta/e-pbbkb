@@ -61,12 +61,22 @@
                         </li>
                     </ul>
                 </li>
-                <li class="sidebar-item {{ request()->routeIs('laporan*') ? 'active' : '' }}">
-                    <a class="sidebar-link"
-                       href="{{ route('laporan.index') }}">
-                        <i class="isax isax-document-text"></i>
+                <li class="sidebar-item has-sub {{ request()->routeIs('laporan*') ? 'active' : '' }}">
+                    <a class="sidebar-link" href="#">
+                        <i class="isax isax-forward-item"></i>
                         <span>Laporan</span>
                     </a>
+                    <ul class="submenu">
+                        {{-- penginputan --}}
+                        <li class="submenu-item {{ request()->routeIs('laporan.penginputan*') ? 'active' : '' }}">
+                            <a class="submenu-link" href="{{ route('laporan.penginputan.index') }}">Penginputan</a>
+                        </li>
+
+                        {{-- export --}}
+                        <li class="submenu-item {{ request()->routeIs('laporan.index*') ? 'active' : '' }}">
+                            <a class="submenu-link" href="{{ route('laporan.index') }}">Export</a>
+                        </li>
+                    </ul>
                 </li>
                 <li class="sidebar-item {{ request()->routeIs('pengaturan-sistem*') ? 'active' : '' }}">
                     <a class="sidebar-link"
