@@ -88,7 +88,7 @@
                                             @if ($user->userDetail && $user->userDetail->filepath_berkas_persyaratan)
                                                 <a class="btn btn-sm btn-success"
                                                    href="{{ route('download', [
-                                                       'uid' => $user->id,
+                                                       'uid' => $user->ulid,
                                                        'type' => 'profile_syarat',
                                                    ]) }}">
                                                     <i class="bi bi-download me-1"></i> Unduh
