@@ -49,6 +49,14 @@
                             type="button">
                         <i class="isax isax-import"></i>Import Data
                     </button>
+                    @if($penjualans->count() > 0)
+                        <button class="btn btn-danger"
+                                data-bs-target="#resetModal"
+                                data-bs-toggle="modal"
+                                type="button">
+                            <i class="isax isax-trash"></i>Reset Data Penjualan
+                        </button>
+                    @endif
                 @endif
             </div>
             <div class="card">
@@ -167,6 +175,45 @@
             </div>
         </div>
     </div>
+
+    <!-- Reset Modal -->
+    <div aria-hidden="true"
+         aria-labelledby="resetModalLabel"
+         class="modal fade"
+         data-bs-backdrop="static"
+         id="resetModal"
+         tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"
+                        id="resetModalLabel">Konfirmasi Reset Data</h5>
+                    <button aria-label="Close"
+                            class="btn-close btn-close-white"
+                            data-bs-dismiss="modal"
+                            type="button"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-warning">
+                        <i class="isax isax-warning-2"></i>
+                        <strong>Peringatan!</strong> Tindakan ini tidak dapat dibatalkan.
+                    </div>
+                    <p>Apakah Anda yakin ingin menghapus <strong>semua data penjualan</strong> pada pelaporan bulan <strong>{{ $pelaporan->bulan_name }} {{ $pelaporan->tahun }}</strong>?</p>
+                    <p class="text-danger mb-0">Semua data penjualan akan dihapus secara permanen.</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary"
+                            data-bs-dismiss="modal"
+                            type="button">Batal</button>
+                    <button class="btn btn-danger"
+                            onclick="resetData()"
+                            type="button">
+                        <i class="isax isax-trash"></i> Reset Data
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
@@ -221,6 +268,56 @@
                     });
                 }
             })
+        }
+
+        function resetData() {
+            // Close modal
+            $('#resetModal').modal('hide');
+            
+            // Show loading
+            Swal.fire({
+                'title': 'Menghapus data...',
+                'allowOutsideClick': false,
+                'allowEscapeKey': false,
+                'didOpen': () => {
+                    Swal.showLoading();
+                }
+            });
+
+            // Ajax request
+            $.ajax({
+                'url': '{{ route('pelaporan.penjualan.reset', $pelaporan->ulid) }}',
+                'type': 'DELETE',
+                'data': {
+                    '_token': '{{ csrf_token() }}'
+                },
+                'success': function(data) {
+                    if (data.status == 'success') {
+                        Swal.fire({
+                            'title': 'Berhasil',
+                            'text': data.message,
+                            'icon': 'success',
+                            'showConfirmButton': false,
+                            'allowOutsideClick': false,
+                            'timer': 1500,
+                        }).then(function() {
+                            window.location.reload();
+                        });
+                    }
+                },
+                'error': function(xhr) {
+                    let message = 'Terjadi kesalahan saat menghapus data';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        message = xhr.responseJSON.message;
+                    }
+                    Swal.fire({
+                        'title': 'Gagal',
+                        'text': message,
+                        'icon': 'error',
+                        'confirmButtonText': 'OK'
+                    });
+                }
+            });
         }
     </script>
 @endpush

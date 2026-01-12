@@ -177,9 +177,10 @@ Route::middleware(['auth', 'prevent_back_history'])->group(function () {
                     Route::get('/{ulid}/create', [PembelianController::class, 'create'])->name('create');
                     Route::post('/{ulid}/store', [PembelianController::class, 'store'])->name('store');
                     Route::get('/{ulid}/edit/{pembelian}', [PembelianController::class, 'edit'])->name('edit');
+                    Route::delete('/{ulid}/reset', [PembelianController::class, 'resetData'])->name('reset');
+                    Route::post('/{ulid}/import', [PembelianController::class, 'import'])->name('import');
                     Route::put('/{ulid}/{pembelian}', [PembelianController::class, 'update'])->name('update');
                     Route::delete('/{ulid}/{pembelian}', [PembelianController::class, 'destroy'])->name('destroy');
-                    Route::post('/{ulid}/import', [PembelianController::class, 'import'])->name('import');
                     Route::get('/download/template-import', [PembelianController::class, 'downloadTemplateImport'])->name('download-template-import');
                 });
             });
@@ -192,6 +193,7 @@ Route::middleware(['auth', 'prevent_back_history'])->group(function () {
                     Route::get('/{ulid}/create', [PenjualanController::class, 'create'])->name('create');
                     Route::post('/{ulid}/store', [PenjualanController::class, 'store'])->name('store');
                     Route::get('/{ulid}/edit/{penjualan}', [PenjualanController::class, 'edit'])->name('edit');
+                    Route::delete('/{ulid}/reset', [PenjualanController::class, 'resetData'])->name('reset');
                     Route::put('/{ulid}/{penjualan}', [PenjualanController::class, 'update'])->name('update');
                     Route::delete('/{ulid}/{penjualan}', [PenjualanController::class, 'destroy'])->name('destroy');
                     Route::post('/{ulid}/import', [PenjualanController::class, 'import'])->name('import');

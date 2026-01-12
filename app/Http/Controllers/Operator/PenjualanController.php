@@ -240,4 +240,35 @@ class PenjualanController extends Controller
 
         return redirect()->route('pelaporan.penjualan.index', $ulid)->with('success', 'Import data berhasil');
     }
+
+    public function resetData(Request $request, $ulid)
+    {
+        $pelaporan = Pelaporan::where('user_id', auth()->user()->id)
+            ->where('ulid', $ulid)
+            ->firstOrFail();
+
+        // Check if pelaporan is already sent to admin
+        if ($pelaporan->is_sent_to_admin) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Tidak dapat menghapus data. Pelaporan sudah dikirim ke admin.'
+            ], 403);
+        }
+
+        try {
+            $count = $pelaporan->penjualan()->count();
+            $pelaporan->penjualan()->delete();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => "Berhasil menghapus {$count} data penjualan"
+            ]);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage() . ' | ' . $e->getFile() . ':' . $e->getLine());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan pada server. Hubungi administrator'
+            ], 500);
+        }
+    }
 }
