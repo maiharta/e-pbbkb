@@ -12,28 +12,40 @@
         <section class="section">
             <div class="card mb-3">
                 <div class="card-body">
-                    <form action="{{ route('master-data.user.index') }}" method="GET" id="filterForm">
+                    <form action="{{ route('master-data.user.index') }}"
+                          id="filterForm"
+                          method="GET">
                         <div class="row align-items-end g-2">
                             <div class="col-md-6">
-                                <label class="form-label fw-bold mb-2" for="daterange">
+                                <label class="form-label fw-bold mb-2"
+                                       for="daterange">
                                     <i class="bi bi-calendar3 me-1"></i> Filter Tanggal Verifikasi
                                 </label>
-                                <input type="text" 
-                                       class="form-control" 
-                                       id="daterange" 
+                                <input autocomplete="off"
+                                       class="form-control"
+                                       id="daterange"
                                        name="daterange"
-                                       autocomplete="off"
                                        placeholder="Pilih rentang tanggal verifikasi"
+                                       type="text"
                                        value="{{ request('start_date') && request('end_date') ? date('d/m/Y', strtotime(request('start_date'))) . ' - ' . date('d/m/Y', strtotime(request('end_date'))) : '' }}">
-                                <input type="hidden" name="start_date" id="start_date" value="{{ request('start_date') }}">
-                                <input type="hidden" name="end_date" id="end_date" value="{{ request('end_date') }}">
+                                <input id="start_date"
+                                       name="start_date"
+                                       type="hidden"
+                                       value="{{ request('start_date') }}">
+                                <input id="end_date"
+                                       name="end_date"
+                                       type="hidden"
+                                       value="{{ request('end_date') }}">
                             </div>
                             <div class="col-md-6">
                                 <div class="d-flex gap-2">
-                                    <button type="submit" class="btn btn-primary flex-fill">
+                                    <button class="btn btn-primary flex-fill"
+                                            type="submit">
                                         <i class="bi bi-funnel-fill me-1"></i> Terapkan Filter
                                     </button>
-                                    <button type="button" class="btn btn-outline-secondary flex-fill" id="resetFilter">
+                                    <button class="btn btn-outline-secondary flex-fill"
+                                            id="resetFilter"
+                                            type="button">
                                         <i class="bi bi-arrow-clockwise me-1"></i> Reset
                                     </button>
                                 </div>
@@ -46,7 +58,8 @@
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-bordered table-striped table-hover" id="user-table">
+                        <table class="table table-bordered table-striped table-hover"
+                               id="user-table">
                             <thead>
                                 <tr>
                                     <th>No</th>
@@ -56,6 +69,7 @@
                                     <th class="text-start">Kabupaten</th>
                                     <th class="text-start">Nomor Telepon</th>
                                     <th class="text-start">Tanggal Verifikasi</th>
+                                    <th class="text-center">Dokumen</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -70,6 +84,18 @@
                                         <td class="text-start">
                                             {{ $user->userDetail->verified_at ? \Carbon\Carbon::parse($user->userDetail->verified_at)->locale('id')->isoFormat('LL') : '-' }}
                                         </td>
+                                        <td class="text-center">
+                                            @if ($user->userDetail && $user->userDetail->filepath_berkas_persyaratan)
+                                                <a class="btn btn-sm btn-success"
+                                                   href="{{ route('download', [
+                                                       'uid' => $user->id,
+                                                       'type' => 'profile_syarat',
+                                                   ]) }}">
+                                                    <i class="bi bi-download me-1"></i> Unduh
+                                                </a>
+                                            @else
+                                                -
+                                            @endif
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -105,14 +131,17 @@
                     customRangeLabel: 'Custom',
                     weekLabel: 'W',
                     daysOfWeek: ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'],
-                    monthNames: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
+                    monthNames: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus',
+                        'September', 'Oktober', 'November', 'Desember'
+                    ],
                     firstDay: 1
                 }
             });
 
             // Update input when date range is selected
             $('#daterange').on('apply.daterangepicker', function(ev, picker) {
-                $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+                $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format(
+                    'DD/MM/YYYY'));
                 $('#start_date').val(picker.startDate.format('YYYY-MM-DD'));
                 $('#end_date').val(picker.endDate.format('YYYY-MM-DD'));
             });

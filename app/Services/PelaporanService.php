@@ -11,7 +11,11 @@ class PelaporanService
     public static function generatePbbkbSistem(Pelaporan $pelaporan): Collection
     {
         return $pelaporan->penjualan->map(function ($item) {
-            $item->pbbkb_sistem = ceil(PenjualanService::generatePbbkbSistem($item));
+            $item->pbbkb_sistem = PenjualanService::generatePbbkbSistem($item);
+            // pembulatan ke atas jika 2 angkan desimal setelah koma lebih dari 0
+            if (round($item->pbbkb_sistem, 2) > floor($item->pbbkb_sistem)) {
+                $item->pbbkb_sistem = ceil($item->pbbkb_sistem);
+            }
             $item->save();
             return $item;
         });
