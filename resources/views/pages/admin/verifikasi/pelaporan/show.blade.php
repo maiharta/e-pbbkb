@@ -307,7 +307,7 @@
                                             <th>Sektor</th>
                                             <th>Total Volume (liter)</th>
                                             <th>Harga per Liter</th>
-                                            <th>DPP</th>
+                                            {{-- <th>DPP</th> --}}
                                             <th>Status Pajak</th>
                                             <th>PBBKB User</th>
                                             <th>PBBKB Sistem</th>
@@ -396,12 +396,12 @@
                     orderable: false,
                     searchable: false,
                 },
-                {
-                    data: 'total_dpp',
-                    name: 'total_dpp',
-                    orderable: false,
-                    searchable: false,
-                },
+                // {
+                //     data: 'total_dpp',
+                //     name: 'total_dpp',
+                //     orderable: false,
+                //     searchable: false,
+                // },
                 {
                     data: 'is_wajib_pajak',
                     name: 'is_wajib_pajak',
