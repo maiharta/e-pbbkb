@@ -56,7 +56,7 @@
                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
                                     <h6 class="text-muted font-semibold text-sm">Total DPP Penjualan</h6>
                                     <h6 class="font-extrabold mb-0">Rp.
-                                        {{ number_format($pelaporan->penjualan->sum('dpp'), 2, ',', '.') }}</h6>
+                                        {{ number_format($pelaporan->penjualan->sum('total_dpp'), 2, ',', '.') }}</h6>
                                 </div>
                             </div>
                         </div>
@@ -307,12 +307,42 @@
                                             <th>Sektor</th>
                                             <th>Total Volume (liter)</th>
                                             <th>Harga per Liter</th>
-                                            {{-- <th>DPP</th> --}}
+                                            <th>DPP</th>
                                             <th>Status Pajak</th>
                                             <th>PBBKB User</th>
                                             <th>PBBKB Sistem</th>
+                                            {{-- is_pbbkb_match --}}
+                                            <th style="display: none;">is_pbbkb_match</th>
                                         </tr>
                                     </thead>
+                                    <tbody>
+                                        @foreach ($pelaporan->penjualan as $penjualan)
+                                            <tr>
+                                                <td>{{ $loop->iteration }}</td>
+                                                <td>{{ $penjualan->pembeli }}</td>
+                                                <td>{{ $penjualan->nomor_kuitansi }}</td>
+                                                <td>{{ $penjualan->tanggal_formatted }}</td>
+                                                <td>{{ $penjualan->jenisBbm->nama }} -
+                                                    {{ $penjualan->jenisBbm->is_subsidi ? 'Subsidi' : 'Non Subsidi' }}
+                                                </td>
+                                                <td>{{ $penjualan->sektor->nama }}</td>
+                                                <td class="text-start">
+                                                    {{ number_format($penjualan->volume, 0, ',', '.') }}</td>
+                                                <td class="text-start">
+                                                    Rp. {{ number_format($penjualan->dpp, 2, ',', '.') }}
+                                                </td>
+                                                <td class="text-start">
+                                                    Rp. {{ number_format($penjualan->total_dpp, 2, ',', '.') }}</td>
+                                                <td>{{ $penjualan->is_wajib_pajak ? 'Ya' : 'Tidak' }}</td>
+                                                <td class="text-start">
+                                                    Rp. {{ number_format($penjualan->pbbkb, 2, ',', '.') }}</td>
+                                                <td class="text-start">
+                                                    Rp. {{ number_format($penjualan->pbbkb_sistem, 2, ',', '.') }}</td>
+                                                <td style="display: none;">
+                                                    {{ $penjualan->is_pbbkb_match ? 'true' : 'false' }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
@@ -339,96 +369,12 @@
         });
         var table2 = $('#penjualan-table').DataTable({
             "responsive": true,
-            processing: true,
-            serverSide: true,
-            ajax: {
-                url: '{{ route('verifikasi.pelaporan.penjualan.table', $pelaporan->ulid) }}',
-                data: function(d) {
-                    d.search = $('#penjualan #dt-search-1').val();
-                }
-            },
-            columns: [{
-                    data: null,
-                    name: 'index',
-                    searchable: false,
-                    orderable: false,
-                    className: 'text-center',
-                    render: function(data, type, row, meta) {
-                        return meta.row + meta.settings._iDisplayStart + 1;
-                    }
-                },
-                {
-                    data: 'pembeli',
-                    name: 'pembeli',
-                    orderable: false,
-                },
-                {
-                    data: 'nomor_kuitansi',
-                    name: 'nomor_kuitansi',
-                    orderable: false,
-                },
-                {
-                    data: 'tanggal',
-                    name: 'tanggal',
-                    searchable: false
-                },
-                {
-                    data: 'jenis_bbm',
-                    name: 'jenis_bbm',
-                    orderable: false,
-                    searchable: false
-                },
-                {
-                    data: 'sektor',
-                    name: 'sektor',
-                    orderable: false,
-                    searchable: false,
-                },
-                {
-                    data: 'volume',
-                    name: 'volume',
-                    orderable: false,
-                    searchable: false,
-                },
-                {
-                    data: 'dpp',
-                    name: 'dpp',
-                    orderable: false,
-                    searchable: false,
-                },
-                // {
-                //     data: 'total_dpp',
-                //     name: 'total_dpp',
-                //     orderable: false,
-                //     searchable: false,
-                // },
-                {
-                    data: 'is_wajib_pajak',
-                    name: 'is_wajib_pajak',
-                    orderable: false,
-                    searchable: false
-                },
-                {
-                    data: 'pbbkb',
-                    name: 'pbbkb',
-                    orderable: false,
-                    searchable: false,
-                    className: 'text-end'
-                },
-                {
-                    data: 'pbbkb_sistem',
-                    name: 'pbbkb_sistem',
-                    orderable: false,
-                    searchable: false,
-                    className: 'text-end'
-                }
-            ],
             "language": {
                 "url": '{{ asset('assets/vendors/datatables-lang-id.json') }}'
             },
             "createdRow": function(row, data, dataIndex) {
                 // Add background color to rows where is_pbbkb_match is false
-                if (!data.is_pbbkb_match) {
+                if (data[12] == 'false') {
                     $(row).addClass('bg-danger text-white');
                 }
             }
