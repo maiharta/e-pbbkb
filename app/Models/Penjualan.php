@@ -75,4 +75,9 @@ class Penjualan extends Model
     {
         return $this->pbbkb == $this->pbbkb_sistem;
     }
+
+    public function getTotalDppAttribute()
+    {
+        return $this->volume * $this->dpp;
+    }
 }

@@ -77,7 +77,7 @@ class TemplateImportPenjualanExport implements FromCollection, ShouldAutoSize, W
             'lokasi_penyaluran_id',
             'status_pajak_id',
             'volume',
-            'dpp',
+            'harga_per_liter',
             'pbbkb',
             'nomor_kuitansi',
             'tanggal_penjualan',

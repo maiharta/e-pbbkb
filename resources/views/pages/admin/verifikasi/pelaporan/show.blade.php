@@ -306,7 +306,8 @@
                                             <th>Jenis BBM</th>
                                             <th>Sektor</th>
                                             <th>Total Volume (liter)</th>
-                                            <th>Total DPP</th>
+                                            <th>Harga per Liter</th>
+                                            <th>DPP</th>
                                             <th>Status Pajak</th>
                                             <th>PBBKB User</th>
                                             <th>PBBKB Sistem</th>
@@ -392,6 +393,12 @@
                 {
                     data: 'dpp',
                     name: 'dpp',
+                    orderable: false,
+                    searchable: false,
+                },
+                {
+                    data: 'total_dpp',
+                    name: 'total_dpp',
                     orderable: false,
                     searchable: false,
                 },
