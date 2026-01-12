@@ -11,7 +11,7 @@ class PelaporanService
     public static function generatePbbkbSistem(Pelaporan $pelaporan): Collection
     {
         return $pelaporan->penjualan->map(function ($item) {
-            $item->pbbkb_sistem = PenjualanService::generatePbbkbSistem($item);
+            $item->pbbkb_sistem = ceil(PenjualanService::generatePbbkbSistem($item));
             $item->save();
             return $item;
         });
