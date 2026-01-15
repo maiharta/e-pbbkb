@@ -36,7 +36,7 @@ class DashboardController extends Controller
             ->sum('total_pbbkb');
 
         // Format total PBBKB in Indonesian "juta/miliar" format
-        $formattedPbbkb = $this->formatToIndonesianScale($totalPbbkb);
+        $formattedPbbkb = number_format($totalPbbkb);
 
         // Get total verified Wapu (filtered by userDetail->verified_at year)
         $totalWapu = User::whereHas('userDetail', function ($query) use ($year) {
