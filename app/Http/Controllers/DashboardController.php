@@ -31,7 +31,7 @@ class DashboardController extends Controller
                   ->whereHas('invoices', function ($invoiceQuery) use ($year) {
                       $invoiceQuery->where('payment_status', 'paid')
                                    ->whereYear('sipay_payment_date_paid', $year);
-                  })
+                  });
         })
             ->sum('total_pbbkb');
 
