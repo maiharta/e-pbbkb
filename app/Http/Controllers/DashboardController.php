@@ -28,7 +28,10 @@ class DashboardController extends Controller
         // Get total PBBKB from paid invoices for the selected year (filtered by pelaporan->tahun)
         $totalPbbkb = Sptpd::whereHas('pelaporan', function ($query) use ($year) {
             $query->where('is_paid', true)
-                  ->where('tahun', $year);
+                  ->whereHas('invoices', function ($invoiceQuery) use ($year) {
+                      $invoiceQuery->where('payment_status', 'paid')
+                                   ->whereYear('sipay_payment_date_paid', $year);
+                  })
         })
             ->sum('total_pbbkb');
 

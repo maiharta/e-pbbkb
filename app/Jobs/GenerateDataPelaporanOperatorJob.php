@@ -39,7 +39,7 @@ class GenerateDataPelaporanOperatorJob implements ShouldQueue
 
             // foreach verfied at until now
             if ($user_verified_at && $user_verified_at->isBefore($now)) {
-                foreach (range(0, $now->diffInMonths($user_verified_at)+1) as $i) {
+                foreach (range(-1, $now->diffInMonths($user_verified_at)+1) as $i) {
                     $now = $user_verified_at->copy()->addMonths($i);
                     $bulan = $now->month;
                     $tahun = $now->year;

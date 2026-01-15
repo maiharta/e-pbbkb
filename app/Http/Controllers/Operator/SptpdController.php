@@ -127,6 +127,7 @@ class SptpdController extends Controller
                 'tanggal' => now()->format('Y-m-d'),
                 'total_pbbkb' => $pelaporan->penjualan->sum('pbbkb_sistem')
             ]);
+            NumberGeneratorService::generateSspdNumber($pelaporan);
             InvoiceService::generateInvoice($pelaporan);
             DB::commit();
         } catch (\Exception $e) {
