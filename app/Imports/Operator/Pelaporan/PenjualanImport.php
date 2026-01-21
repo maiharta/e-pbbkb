@@ -216,9 +216,9 @@ class PenjualanImport implements
             'status_pajak_id' => 'required|in:1,2',
             'sektor_id' => "required|in:{$sektorIds}",
             'jenis_bbm_id' => "required|in:{$jenisBbmIds}",
-            'volume' => 'required|numeric|min:0',
-            'harga_per_liter' => 'required|numeric|min:0',
-            'pbbkb' => 'required|numeric|min:0',
+            'volume' => 'required|numeric',
+            'harga_per_liter' => 'required|numeric',
+            'pbbkb' => 'required|numeric',
             'nomor_kuitansi' => 'required|string',
             'tanggal_penjualan' => 'required',
         ];
