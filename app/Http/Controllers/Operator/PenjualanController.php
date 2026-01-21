@@ -177,6 +177,7 @@ class PenjualanController extends Controller
             ->firstOrFail();
         $penjualan = Penjualan::where('ulid', $penjualan)->firstOrFail();
 
+        Log::info('Deleting penjualan id: ' . $penjualan->id);
         // delete all relation
         PelaporanNote::where('penjualan_id', $penjualan->id)->delete();
 
