@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Imports\Operator\Pelaporan\PenjualanImport;
 use Maatwebsite\Excel\Validators\ValidationException;
 use App\Exports\Operator\Pelaporan\TemplateImportPenjualanExport;
+use App\Models\PelaporanNote;
 
 class PenjualanController extends Controller
 {
@@ -175,6 +176,9 @@ class PenjualanController extends Controller
             })
             ->firstOrFail();
         $penjualan = Penjualan::where('ulid', $penjualan)->firstOrFail();
+
+        // delete all relation
+        PelaporanNote::where('penjualan_id', $penjualan->id)->delete();
 
         $penjualan->delete();
 
