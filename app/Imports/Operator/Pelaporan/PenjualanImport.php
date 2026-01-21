@@ -10,15 +10,16 @@ use App\Models\Pelaporan;
 use App\Models\Penjualan;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Validators\Failure;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Maatwebsite\Excel\Concerns\ToCollection;
+use Illuminate\Contracts\Validation\Validator;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
-use Maatwebsite\Excel\Concerns\WithMultipleSheets;
-use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
-use Illuminate\Contracts\Validation\Validator;
-use Maatwebsite\Excel\Validators\Failure;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\WithMultipleSheets;
+use Symfony\Component\Uid\Ulid;
 
 class PenjualanImport implements 
     ToCollection, 
@@ -103,6 +104,7 @@ class PenjualanImport implements
             }
 
             $data = [
+                'ulid' => (string) Ulid::generate(),
                 'pelaporan_id' => $this->pelaporan->id,
                 'nomor_kuitansi' => $row['nomor_kuitansi'],
                 'pembeli' => $row['pembeli'],
