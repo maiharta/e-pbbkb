@@ -77,6 +77,18 @@
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
+                    // Show loading
+                    Swal.fire({
+                        title: 'Mengirim...',
+                        text: 'Mohon tunggu',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        showConfirmButton: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
                     // ajax
                     $.ajax({
                         'url': '{{ route('pelaporan.send') }}/' + ulid,
