@@ -179,7 +179,7 @@ class PenjualanController extends Controller
 
         Log::info('Deleting penjualan id: ' . $penjualan->id);
         // delete all relation
-        PelaporanNote::where('penjualan_id', $penjualan->id)->delete();
+        PelaporanNote::where('penjualan_id', $penjualan->id)->forceDelete();
 
         $penjualan->delete();
 
