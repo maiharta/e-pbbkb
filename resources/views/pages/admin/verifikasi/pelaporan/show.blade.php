@@ -459,12 +459,12 @@
         }
 
         function valid() {
-            @if ($pelaporan->pelaporanNote->where('is_active', true)->where('status', 'danger')->count() != 0)
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Gagal menyetujui laporan. Terdapat data yang belum sesuai dengan sistem'
-                });
-            @else
+            // @if ($pelaporan->pelaporanNote->where('is_active', true)->where('status', 'danger')->count() != 0)
+            //     Swal.fire({
+            //         icon: 'error',
+            //         title: 'Gagal menyetujui laporan. Terdapat data yang belum sesuai dengan sistem'
+            //     });
+            // @else
                 Swal.fire({
                     icon: 'question',
                     title: 'Apakah anda yakin ingin menyetujui permohonan ini?',
@@ -505,7 +505,7 @@
                         }
                     });
                 });
-            @endif
+            // @endif
         }
     </script>
 @endpush
