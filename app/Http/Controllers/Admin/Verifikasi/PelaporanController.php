@@ -96,12 +96,12 @@ class PelaporanController extends Controller
             ->where('is_verified', false)
             ->firstOrFail();
 
-        if ($pelaporan->pelaporanNote->where('is_active', true)->where('status', 'danger')->count() != 0) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Gagal melakukan validasi. Terdapat data pelaporan yang belum sesuai'
-            ]);
-        }
+        // if ($pelaporan->pelaporanNote->where('is_active', true)->where('status', 'danger')->count() != 0) {
+        //     return response()->json([
+        //         'status' => 'error',
+        //         'message' => 'Gagal melakukan validasi. Terdapat data pelaporan yang belum sesuai'
+        //     ]);
+        // }
 
         DB::beginTransaction();
         try {
