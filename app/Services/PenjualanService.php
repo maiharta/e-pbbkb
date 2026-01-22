@@ -12,6 +12,6 @@ class PenjualanService
             return 0;
         }
 
-        return (($penjualan->persentase_pengenaan_sektor / 100) * ($penjualan->persentase_tarif_jenis_bbm / 100)) * $penjualan->dpp * $penjualan->volume;
+        return (($penjualan->persentase_pengenaan_sektor / 100) * ($penjualan->persentase_tarif_jenis_bbm / 100)) * $penjualan->dpp;
     }
 }

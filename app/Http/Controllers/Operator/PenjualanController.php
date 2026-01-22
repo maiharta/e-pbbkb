@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Operator;
 
+use App\Exceptions\ServiceException;
 use App\Models\Sektor;
 use App\Models\JenisBbm;
 use App\Models\Kabupaten;
@@ -193,8 +194,6 @@ class PenjualanController extends Controller
             ->firstOrFail();
         $penjualan = Penjualan::where('ulid', $penjualan)->firstOrFail();
 
-        Log::info('Deleting penjualan id: ' . $penjualan->id);
-        // delete all relation
         PelaporanNote::where('penjualan_id', $penjualan->id)->forceDelete();
 
         $penjualan->delete();
@@ -257,6 +256,11 @@ class PenjualanController extends Controller
                 'message' => 'Import gagal, silahkan download dan cek file pesan error',
                 'file' => Storage::url('public/error-import-validation/penjualan/' . $filename),
             ]);
+        } catch (ServiceException $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        } catch (\Exception $e) {
+            Log::error($e->getMessage() . ' | ' . $e->getFile() . ':' . $e->getLine());
+            return redirect()->back()->with('error', 'Terjadi kesalahan pada server. Hubungi administrator');
         }
 
         return redirect()->route('pelaporan.penjualan.index', $ulid)->with('success', 'Import data berhasil');
@@ -306,6 +310,27 @@ class PenjualanController extends Controller
                 $query->where('ulid', $ulid)->where('user_id', auth()->user()->id);
             });
 
+            // filter by jenis_bbm_id
+            if ($request->has('jenis_bbm_id') && !empty($request->input('jenis_bbm_id'))) {
+                $query = $query->where('jenis_bbm_id', $request->input('jenis_bbm_id'));
+            }
+            // filter by sektor_id
+            if ($request->has('sektor_id') && !empty($request->input('sektor_id'))) {
+                $query = $query->where('sektor_id', $request->input('sektor_id'));
+            }
+            // filter by kabupaten_id
+            if ($request->has('kabupaten_id') && !empty($request->input('kabupaten_id'))) {
+                $query = $query->where('kabupaten_id', $request->input('kabupaten_id'));
+            }
+            // filter statusData revisi
+            if ($request->has('status_data') && $request->input('status_data')) {
+                if ($request->input('status_data') == 1) {
+                    $query = $query->whereColumn('pbbkb', '!=', 'pbbkb_sistem');
+                } else {
+                    $query = $query->whereColumn('pbbkb', '=', 'pbbkb_sistem');
+                }
+            }
+
             // Total records
             $totalRecords = $query->count();
 
@@ -319,19 +344,6 @@ class PenjualanController extends Controller
                 $totalFiltered = $query->count();
             } else {
                 $totalFiltered = $totalRecords;
-            }
-
-            // filter by jenis_bbm_id
-            if ($request->has('jenis_bbm_id') && !empty($request->input('jenis_bbm_id'))) {
-                $query = $query->where('jenis_bbm_id', $request->input('jenis_bbm_id'));
-            }
-            // filter by sektor_id
-            if ($request->has('sektor_id') && !empty($request->input('sektor_id'))) {
-                $query = $query->where('sektor_id', $request->input('sektor_id'));
-            }
-            // filter by kabupaten_id
-            if ($request->has('kabupaten_id') && !empty($request->input('kabupaten_id'))) {
-                $query = $query->where('kabupaten_id', $request->input('kabupaten_id'));
             }
 
             // Offset and limit

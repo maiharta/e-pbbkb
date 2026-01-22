@@ -147,6 +147,18 @@
                                             placeholder="Semua sektor"
                                             value="{{ old('sektor_id') }}" />
                         </div>
+                        @if ($pelaporan->catatan_revisi && !$pelaporan->is_sptpd_canceled)
+                            <div class="col">
+                                <x-input.select :options="[
+                                    ['key' => '1', 'value' => 'Data Revisi'],
+                                    ['key' => '2', 'value' => 'Data Match'],
+                                ]"
+                                                label="Status Data"
+                                                name="status_data"
+                                                placeholder="Semua status data"
+                                                value="{{ old('status_data') }}" />
+                            </div>
+                        @endif
                     </div>
                     <div class="gap-2 d-flex">
                         <button class="w-100 d-block btn btn-secondary"
@@ -167,8 +179,11 @@
                                     <th>Jenis BBM</th>
                                     <th>Sektor</th>
                                     <th>Total Volume (liter)</th>
-                                    <th>Harga Per Liter</th>
+                                    <th>DPP</th>
                                     <th>PBBKB</th>
+                                    @if ($pelaporan->catatan_revisi && !$pelaporan->is_sptpd_canceled)
+                                        <th>PBBKB Sistem</th>
+                                    @endif
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -283,6 +298,7 @@
                     d.kabupaten_id = $('select[name="kabupaten_id"]').val();
                     d.jenis_bbm_id = $('select[name="jenis_bbm_id"]').val();
                     d.sektor_id = $('select[name="sektor_id"]').val();
+                    d.status_data = $('select[name="status_data"]').val();
                 }
             },
             "columns": [{
@@ -331,7 +347,13 @@
                     name: 'pbbkb',
                     className: 'text-end'
                 },
-                {
+                @if ($pelaporan->catatan_revisi && !$pelaporan->is_sptpd_canceled)
+                    {
+                        data: 'pbbkb_sistem',
+                        name: 'pbbkb_sistem',
+                        className: 'text-end'
+                    },
+                @endif {
                     data: 'action',
                     name: 'action',
                     orderable: false,
@@ -339,21 +361,31 @@
                     className: 'text-center',
                 },
             ],
+            @if ($pelaporan->catatan_revisi && !$pelaporan->is_sptpd_canceled)
+                "createdRow": function(row, data, dataIndex) {
+                    // Add background color to rows where is_pbbkb_match is false
+                    if (data.is_pbbkb_match == false) {
+                        $(row).addClass('bg-danger text-white');
+                    }
+                },
+            @endif
             "language": {
                 "url": '{{ asset('assets/vendors/datatables-lang-id.json') }}'
             }
         });
 
         // Filter change handlers
-        $('select[name="kabupaten_id"], select[name="jenis_bbm_id"], select[name="sektor_id"]').on('change', function() {
-            table.ajax.reload();
-        });
+        $('select[name="kabupaten_id"], select[name="jenis_bbm_id"], select[name="sektor_id"], select[name="status_data"]')
+            .on('change', function() {
+                table.ajax.reload();
+            });
 
         // reset filter
         $('#resetFilter').on('click', function() {
             $('select[name="kabupaten_id"]').val('').trigger('change');
             $('select[name="jenis_bbm_id"]').val('').trigger('change');
             $('select[name="sektor_id"]').val('').trigger('change');
+            $('select[name="status_data"]').val('').trigger('change');
             table.ajax.reload();
         });
 

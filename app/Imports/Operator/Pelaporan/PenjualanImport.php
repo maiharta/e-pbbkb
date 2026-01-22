@@ -2,6 +2,7 @@
 
 namespace App\Imports\Operator\Pelaporan;
 
+use App\Exceptions\ServiceException;
 use Carbon\Carbon;
 use App\Models\Sektor;
 use App\Models\JenisBbm;
@@ -21,10 +22,10 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Symfony\Component\Uid\Ulid;
 
-class PenjualanImport implements 
-    ToCollection, 
-    WithHeadingRow, 
-    WithValidation, 
+class PenjualanImport implements
+    ToCollection,
+    WithHeadingRow,
+    WithValidation,
     WithMultipleSheets,
     WithChunkReading,
     WithBatchInserts
@@ -38,7 +39,7 @@ class PenjualanImport implements
     public function __construct(Pelaporan $pelaporan)
     {
         $this->pelaporan = $pelaporan;
-        
+
         // Cache valid IDs once per import to avoid repeated queries during validation
         if (is_null(self::$validKabupatenIds)) {
             self::$validKabupatenIds = Kabupaten::pluck('id')->toArray();
@@ -75,7 +76,7 @@ class PenjualanImport implements
         // Pre-load reference data once and index by ID for O(1) lookup
         $sektors = Sektor::get()->keyBy('id');
         $jenis_bbms = JenisBbm::get()->keyBy('id');
-        
+
         // Get existing penjualan records for this pelaporan to handle updates
         $existingPenjualans = Penjualan::where('pelaporan_id', $this->pelaporan->id)
             ->get()
@@ -86,14 +87,14 @@ class PenjualanImport implements
         $now = now();
 
         foreach ($collection as $row) {
-            $tanggal_carbon = is_string($row['tanggal_penjualan']) 
-                ? Carbon::parse($row['tanggal_penjualan']) 
+            $tanggal_carbon = is_string($row['tanggal_penjualan'])
+                ? Carbon::parse($row['tanggal_penjualan'])
                 : Carbon::instance(Date::excelToDateTimeObject($row['tanggal_penjualan']));
-            
+
             // Validate date belongs to the correct reporting period
-            if (((int) $tanggal_carbon->format('m') != $this->pelaporan->bulan) || 
+            if (((int) $tanggal_carbon->format('m') != $this->pelaporan->bulan) ||
                 ((int) $tanggal_carbon->format('Y') != $this->pelaporan->tahun)) {
-                throw new \Exception('Terdapat data pelaporan dengan bulan berbeda dengan bulan pelaporan pada file excel');
+                throw new ServiceException('Terdapat data pelaporan dengan bulan berbeda dengan bulan pelaporan pada file excel, nomor kuitansi: ' . $row['nomor_kuitansi'] . ', tanggal penjualan: ' . $tanggal_carbon->format('Y-m-d'));
             }
 
             $jenis_bbm = $jenis_bbms->get($row['jenis_bbm_id']);
@@ -122,7 +123,7 @@ class PenjualanImport implements
                 'lokasi_penyaluran' => $row['lokasi_penyaluran_id'] == 1 ? 'depot' : 'TBBM',
                 'is_wajib_pajak' => $row['status_pajak_id'] == 2 ? 1 : 0,
                 'volume' => $row['volume'],
-                'dpp' => $row['harga_per_liter'],
+                'dpp' => $row['dpp'],
                 'pbbkb' => $row['pbbkb'],
                 'tanggal' => $tanggal_carbon->format('Y-m-d'),
                 'updated_at' => $now,
@@ -166,10 +167,10 @@ class PenjualanImport implements
         }
 
         $chunks = array_chunk($dataToUpdate, 500);
-        
+
         foreach ($chunks as $chunk) {
             $ids = collect($chunk)->pluck('id')->toArray();
-            
+
             // Build CASE statements for each column
             $cases = [];
             $columns = [
@@ -199,7 +200,7 @@ class PenjualanImport implements
 
             $idsString = implode(',', $ids);
             $updateStatement = implode(', ', $cases);
-            
+
             DB::statement("UPDATE penjualans SET {$updateStatement} WHERE id IN ({$idsString})");
         }
     }
@@ -209,7 +210,7 @@ class PenjualanImport implements
         $kabupatenIds = implode(',', self::$validKabupatenIds);
         $sektorIds = implode(',', self::$validSektorIds);
         $jenisBbmIds = implode(',', self::$validJenisBbmIds);
-        
+
         return [
             'pembeli' => 'required',
             'alamat' => 'required',
@@ -219,7 +220,7 @@ class PenjualanImport implements
             'sektor_id' => "required|in:{$sektorIds}",
             'jenis_bbm_id' => "required|in:{$jenisBbmIds}",
             'volume' => 'required|numeric',
-            'harga_per_liter' => 'required|numeric',
+            'dpp' => 'required|numeric',
             'pbbkb' => 'required|numeric',
             'nomor_kuitansi' => 'required|string',
             'tanggal_penjualan' => 'required',

@@ -306,42 +306,13 @@
                                             <th>Jenis BBM</th>
                                             <th>Sektor</th>
                                             <th>Total Volume (liter)</th>
-                                            <th>Harga per Liter</th>
                                             <th>DPP</th>
                                             <th>Status Pajak</th>
                                             <th>PBBKB User</th>
                                             <th>PBBKB Sistem</th>
-                                            {{-- is_pbbkb_match --}}
-                                            <th style="display: none;">is_pbbkb_match</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($pelaporan->penjualan as $penjualan)
-                                            <tr>
-                                                <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $penjualan->pembeli }}</td>
-                                                <td>{{ $penjualan->nomor_kuitansi }}</td>
-                                                <td>{{ $penjualan->tanggal_formatted }}</td>
-                                                <td>{{ $penjualan->jenisBbm->nama }} -
-                                                    {{ $penjualan->jenisBbm->is_subsidi ? 'Subsidi' : 'Non Subsidi' }}
-                                                </td>
-                                                <td>{{ $penjualan->sektor->nama }}</td>
-                                                <td class="text-start">
-                                                    {{ number_format($penjualan->volume, 0, ',', '.') }}</td>
-                                                <td class="text-start">
-                                                    Rp. {{ number_format($penjualan->dpp, 2, ',', '.') }}
-                                                </td>
-                                                <td class="text-start">
-                                                    Rp. {{ number_format($penjualan->total_dpp, 2, ',', '.') }}</td>
-                                                <td>{{ $penjualan->is_wajib_pajak ? 'Ya' : 'Tidak' }}</td>
-                                                <td class="text-start">
-                                                    Rp. {{ number_format($penjualan->pbbkb, 2, ',', '.') }}</td>
-                                                <td class="text-start">
-                                                    Rp. {{ number_format($penjualan->pbbkb_sistem, 2, ',', '.') }}</td>
-                                                <td style="display: none;">
-                                                    {{ $penjualan->is_pbbkb_match ? 'true' : 'false' }}</td>
-                                            </tr>
-                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -369,12 +340,74 @@
         });
         var table2 = $('#penjualan-table').DataTable({
             "responsive": true,
+            "processing": true,
+            "serverSide": true,
+            ajax: {
+                url: '{{ route('verifikasi.pelaporan.penjualan.table', $pelaporan->ulid) }}',
+                data: function(d) {
+                    d.search = $('#dt-search-1').val();
+                }
+            },
             "language": {
                 "url": '{{ asset('assets/vendors/datatables-lang-id.json') }}'
             },
+            "columns": [{
+                    data: null,
+                    name: 'index',
+                    searchable: false,
+                    orderable: false,
+                    className: 'text-center',
+                    render: function(data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }
+                },
+                {
+                    data: 'pembeli',
+                    name: 'pembeli',
+                    orderable: false
+                },
+                {
+                    data: 'nomor_kuitansi',
+                    name: 'nomor_kuitansi'
+                },
+                {
+                    data: 'tanggal',
+                    name: 'tanggal'
+                },
+                {
+                    data: 'jenis_bbm',
+                    name: 'jenis_bbm'
+                },
+                {
+                    data: 'sektor',
+                    name: 'sektor'
+                },
+                {
+                    data: 'volume',
+                    name: 'volume',
+                    className: 'text-end'
+                },
+                {
+                    data: 'dpp',
+                    name: 'dpp',
+                    className: 'text-end'
+                },
+                {
+                    data: "is_wajib_pajak",
+                    className: "text-start"
+                },
+                {
+                    data: "pbbkb",
+                    className: "text-start"
+                },
+                {
+                    data: "pbbkb_sistem",
+                    className: "text-start"
+                },
+            ],
             "createdRow": function(row, data, dataIndex) {
                 // Add background color to rows where is_pbbkb_match is false
-                if (data[12] == 'false') {
+                if (data.is_pbbkb_match == false) {
                     $(row).addClass('bg-danger text-white');
                 }
             }
@@ -459,46 +492,46 @@
         }
 
         function valid() {
-                Swal.fire({
-                    icon: 'question',
-                    title: 'Apakah anda yakin ingin menyetujui permohonan ini?',
-                    showCancelButton: true,
-                    confirmButtonText: `Ya`,
-                    cancelButtonText: `Tidak`,
-                }).then((result) => {
-                    $.ajax({
-                        url: "{{ route('verifikasi.pelaporan.approve') }}",
-                        type: "POST",
-                        data: {
-                            _token: "{{ csrf_token() }}",
-                            ulid: getUlid(),
-                        },
-                        success: function(response) {
-                            if (response.status == 'success') {
-                                Swal.fire(
-                                    'Berhasil!',
-                                    response.message,
-                                    'success'
-                                ).then((result) => {
-                                    window.location.href =
-                                        "{{ route('verifikasi.pelaporan.index') }}";
-                                });
-                            } else {
-                                Toast.fire({
-                                    icon: 'error',
-                                    title: response.message,
-                                });
-                            }
-                        },
-                        error: function(response) {
+            Swal.fire({
+                icon: 'question',
+                title: 'Apakah anda yakin ingin menyetujui permohonan ini?',
+                showCancelButton: true,
+                confirmButtonText: `Ya`,
+                cancelButtonText: `Tidak`,
+            }).then((result) => {
+                $.ajax({
+                    url: "{{ route('verifikasi.pelaporan.approve') }}",
+                    type: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        ulid: getUlid(),
+                    },
+                    success: function(response) {
+                        if (response.status == 'success') {
                             Swal.fire(
-                                'Gagal!',
-                                'Form permohonan gagal divalidasi. Hubungi administrator',
-                                'error'
-                            );
+                                'Berhasil!',
+                                response.message,
+                                'success'
+                            ).then((result) => {
+                                window.location.href =
+                                    "{{ route('verifikasi.pelaporan.index') }}";
+                            });
+                        } else {
+                            Toast.fire({
+                                icon: 'error',
+                                title: response.message,
+                            });
                         }
-                    });
+                    },
+                    error: function(response) {
+                        Swal.fire(
+                            'Gagal!',
+                            'Form permohonan gagal divalidasi. Hubungi administrator',
+                            'error'
+                        );
+                    }
                 });
+            });
         }
     </script>
 @endpush

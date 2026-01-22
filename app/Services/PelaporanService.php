@@ -5,20 +5,50 @@ namespace App\Services;
 use App\Models\Pelaporan;
 use App\Models\Penjualan;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class PelaporanService
 {
     public static function generatePbbkbSistem(Pelaporan $pelaporan): Collection
     {
-        return $pelaporan->penjualan->map(function ($item) {
-            $item->pbbkb_sistem = PenjualanService::generatePbbkbSistem($item);
-            // pembulatan ke atas jika 2 angkan desimal setelah koma lebih dari 0
-            if (round($item->pbbkb_sistem, 2) > floor($item->pbbkb_sistem)) {
-                $item->pbbkb_sistem = ceil($item->pbbkb_sistem);
+        $updatedItems = collect();
+
+        // Process in chunks to avoid memory issues with large datasets
+        $pelaporan->penjualan()->chunk(500, function ($penjualans) use ($updatedItems) {
+            $cases = [];
+            $ids = [];
+
+            foreach ($penjualans as $item) {
+                $pbbkb_sistem = PenjualanService::generatePbbkbSistem($item);
+
+                // Pembulatan ke atas jika 2 angka desimal setelah koma lebih dari 0
+                if (round($pbbkb_sistem, 2) > floor($pbbkb_sistem)) {
+                    $pbbkb_sistem = ceil($pbbkb_sistem);
+                }
+
+                $ids[] = $item->id;
+                $cases[] = "WHEN {$item->id} THEN {$pbbkb_sistem}";
+
+                // Update the model instance for return collection
+                $item->pbbkb_sistem = $pbbkb_sistem;
+                $updatedItems->push($item);
             }
-            $item->save();
-            return $item;
+
+            // Bulk update using CASE statement for better performance
+            if (!empty($ids)) {
+                $idsString = implode(',', $ids);
+                $casesString = implode(' ', $cases);
+
+                DB::table('penjualans')
+                    ->whereIn('id', $ids)
+                    ->update([
+                        'pbbkb_sistem' => DB::raw("CASE id {$casesString} END"),
+                        'updated_at' => now()
+                    ]);
+            }
         });
+
+        return $updatedItems;
     }
 
     public static function generateNote(Pelaporan $pelaporan): void
@@ -29,7 +59,7 @@ class PelaporanService
             $step = 1;
         } else {
             $step = $pelaporan->pelaporanNote->last()->step + 1;
-            $pelaporan->pelaporanNote()->update(['is_active' => false]);
+            $pelaporan->pelaporanNote()->delete();
         }
 
         // generate note ppbkb is match

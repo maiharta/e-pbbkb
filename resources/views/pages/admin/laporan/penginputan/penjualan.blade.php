@@ -32,7 +32,6 @@
                                     <th>Sektor</th>
                                     <th>Jenis BBM</th>
                                     <th>Volume (Liter)</th>
-                                    <th>Harga per liter</th>
                                     <th>DPP</th>
                                     <th>PBBKB</th>
                                     <th>Tanggal</th>
@@ -49,7 +48,6 @@
                                         <td>{{ $penjualan->jenisBbm->nama }}</td>
                                         <td class="text-end">{{ number_format($penjualan->volume, 0, ',', '.') }}</td>
                                         <td class="text-end">Rp {{ number_format($penjualan->dpp, 2, ',', '.') }}</td>
-                                        <td class="text-end">Rp {{ number_format($penjualan->total_dpp, 2, ',', '.') }}</td>
                                         <td class="text-end">Rp {{ number_format($penjualan->pbbkb_sistem, 2, ',', '.') }}</td>
                                         <td>{{ Carbon\Carbon::parse($penjualan->tanggal)->format('d/m/Y') }}</td>
                                         <td>{{ $penjualan->lokasi_penyaluran }}</td>
