@@ -150,6 +150,7 @@ Route::middleware(['auth', 'prevent_back_history'])->group(function () {
                 Route::get('/{ulid}/sspd', [App\Http\Controllers\Admin\Laporan\PenginputanController::class, 'showSspd'])->name('sspd.show');
                 Route::get('/{ulid}/sspd/download', [App\Http\Controllers\Admin\Laporan\PenginputanController::class, 'downloadSspd'])->name('sspd.download');
                 Route::get('/{ulid}/penjualan', [App\Http\Controllers\Admin\Laporan\PenginputanController::class, 'showPenjualan'])->name('penjualan.show');
+                Route::get('/{ulid}/penjualan/table', [App\Http\Controllers\Admin\Laporan\PenginputanController::class, 'penjualanTable'])->name('penjualan.table');
                 Route::get('/{ulid}/pembelian', [App\Http\Controllers\Admin\Laporan\PenginputanController::class, 'showPembelian'])->name('pembelian.show');
                 Route::get('/{ulid}/invoices', [App\Http\Controllers\Admin\Laporan\PenginputanController::class, 'showInvoices'])->name('invoices.show');
             });

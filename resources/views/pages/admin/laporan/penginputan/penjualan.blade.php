@@ -60,7 +60,7 @@
             "processing": true,
             "serverSide": true,
             ajax: {
-                url: '{{ route('verifikasi.pelaporan.penjualan.table', $pelaporan->ulid) }}',
+                url: '{{ route('laporan.penginputan.penjualan.table', $pelaporan->ulid) }}',
                 data: function(d) {
                     d.search = $('#dt-search-0').val();
                 }
