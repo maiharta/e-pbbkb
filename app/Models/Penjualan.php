@@ -78,6 +78,6 @@ class Penjualan extends Model
 
     public function getTotalDppAttribute()
     {
-        return $this->volume * $this->dpp;
+        return $this->dpp;
     }
 }

@@ -37,7 +37,7 @@ class SptpdController extends Controller
 
                         $item->map(function ($i) use (&$subtotal_volume, &$subtotal_dpp, &$subtotal_pbbkb) {
                             $subtotal_volume += $i->volume;
-                            $subtotal_dpp += $i->dpp * $i->volume;
+                            $subtotal_dpp += $i->dpp;
                             $subtotal_pbbkb += $i->pbbkb_sistem;
                         });
 
@@ -46,7 +46,7 @@ class SptpdController extends Controller
                             'persentase_tarif' => $item_unique->persentase_tarif_jenis_bbm / 100 * $item_unique->persentase_pengenaan_sektor / 100,
                             'volume' => $item->sum('volume'),
                             'dpp' => $item->sum(function ($i) {
-                                return $i->dpp * $i->volume;
+                                return $i->dpp;
                             }),
                             'pbbkb' => $item->sum('pbbkb_sistem')
                         ]));
