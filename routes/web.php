@@ -189,6 +189,7 @@ Route::middleware(['auth', 'prevent_back_history'])->group(function () {
             Route::prefix('penjualan')->name('penjualan.')->group(function () {
                 Route::get('/{ulid}', [PenjualanController::class, 'index'])->name('index');
                 Route::get('/{ulid}/show', [PenjualanController::class, 'show'])->name('show');
+                Route::get('/{ulid}/table', [PenjualanController::class, 'table'])->name('table');
                 Route::middleware(['ensure_pelaporan_is_not_send_to_admin'])->group(function () {
                     Route::get('/{ulid}/create', [PenjualanController::class, 'create'])->name('create');
                     Route::post('/{ulid}/store', [PenjualanController::class, 'store'])->name('store');

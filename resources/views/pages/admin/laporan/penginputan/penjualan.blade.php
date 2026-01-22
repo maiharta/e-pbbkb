@@ -27,6 +27,7 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
+                                    <th>Invoice</th>
                                     <th>Nama Pembeli</th>
                                     <th>Sektor</th>
                                     <th>Jenis BBM</th>
@@ -42,6 +43,7 @@
                                 @foreach ($penjualans as $penjualan)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $penjualan->nomor_kuitansi }}</td>
                                         <td>{{ $penjualan->pembeli }}</td>
                                         <td>{{ $penjualan->sektor->nama }}</td>
                                         <td>{{ $penjualan->jenisBbm->nama }}</td>

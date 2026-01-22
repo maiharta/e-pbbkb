@@ -39,6 +39,69 @@
                     </div>
                 </div>
             @endif
+
+            {{-- card --}}
+            <div class="row mb-2">
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="card dashboard-card h-80">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div class="card-icon bg-soft-success">
+                                    <i class="isax isax-people fs-3 text-primary"></i>
+                                </div>
+                            </div>
+                            <h5 class="text-value"
+                                id="totalPelaporan">{{ $transaction_total }}</h5>
+                            <p class="text-label mb-0">Total Penjualan</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="card dashboard-card h-80">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div class="card-icon bg-soft-primary">
+                                    <i class="isax isax-money fs-3 text-primary"></i>
+                                </div>
+                            </div>
+                            <h5 class="text-value"
+                                id="totalPBBKB">{{ $volume_total }}</h5>
+                            <p class="text-label mb-0">Total Volume</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="card dashboard-card h-80">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div class="card-icon bg-soft-warning">
+                                    <i class="isax isax-verify fs-3 text-primary"></i>
+                                </div>
+                            </div>
+                            <h5 class="text-value"
+                                id="pendingPelaporan">{{ $dpp_total }}</h5>
+                            <p class="text-label mb-0">Total DPP</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="card dashboard-card h-80">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div class="card-icon bg-soft-danger">
+                                    <i class="isax isax-clock fs-3 text-primary"></i>
+                                </div>
+                            </div>
+                            <h5 class="text-value"
+                                id="revisedPelaporan">{{ $pbbkb_total }}</h5>
+                            <p class="text-label mb-0">Total PBBKB</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="d-flex gap-2 align-items-center mb-3">
                 @if (!$pelaporan->is_sent_to_admin)
                     <a class="btn btn-primary"
@@ -49,7 +112,7 @@
                             type="button">
                         <i class="isax isax-import"></i>Import Data
                     </button>
-                    @if($penjualans->count() > 0)
+                    @if ($transaction_total > 0)
                         <button class="btn btn-danger"
                                 data-bs-target="#resetModal"
                                 data-bs-toggle="modal"
@@ -61,6 +124,37 @@
             </div>
             <div class="card">
                 <div class="card-body">
+                    {{-- filter --}}
+                    <div class="row">
+                        <div class="col">
+                            <x-input.select :options="$kabupatens->map(fn($item) => ['key' => $item->id, 'value' => $item->nama])"
+                                            label="Kabupaten"
+                                            name="kabupaten_id"
+                                            placeholder="Semua kabupaten"
+                                            value="{{ old('kabupaten_id') }}" />
+                        </div>
+                        <div class="col">
+                            <x-input.select :options="$jenis_bbms->map(fn($item) => ['key' => $item->id, 'value' => $item->nama])"
+                                            label="Jenis BBM"
+                                            name="jenis_bbm_id"
+                                            placeholder="Semua jenis BBM"
+                                            value="{{ old('jenis_bbm_id') }}" />
+                        </div>
+                        <div class="col">
+                            <x-input.select :options="$sektors->map(fn($item) => ['key' => $item->id, 'value' => $item->nama])"
+                                            label="Sektor"
+                                            name="sektor_id"
+                                            placeholder="Semua sektor"
+                                            value="{{ old('sektor_id') }}" />
+                        </div>
+                    </div>
+                    <div class="gap-2 d-flex">
+                        <button class="w-100 d-block btn btn-secondary"
+                                id="resetFilter"
+                                type="button">
+                            <i class="bi bi-x-circle me-1"></i> Reset Filter
+                        </button>
+                    </div>
                     <div class="table-responsive">
                         <table class="table table-bordered"
                                id="penjualan-table">
@@ -79,49 +173,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($penjualans as $penjualan)
-                                    {{-- @dd($penjualan) --}}
-                                    <tr
-                                        class="{{ $pelaporan->catatan_revisi && !$penjualan->is_pbbkb_match ? 'bg-danger text-white' : '' }}">
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $penjualan->pembeli }}</td>
-                                        <td>{{ $penjualan->nomor_kuitansi }}</td>
-                                        <td>{{ $penjualan->tanggal_formatted }}</td>
-                                        <td>{{ $penjualan->jenisBbm->nama }} -
-                                            {{ $penjualan->jenisBbm->is_subsidi ? 'Subsidi' : 'Non Subsidi' }}</td>
-                                        <td>{{ $penjualan->sektor->nama }}</td>
-                                        <td class="text-start">{{ number_format($penjualan->volume, 0, ',', '.') }}</td>
-                                        <td class="text-start">Rp. {{ number_format($penjualan->dpp, 2, ',', '.') }}</td>
-                                        <td class="text-start">Rp. {{ number_format($penjualan->pbbkb, 2, ',', '.') }}</td>
-                                        <td>
-                                            @if (!$pelaporan->is_sent_to_admin)
-                                                <div class="dropdown">
-                                                    <button aria-expanded="false"
-                                                            class="btn"
-                                                            data-bs-toggle="dropdown"
-                                                            id="dropdownMenuButton1"
-                                                            type="button">
-                                                        <i class="isax isax-more"></i>
-                                                    </button>
-                                                    <ul aria-labelledby="dropdownMenuButton1"
-                                                        class="dropdown-menu">
-                                                        <li><a class="dropdown-item"
-                                                               href="{{ route('pelaporan.penjualan.edit', ['penjualan' => $penjualan->ulid, 'ulid' => $pelaporan->ulid]) }}">Edit</a>
-                                                        </li>
-                                                        <li>
-                                                            <button class="dropdown-item"
-                                                                    onclick="hapus('{{ route('pelaporan.penjualan.destroy', ['penjualan' => $penjualan->ulid, 'ulid' => $pelaporan->ulid]) }}')">
-                                                                Hapus
-                                                            </button>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            @else
-                                                Tidak ada aksi
-                                            @endif
-                                        </td>
-                                    </tr>
-                                @endforeach
+
                             </tbody>
                         </table>
                     </div>
@@ -198,7 +250,9 @@
                         <i class="isax isax-warning-2"></i>
                         <strong>Peringatan!</strong> Tindakan ini tidak dapat dibatalkan.
                     </div>
-                    <p>Apakah Anda yakin ingin menghapus <strong>semua data penjualan</strong> pada pelaporan bulan <strong>{{ $pelaporan->bulan_name }} {{ $pelaporan->tahun }}</strong>?</p>
+                    <p>Apakah Anda yakin ingin menghapus <strong>semua data penjualan</strong> pada pelaporan bulan
+                        <strong>{{ $pelaporan->bulan_name }} {{ $pelaporan->tahun }}</strong>?
+                    </p>
                     <p class="text-danger mb-0">Semua data penjualan akan dihapus secara permanen.</p>
                 </div>
                 <div class="modal-footer">
@@ -218,11 +272,89 @@
 
 @push('scripts')
     <script>
-        $('#penjualan-table').DataTable({
+        var table = $('#penjualan-table').DataTable({
             "responsive": true,
+            "serverSide": true,
+            "processing": true,
+            ajax: {
+                url: '{{ route('pelaporan.penjualan.table', $pelaporan->ulid) }}',
+                data: function(d) {
+                    d.search = $('#dt-search-0').val();
+                    d.kabupaten_id = $('select[name="kabupaten_id"]').val();
+                    d.jenis_bbm_id = $('select[name="jenis_bbm_id"]').val();
+                    d.sektor_id = $('select[name="sektor_id"]').val();
+                }
+            },
+            "columns": [{
+                    data: null,
+                    name: 'index',
+                    searchable: false,
+                    orderable: false,
+                    className: 'text-center',
+                    render: function(data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }
+                },
+                {
+                    data: 'pembeli',
+                    name: 'pembeli',
+                    orderable: false
+                },
+                {
+                    data: 'nomor_kuitansi',
+                    name: 'nomor_kuitansi'
+                },
+                {
+                    data: 'tanggal',
+                    name: 'tanggal'
+                },
+                {
+                    data: 'jenis_bbm',
+                    name: 'jenis_bbm'
+                },
+                {
+                    data: 'sektor',
+                    name: 'sektor'
+                },
+                {
+                    data: 'volume',
+                    name: 'volume',
+                    className: 'text-end'
+                },
+                {
+                    data: 'dpp',
+                    name: 'dpp',
+                    className: 'text-end'
+                },
+                {
+                    data: 'pbbkb',
+                    name: 'pbbkb',
+                    className: 'text-end'
+                },
+                {
+                    data: 'action',
+                    name: 'action',
+                    orderable: false,
+                    searchable: false,
+                    className: 'text-center',
+                },
+            ],
             "language": {
                 "url": '{{ asset('assets/vendors/datatables-lang-id.json') }}'
             }
+        });
+
+        // Filter change handlers
+        $('select[name="kabupaten_id"], select[name="jenis_bbm_id"], select[name="sektor_id"]').on('change', function() {
+            table.ajax.reload();
+        });
+
+        // reset filter
+        $('#resetFilter').on('click', function() {
+            $('select[name="kabupaten_id"]').val('').trigger('change');
+            $('select[name="jenis_bbm_id"]').val('').trigger('change');
+            $('select[name="sektor_id"]').val('').trigger('change');
+            table.ajax.reload();
         });
 
         function hapus(route) {
@@ -235,6 +367,18 @@
                 'cancelButtonText': 'Batal',
             }).then((result) => {
                 if (result.isConfirmed) {
+                    // Show loading
+                    Swal.fire({
+                        title: 'Menghapus...',
+                        text: 'Mohon tunggu',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        showConfirmButton: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
                     // ajax
                     $.ajax({
                         'url': route,
@@ -273,7 +417,7 @@
         function resetData() {
             // Close modal
             $('#resetModal').modal('hide');
-            
+
             // Show loading
             Swal.fire({
                 'title': 'Menghapus data...',

@@ -23,8 +23,24 @@ class PenjualanController extends Controller
     public function index(Request $request, $ulid)
     {
         $pelaporan = Pelaporan::where('user_id', auth()->user()->id)->where('ulid', $ulid)->firstOrFail();
-        $penjualans = $pelaporan->penjualan()->with(['sektor', 'jenisBbm'])->get();
-        return view('pages.operator.pelaporan.penjualan.index', compact('pelaporan', 'penjualans'));
+        $penjualans = $pelaporan->penjualan()->get();
+        $jenis_bbms = JenisBbm::all();
+        $sektors = Sektor::all();
+        $kabupatens = Kabupaten::all();
+        $transaction_total = $penjualans->count();
+        $volume_total = number_format($penjualans->sum('volume'), 0, ',', '.');
+        $dpp_total = 'Rp. ' . number_format($penjualans->sum('dpp'), 0, ',', '.');
+        $pbbkb_total = 'Rp. ' . number_format($penjualans->sum('pbbkb'), 0, ',', '.');
+        return view('pages.operator.pelaporan.penjualan.index', compact(
+            'pelaporan',
+            'jenis_bbms',
+            'sektors',
+            'kabupatens',
+            'transaction_total',
+            'volume_total',
+            'dpp_total',
+            'pbbkb_total'
+        ));
     }
 
     public function create(Request $request, $ulid)
@@ -275,5 +291,116 @@ class PenjualanController extends Controller
                 'message' => 'Terjadi kesalahan pada server. Hubungi administrator'
             ], 500);
         }
+    }
+
+    public function table(Request $request, $ulid)
+    {
+        if ($request->ajax()) {
+            $start = $request->input('start');
+            $length = $request->input('length');
+            $draw = $request->input('draw');
+            $search = $request->input('search');
+
+            // Query
+            $query = Penjualan::with(['jenisBbm', 'sektor', 'pelaporan'])->whereHas('pelaporan', function ($query) use ($ulid) {
+                $query->where('ulid', $ulid)->where('user_id', auth()->user()->id);
+            });
+
+            // Total records
+            $totalRecords = $query->count();
+
+            // Filter records
+            if ($search) {
+                $query = $query->where(function ($query) use ($search) {
+                    $query->where('nomor_kuitansi', 'like', "%{$search}%");
+                });
+
+                // filtered records count
+                $totalFiltered = $query->count();
+            } else {
+                $totalFiltered = $totalRecords;
+            }
+
+            // filter by jenis_bbm_id
+            if ($request->has('jenis_bbm_id') && !empty($request->input('jenis_bbm_id'))) {
+                $query = $query->where('jenis_bbm_id', $request->input('jenis_bbm_id'));
+            }
+            // filter by sektor_id
+            if ($request->has('sektor_id') && !empty($request->input('sektor_id'))) {
+                $query = $query->where('sektor_id', $request->input('sektor_id'));
+            }
+            // filter by kabupaten_id
+            if ($request->has('kabupaten_id') && !empty($request->input('kabupaten_id'))) {
+                $query = $query->where('kabupaten_id', $request->input('kabupaten_id'));
+            }
+
+            // Offset and limit
+            if ($start != 0 || $length != -1) {
+                $query = $query->offset($start)
+                    ->limit($length);
+            }
+
+            // Get data
+            $records = $query
+                ->get()
+                ->map(function ($order) {
+                    if ($order->is_wajib_pajak) {
+                        $is_wajib_pajak = '<span class="w-100 badge bg-success">Ya</span>';
+                    } else {
+                        $is_wajib_pajak = '<span class="w-100 badge bg-secondary">Tidak</span>';
+                    }
+
+                    // action
+                    $action = '';
+                    if (!$order->pelaporan->is_sent_to_admin) {
+                        $action .= '<div class="dropdown">
+                                        <button aria-expanded="false"
+                                                class="btn"
+                                                data-bs-toggle="dropdown"
+                                                id="dropdownMenuButton1"
+                                                type="button">
+                                            <i class="isax isax-more"></i>
+                                        </button>
+                                        <ul aria-labelledby="dropdownMenuButton1"
+                                            class="dropdown-menu">
+                                            <li><a class="dropdown-item"
+                                                   href="' . route('pelaporan.penjualan.edit', ['penjualan' => $order->ulid, 'ulid' => $order->pelaporan->ulid]) . '">Edit</a>
+                                            </li>
+                                            <li>
+                                                <button class="dropdown-item"
+                                                        onclick="hapus(\'' . route('pelaporan.penjualan.destroy', ['penjualan' => $order->ulid, 'ulid' => $order->pelaporan->ulid]) . '\')">
+                                                    Hapus
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </div>';
+                    } else {
+                        $action .= 'Tidak ada aksi';
+                    }
+                    return [
+                        'pembeli' => $order->pembeli,
+                        'nomor_kuitansi' => $order->nomor_kuitansi,
+                        'tanggal' => $order->tanggal_formatted,
+                        'jenis_bbm' => $order->jenisBbm->nama . ' - ' . ($order->jenisBbm->is_subsidi ? 'Subsidi' : 'Non Subsidi'),
+                        'sektor' => $order->sektor->nama,
+                        'volume' => number_format($order->volume, 0, ',', '.'),
+                        'dpp' => 'Rp. ' . number_format($order->dpp, 2, ',', '.'),
+                        'is_wajib_pajak' => $is_wajib_pajak,
+                        'pbbkb' => 'Rp. ' . number_format($order->pbbkb, 2, ',', '.'),
+                        'is_pbbkb_match' => $order->is_pbbkb_match,
+                        'pbbkb_sistem' => 'Rp. ' . number_format($order->pbbkb_sistem, 2, ',', '.'),
+                        'action' => $action,
+                    ];
+                });
+
+            // JSON response
+            return response()->json([
+                'draw' => intval($draw),
+                'recordsTotal' => $totalRecords,
+                'recordsFiltered' => $totalFiltered,
+                'data' => $records,
+            ]);
+        }
+
     }
 }
