@@ -111,7 +111,7 @@ class PenginputanController extends Controller
 
                         $items->push(collect([
                             'nama_jenis_bbm' => $item_unique->nama_jenis_bbm,
-                            'persentase_tarif' => $item_unique->persentase_tarif_jenis_bbm / 100 * $item_unique->persentase_pengenaan_sektor / 100,
+                            'persentase_tarif' => $item_unique->persentase_tarif_jenis_bbm * $item_unique->persentase_pengenaan_sektor / 100,
                             'volume' => $item->sum('volume'),
                             'dpp' => $item->sum(function ($i) {
                                 return $i->dpp;
