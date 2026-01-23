@@ -65,6 +65,7 @@
                                     <th>No</th>
                                     <th class="text-start">Email</th>
                                     <th class="text-start">Nama</th>
+                                    <th class="text-start">Kode Billing</th>
                                     <th class="text-start">NPWPD</th>
                                     <th class="text-start">Kabupaten</th>
                                     <th class="text-start">Nomor Telepon</th>
@@ -78,6 +79,7 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td class="text-start">{{ $user->email }}</td>
                                         <td class="text-start">{{ $user->name }}</td>
+                                        <td class="text-start">{{ $user->userDetail->kode_billing ?? '-' }}</td>
                                         <td class="text-start">{{ $user->userDetail->npwpd ?? '-' }}</td>
                                         <td class="text-start">{{ $user->userDetail->kabupaten->nama ?? '-' }}</td>
                                         <td class="text-start">{{ $user->userDetail->nomor_telepon ?? '-' }}</td>

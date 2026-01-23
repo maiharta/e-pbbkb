@@ -115,7 +115,7 @@ class SipayService
         $data = [
             'payment_type' => 'va-bpd',
             'total_amount' => (int)$invoice->amount,
-            'id_billing' => null,
+            'id_billing' => $invoice->customer_kode_billing,
             'nama' => $invoice->customer_name,
             'ket_1_val' => 'Badan Pendapatan Daerah',
             'ket_2_val' => 'Pembayaran EPBBKB',

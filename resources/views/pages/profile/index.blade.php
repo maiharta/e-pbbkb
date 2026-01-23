@@ -105,6 +105,18 @@
                                            type="text"
                                            value="{{ old('name', auth()->user()->name) }}">
                                 </div>
+                                @if ($user_detail->is_verified)
+                                    <div class="form-group mb-3">
+                                        <label class="col-form-label fw-bold"
+                                               for="kode_billing">Kode Billing</label>
+                                        <input class="form-control"
+                                               disabled
+                                               id="kode_billing"
+                                               placeholder="Kode Billing"
+                                               type="text"
+                                               value="{{ auth()->user()->userDetail->kode_billing ?? '-' }}">
+                                    </div>
+                                @endif
                                 <div class="form-group mb-3">
                                     <label class="col-form-label fw-bold"
                                            for="npwpd">NPWPD</label>

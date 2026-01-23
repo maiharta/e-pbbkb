@@ -86,6 +86,7 @@ class InvoiceService
 
             $invoice = $pelaporan->invoices()->create([
                 'customer_npwpd' => $pelaporan->user->userDetail->npwpd,
+                'customer_kode_billing' => $pelaporan->user->userDetail->kode_billing,
                 'customer_name' => $pelaporan->user->name,
                 'customer_email' => $pelaporan->user->email,
                 'customer_phone' => $pelaporan->user->userDetail->nomor_telepon,

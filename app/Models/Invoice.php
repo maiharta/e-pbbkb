@@ -13,6 +13,7 @@ class Invoice extends Model
         'pelaporan_id',
         'invoice_number',
         'customer_npwpd',
+        'customer_kode_billing',
         'customer_name',
         'customer_email',
         'customer_phone',

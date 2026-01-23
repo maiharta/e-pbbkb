@@ -60,10 +60,10 @@ class UserController extends Controller
                 'catatan_revisi' => $request->catatan_revisi,
                 'is_user_readonly' => false
             ]);
-            
+
             // Send email notification
             Mail::to($user->email)->send(new UserRevisionMail($user, $request->catatan_revisi));
-            
+
             DB::commit();
             return response()->json([
                 'status' => 'success',
@@ -97,18 +97,25 @@ class UserController extends Controller
 
         DB::beginTransaction();
         try{
+            $kode_billing = mt_rand(100000000000, 999999999999);
+            if (User::whereHas('userDetail', function ($query) use ($kode_billing) {
+                $query->where('kode_billing', $kode_billing);
+            })->exists()) {
+                $kode_billing = mt_rand(100000000000, 999999999999);
+            }
             $user->userDetail->update([
                 'catatan_revisi' => null,
                 'is_verified' => true,
-                'verified_at' => now()
+                'verified_at' => now(),
+                'kode_billing' => $kode_billing,
             ]);
-            
+
             // Send email notification
             Mail::to($user->email)->send(new UserApprovedMail($user));
 
             // artisan generate:pelaporan
             Artisan::call('generate:data-pelaporan-operator');
-            
+
             DB::commit();
             return response()->json([
                 'status' => 'success',

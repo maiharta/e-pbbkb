@@ -21,6 +21,7 @@ class UserDetail extends Model
         'is_user_readonly',
         'catatan_revisi',
         'is_verified',
+        'kode_billing',
         'verified_at',
     ];
 
