@@ -105,7 +105,7 @@
                                            type="text"
                                            value="{{ old('name', auth()->user()->name) }}">
                                 </div>
-                                @if ($user_detail->is_verified)
+                                @if ($user_detail?->is_verified)
                                     <div class="form-group mb-3">
                                         <label class="col-form-label fw-bold"
                                                for="kode_billing">Kode Billing</label>
