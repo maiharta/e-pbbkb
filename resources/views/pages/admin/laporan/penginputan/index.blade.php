@@ -84,6 +84,8 @@
                                     <th>No</th>
                                     <th>Nama Perusahaan</th>
                                     <th>Periode Laporan</th>
+                                    <th>Batas Pelaporan</th>
+                                    <th>Batas Pembayaran</th>
                                     <th>Status</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -94,6 +96,8 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $pelaporan->user->name }}</td>
                                         <td>{{ $pelaporan->bulan_name }} {{ $pelaporan->tahun }}</td>
+                                        <td>{{ $pelaporan->batas_pelaporan }}</td>
+                                        <td>{{ $pelaporan->batas_pembayaran }}</td>
                                         <td>
                                             {!! $pelaporan->status_badge !!}
                                         </td>
@@ -289,7 +293,7 @@
             const userId = $('#user_id').val();
             const status = $('#status').val();
             let url = '{{ route("laporan.penginputan.index") }}?';
-            
+
             let params = [];
             if (userId) params.push('user_id=' + userId);
             if (status) params.push('status=' + status);
@@ -297,7 +301,7 @@
                 params.push('periode_awal=' + periodeAwal);
                 params.push('periode_akhir=' + periodeAkhir);
             }
-            
+
             url += params.join('&');
             window.location.href = url;
         });
