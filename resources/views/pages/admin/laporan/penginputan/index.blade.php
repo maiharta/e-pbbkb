@@ -96,8 +96,8 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $pelaporan->user->name }}</td>
                                         <td>{{ $pelaporan->bulan_name }} {{ $pelaporan->tahun }}</td>
-                                        <td>{{ $pelaporan->batas_pelaporan }}</td>
-                                        <td>{{ $pelaporan->batas_pembayaran }}</td>
+                                        <td>{{ $pelaporan->batas_pelaporan?->format('d-m-Y') }}</td>
+                                        <td>{{ $pelaporan->batas_pembayaran?->format('d-m-Y') }}</td>
                                         <td>
                                             {!! $pelaporan->status_badge !!}
                                         </td>
