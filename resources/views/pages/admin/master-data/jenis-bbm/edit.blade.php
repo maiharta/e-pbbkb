@@ -107,7 +107,7 @@
         });
 
         @if (!is_null(old('is_subsidi', $jenis_bbm->is_subsidi)))
-            $('#is_subsidi').val('{{ old('is_subsidi', $jenis_bbm->is_subsidi) }}').trigger('change');
+            $('#is_subsidi').val('{{ old('is_subsidi', $jenis_bbm->is_subsidi) == 0 ? '' : old('is_subsidi', $jenis_bbm->is_subsidi) }}').trigger('change');
         @endif
     </script>
 @endpush
