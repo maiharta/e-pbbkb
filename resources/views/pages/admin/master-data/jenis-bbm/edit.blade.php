@@ -106,7 +106,7 @@
             placeholder: 'Pilih tipe subsidi',
         });
 
-        @if (old('is_subsidi', $jenis_bbm->is_subsidi))
+        @if (!is_null(old('is_subsidi', $jenis_bbm->is_subsidi)))
             $('#is_subsidi').val('{{ old('is_subsidi', $jenis_bbm->is_subsidi) }}').trigger('change');
         @endif
     </script>
