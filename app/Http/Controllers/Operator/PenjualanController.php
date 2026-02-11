@@ -282,7 +282,7 @@ class PenjualanController extends Controller
 
         try {
             $count = $pelaporan->penjualan()->count();
-            $pelaporan->pelaporanNote()->delete();
+            $pelaporan->pelaporanNote()->forceDelete();
             $pelaporan->penjualan()->delete();
 
             return response()->json([
