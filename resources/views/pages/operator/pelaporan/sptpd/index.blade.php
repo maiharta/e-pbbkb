@@ -530,6 +530,14 @@
                                 }).then(function() {
                                     window.location.href = '{{ route('pelaporan.index') }}'
                                 });
+                            }else{
+                                Swal.fire({
+                                    'title': 'Gagal',
+                                    'text': data.message,
+                                    'icon': 'error',
+                                    'showConfirmButton': false,
+                                    'timer': 1500,
+                                });
                             }
                         },
                         'error': function(data) {

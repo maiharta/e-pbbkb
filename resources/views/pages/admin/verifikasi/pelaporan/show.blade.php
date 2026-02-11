@@ -499,38 +499,40 @@
                 confirmButtonText: `Ya`,
                 cancelButtonText: `Tidak`,
             }).then((result) => {
-                $.ajax({
-                    url: "{{ route('verifikasi.pelaporan.approve') }}",
-                    type: "POST",
-                    data: {
-                        _token: "{{ csrf_token() }}",
-                        ulid: getUlid(),
-                    },
-                    success: function(response) {
-                        if (response.status == 'success') {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ route('verifikasi.pelaporan.approve') }}",
+                        type: "POST",
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            ulid: getUlid(),
+                        },
+                        success: function(response) {
+                            if (response.status == 'success') {
+                                Swal.fire(
+                                    'Berhasil!',
+                                    response.message,
+                                    'success'
+                                ).then((result) => {
+                                    window.location.href =
+                                        "{{ route('verifikasi.pelaporan.index') }}";
+                                });
+                            } else {
+                                Toast.fire({
+                                    icon: 'error',
+                                    title: response.message,
+                                });
+                            }
+                        },
+                        error: function(response) {
                             Swal.fire(
-                                'Berhasil!',
-                                response.message,
-                                'success'
-                            ).then((result) => {
-                                window.location.href =
-                                    "{{ route('verifikasi.pelaporan.index') }}";
-                            });
-                        } else {
-                            Toast.fire({
-                                icon: 'error',
-                                title: response.message,
-                            });
+                                'Gagal!',
+                                'Form permohonan gagal divalidasi. Hubungi administrator',
+                                'error'
+                            );
                         }
-                    },
-                    error: function(response) {
-                        Swal.fire(
-                            'Gagal!',
-                            'Form permohonan gagal divalidasi. Hubungi administrator',
-                            'error'
-                        );
-                    }
-                });
+                    });
+                }
             });
         }
     </script>

@@ -306,8 +306,8 @@
                                     <ol class="list-unstyled">
                                         <li class="mb-2"><span class="badge bg-success me-2">1</span>Masukkan username dan password / PIN pada aplikasi Mobile / Internet Banking.</li>
                                         <li class="mb-2"><span class="badge bg-success me-2">2</span>Pilih menu <strong>"Pembayaran"</strong></li>
-                                        <li class="mb-2"><span class="badge bg-success me-2">3</span>Pilih <strong>"Pembayaran Retribusi"</strong></li>
-                                        <li class="mb-2"><span class="badge bg-success me-2">4</span>Pilih Input Nomor ID lalu Pilih <strong>"Retribusi OPD Pemprov Bali"</strong></li>
+                                        <li class="mb-2"><span class="badge bg-success me-2">3</span>Pilih <strong>"Pembayaran Pajak Daerah Bali"</strong></li>
+                                        <li class="mb-2"><span class="badge bg-success me-2">4</span>Pilih Input Nomor ID lalu Pilih <strong>"Pembayaran PBBKB Provinsi Bali"</strong></li>
                                         <li class="mb-2"><span class="badge bg-success me-2">5</span>Input Nomor ID/tagihan <strong><span class="sample-id"></span></strong></li>
                                         <li class="mb-2"><span class="badge bg-success me-2">6</span>Input PIN untuk melanjutkan transaksi.</li>
                                         <li class="mb-0"><span class="badge bg-success me-2">7</span>Selesai.</li>
