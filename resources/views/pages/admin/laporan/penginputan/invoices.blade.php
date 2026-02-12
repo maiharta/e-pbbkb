@@ -56,7 +56,7 @@
                                             @endif
                                         </td>
                                         <td>{{ $invoice->sipay_transaction_date ? Carbon\Carbon::parse($invoice->sipay_transaction_date)->format('d/m/Y H:i') : '-' }}</td>
-                                        <td>{{ $invoice->expires_at ? Carbon\Carbon::parse($invoice->expires_at)->format('d/m/Y H:i') : '-' }}</td>
+                                        <td>{{ $invoice->expires_at ? Carbon\Carbon::parse($invoice->expires_at)->endOfDay()->format('d/m/Y H:i') : '-' }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
