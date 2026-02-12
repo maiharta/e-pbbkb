@@ -27,7 +27,7 @@ class BungaService
         // }
 
         $now = now();
-        $batas_pembayaran = $pelaporan->batas_pembayaran;
+        $batas_pembayaran = Carbon::parse($pelaporan->batas_pembayaran)->endOfDay();
 
         if($now->isAfter($batas_pembayaran)) {
             // Get existing bunga records for this pelaporan
