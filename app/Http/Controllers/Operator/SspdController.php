@@ -22,27 +22,15 @@ class SspdController extends Controller
 
         $pelaporan->data_formatted = $pelaporan
             ->penjualan
-            ->groupBy('kode_jenis_bbm')
-            ->mapWithKeys(function ($penjualan, $jenis_bbm_id) {
-                $nama_jenis_bbm = $penjualan->first()->nama_jenis_bbm;
-
-                $volume = 0;
-                $dpp = 0;
-                $pbbkb = 0;
-
-                $penjualan->each(function ($item) use (&$volume, &$dpp, &$pbbkb) {
-                    $volume += $item->volume;
-                    $dpp += $item->dpp;
-                    $pbbkb += $item->pbbkb_sistem;
-                });
-
-                return collect([
+            ->groupBy('nama_jenis_bbm')
+            ->mapWithKeys(function ($penjualan, $nama_jenis_bbm) {
+                return [
                     $nama_jenis_bbm => collect([
-                        'volume' => $volume,
-                        'dpp' => $dpp,
-                        'pbbkb' => $pbbkb
+                        'volume' => $penjualan->sum('volume'),
+                        'dpp' => $penjualan->sum('dpp'),
+                        'pbbkb' => $penjualan->sum('pbbkb_sistem')
                     ])
-                ]);
+                ];
             });
 
         $pelaporan->total_volume = $pelaporan->data_formatted->values()->sum('volume');

@@ -118,7 +118,7 @@ class PenjualanImport implements
                 'jenis_bbm_id' => $row['jenis_bbm_id'],
                 'kode_jenis_bbm' => $jenis_bbm->kode,
                 'nama_jenis_bbm' => $jenis_bbm->nama,
-                'is_subsidi' => $jenis_bbm->is_subsidi,
+                'is_subsidi' => $jenis_bbm->is_subsidi ? 1 : 0,
                 'persentase_tarif_jenis_bbm' => $jenis_bbm->persentase_tarif,
                 'lokasi_penyaluran' => $row['lokasi_penyaluran_id'] == 1 ? 'depot' : 'TBBM',
                 'is_wajib_pajak' => $row['status_pajak_id'] == 2 ? 1 : 0,

@@ -104,13 +104,13 @@ class AuthenticationController extends Controller
     public function logout(Request $request)
     {
         auth()->logout();
-        
+
         // Invalidate the session
         $request->session()->invalidate();
-        
+
         // Regenerate the CSRF token
         $request->session()->regenerateToken();
-        
+
         return redirect()->route('login.index')->with('success', 'Anda telah berhasil logout');
     }
 }
