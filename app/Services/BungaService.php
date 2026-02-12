@@ -68,42 +68,42 @@ class BungaService
     protected static function generateRecurringBunga(Pelaporan $pelaporan, float $persentaseBunga)
     {
         $now = now();
-        
+
         // Get the first bunga record to determine the original day
         $firstBunga = Bunga::where('pelaporan_id', $pelaporan->id)
             ->orderBy('bunga_ke', 'asc')
             ->first();
-            
+
         if (!$firstBunga) {
             return;
         }
 
         $originalDate = Carbon::parse($firstBunga->waktu_bunga);
         $originalDay = $originalDate->day;
-        
+
         // Get the last bunga record to determine next sequence
         $lastBunga = Bunga::where('pelaporan_id', $pelaporan->id)
             ->orderBy('bunga_ke', 'desc')
             ->first();
-            
+
         $nextBungaKe = $lastBunga->bunga_ke + 1;
         $lastBungaDate = Carbon::parse($lastBunga->waktu_bunga);
-        
+
         // Generate bunga for all missing months up to current month
-        $currentDate = $lastBungaDate->copy()->addMonth();
-        
+        $currentDate = $lastBungaDate->copy()->addMonth()->endOfDay();
+
         while ($currentDate->lte($now)) {
             // Check if bunga already exists for this month
             $existingBunga = Bunga::where('pelaporan_id', $pelaporan->id)
                 ->whereYear('waktu_bunga', $currentDate->year)
                 ->whereMonth('waktu_bunga', $currentDate->month)
                 ->first();
-                
+
             if (!$existingBunga) {
                 // Calculate the appropriate day for this month
                 $targetDay = self::calculateRecurringDay($originalDay, $currentDate->year, $currentDate->month);
                 $bungaDate = Carbon::create($currentDate->year, $currentDate->month, $targetDay);
-                
+
                 // Create bunga record
                 Bunga::create([
                     'pelaporan_id' => $pelaporan->id,
@@ -113,11 +113,11 @@ class BungaService
                     'bunga' => $persentaseBunga,
                     'keterangan' => "Bunga telat pembayaran ke-{$nextBungaKe}"
                 ]);
-                
+
                 $nextBungaKe++;
             }
-            
-            $currentDate->addMonth();
+
+            $currentDate->addMonth()->endOfDay();
         }
     }
 
@@ -128,7 +128,7 @@ class BungaService
     {
         // Get the last day of the target month
         $lastDayOfMonth = Carbon::create($year, $month, 1)->endOfMonth()->day;
-        
+
         // Special handling for different scenarios
         if ($originalDay <= 28) {
             // Safe days that exist in all months
@@ -152,7 +152,7 @@ class BungaService
                 return min($originalDay, $lastDayOfMonth);
             }
         }
-        
+
         return $originalDay;
     }
 
@@ -164,34 +164,34 @@ class BungaService
     {
         $now = now();
         $batas_pembayaran = $pelaporan->batas_pembayaran;
-        
+
         // If we haven't passed the batas_pembayaran yet, the next bunga date is the day after batas_pembayaran
         if ($now->lessThan($batas_pembayaran)) {
             return $batas_pembayaran->copy()->addDay();
         }
-        
+
         // Get the last bunga record to determine the pattern
         $lastBunga = Bunga::where('pelaporan_id', $pelaporan->id)
             ->orderBy('bunga_ke', 'desc')
             ->first();
-            
+
         if (!$lastBunga) {
             // No bunga exists yet, so next bunga date is the day after batas_pembayaran
             return $batas_pembayaran->copy()->addDay();
         }
-        
+
         // Get the first bunga to determine the original day pattern
         $firstBunga = Bunga::where('pelaporan_id', $pelaporan->id)
             ->orderBy('bunga_ke', 'asc')
             ->first();
-            
+
         $originalDay = Carbon::parse($firstBunga->waktu_bunga)->day;
         $lastBungaDate = Carbon::parse($lastBunga->waktu_bunga);
-        
+
         // Calculate the next month's bunga date
         $nextMonth = $lastBungaDate->copy()->addMonth();
         $targetDay = self::calculateRecurringDay($originalDay, $nextMonth->year, $nextMonth->month);
-        
+
         return Carbon::create($nextMonth->year, $nextMonth->month, $targetDay);
     }
 

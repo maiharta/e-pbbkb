@@ -59,8 +59,8 @@ class InvoiceService
             $existingInvoice = $pelaporan->invoices()->where('payment_status', 'pending')->first();
 
             if ($existingInvoice) {
-                // check expires at
-                if (now()->greaterThanOrEqualTo($existingInvoice->expires_at)) {
+                // check day expires at is greater than now. just day, not time
+                if (now()->greaterThan($existingInvoice->expires_at->endOfDay())) {
                     $sipayService = new SipayService();
                     // Cancel the invoice in Sipay
                     $sipayService->cancelInvoice($existingInvoice);
