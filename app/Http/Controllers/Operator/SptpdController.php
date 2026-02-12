@@ -56,9 +56,9 @@ class SptpdController extends Controller
                         collect([
                             'items' => $items,
                             'subtotal' => collect([
-                                'volume' => $subtotal_volume,
-                                'dpp' => $subtotal_dpp,
-                                'pbbkb' => $subtotal_pbbkb
+                                'volume' => $items->sum('volume'),
+                                'dpp' => $items->sum('dpp'),
+                                'pbbkb' => $items->sum('pbbkb')
                             ])
                         ])
                     );
