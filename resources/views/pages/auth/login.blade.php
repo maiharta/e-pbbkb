@@ -32,9 +32,11 @@
                 type="submit">
             Login
         </button>
-        <p class="text-center mt-3 footer-caption">
-            Belum punya akun? <a class="footer-link"
-               href="{{ route('register.index') }}">Register</a>
-        </p>
+        @if (config('app.feature.registration'))
+            <p class="text-center mt-3 footer-caption">
+                Belum punya akun? <a class="footer-link"
+                   href="{{ route('register.index') }}">Register</a>
+            </p>
+        @endif
     </form>
 @endsection

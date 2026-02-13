@@ -33,11 +33,17 @@ class AuthenticationController extends Controller
 
     public function register(Request $request)
     {
+        if(!config('app.feature.registration')){
+            abort(404);
+        }
         return view('pages.auth.register');
     }
 
     public function store(Request $request)
     {
+        if(!config('app.feature.registration')){
+            abort(404);
+        }
         $request->validate([
             'email' => 'required|email',
             'password' => 'required|string|min:8',
@@ -80,6 +86,10 @@ class AuthenticationController extends Controller
 
     public function generateOtp(Request $request)
     {
+        if(!config('app.feature.registration')){
+            abort(404);
+        }
+
         $request->validate([
             'email' => 'required|email'
         ]);
