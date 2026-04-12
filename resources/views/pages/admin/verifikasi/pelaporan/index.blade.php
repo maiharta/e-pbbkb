@@ -30,7 +30,7 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $pelaporan->user->name }}</td>
                                         <td>{{ $pelaporan->bulan_name }} {{ $pelaporan->tahun }}</td>
-                                        <td>{{ Carbon\Carbon::parse($pelaporan->created_at)->locale('id')->isoFormat('LL') }}</td>
+                                        <td>{{ $pelaporan->first_send_at ? Carbon\Carbon::parse($pelaporan->first_send_at)->locale('id')->isoFormat('LL') : '-' }}</td>
                                         <td>
                                             {{-- dropdown --}}
                                             <div class="dropdown">

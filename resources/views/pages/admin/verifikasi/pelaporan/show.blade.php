@@ -37,7 +37,7 @@
                         <tr>
                             <td class="pb-1 pe-4">Tanggal Pengajuan</td>
                             <th>:
-                                {{ Carbon\Carbon::parse($pelaporan->created_at)->locale('id')->isoFormat('LL') }}
+                                {{ $pelaporan->first_send_at ? Carbon\Carbon::parse($pelaporan->first_send_at)->locale('id')->isoFormat('LL') : '-' }}</
                             </th>
                         </tr>
                     </table>
