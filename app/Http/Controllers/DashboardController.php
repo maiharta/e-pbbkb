@@ -34,14 +34,16 @@ class DashboardController extends Controller
         //           });
         // })
         //     ->sum('total_pbbkb');
-            $totalPbbkb = Pelaporan::withWhereHas('invoices', function ($invoiceQuery) use ($year) {
-                $invoiceQuery->where('payment_status', 'paid')
-                             ->whereYear('sipay_payment_date_paid', $year);
-            })
+        $totalPbbkb = Pelaporan::withWhereHas('invoices', function ($invoiceQuery) use ($year) {
+            $invoiceQuery->where('payment_status', 'paid')
+                ->whereYear('sipay_payment_date_paid', $year);
+        })
             ->where('is_paid', true)
             ->get();
 
-            $totalPbbkb = $totalPbbkb->map(function ($pelaporan) {    return $pelaporan->invoices->sum('amount');})->sum();
+        $totalPbbkb = $totalPbbkb->map(function ($pelaporan) {
+            return $pelaporan->invoices->sum('amount');
+        })->sum();
 
         // Format total PBBKB in Indonesian "juta/miliar" format
         $formattedPbbkb = number_format($totalPbbkb);
@@ -50,11 +52,11 @@ class DashboardController extends Controller
         $totalWapu = User::whereHas('userDetail', function ($query) use ($year) {
             $query->where('is_verified', true);
         })
-        // role operator HasRole 'operator'
-        ->whereHas('roles', function ($query) {
-            $query->where('name', 'operator');
-        })
-        ->count();
+            // role operator HasRole 'operator'
+            ->whereHas('roles', function ($query) {
+                $query->where('name', 'operator');
+            })
+            ->count();
 
         // Get count of verified inputs (filtered by pelaporan->tahun)
         $verifiedInputs = Pelaporan::where('is_verified', true)
@@ -116,16 +118,16 @@ class DashboardController extends Controller
 
         $monthlyData = Pelaporan::withWhereHas('invoices', function ($invoiceQuery) use ($year) {
             $invoiceQuery->where('payment_status', 'paid')
-                         ->whereYear('sipay_payment_date_paid', $year);
+                ->whereYear('sipay_payment_date_paid', $year);
         })
-        ->where('is_paid', true)
-        ->select(
-            DB::raw('MONTH(pelaporans.tanggal) as month'),
-            DB::raw('SUM(invoices.amount) as total')
-        )
-        ->groupBy(DB::raw('MONTH(pelaporans.tanggal)'))
-        ->orderBy('month')
-        ->get();
+            ->where('is_paid', true)
+            ->select(
+                DB::raw('MONTH(pelaporans.tanggal) as month'),
+                DB::raw('SUM(invoices.amount) as total')
+            )
+            ->groupBy(DB::raw('MONTH(pelaporans.tanggal)'))
+            ->orderBy('month')
+            ->get();
 
         // Fill in the data for months that have values
         foreach ($monthlyData as $data) {
