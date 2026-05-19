@@ -98,7 +98,8 @@ class DashboardController extends Controller
             ->selectRaw('MONTH(invoices.created_at) as month, SUM(invoices.amount) as total')
             ->join('invoices', 'pelaporans.id', '=', 'invoices.pelaporan_id')
             ->groupBy(DB::raw('MONTH(invoices.created_at)'))
-            ->get();
+            ->get()
+            ->dd();
 
         // Fill in the data for months that have values
         foreach ($monthlyData as $data) {
