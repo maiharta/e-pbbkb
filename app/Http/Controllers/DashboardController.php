@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Sptpd;
-use App\Models\Invoice;
 use App\Models\Pelaporan;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -25,25 +23,12 @@ class DashboardController extends Controller
         // Get the requested year or default to current year
         $year = $request->input('year', date('Y'));
 
-        // Get total PBBKB from paid invoices for the selected year (filtered by pelaporan->tahun)
-        // $totalPbbkb = Sptpd::whereHas('pelaporan', function ($query) use ($year) {
-        //     $query->where('is_paid', true)
-        //           ->whereHas('invoices', function ($invoiceQuery) use ($year) {
-        //               $invoiceQuery->where('payment_status', 'paid')
-        //                            ->whereYear('sipay_payment_date_paid', $year);
-        //           });
-        // })
-        //     ->sum('total_pbbkb');
-        $totalPbbkb = Pelaporan::withWhereHas('invoices', function ($invoiceQuery) use ($year) {
-            $invoiceQuery->where('payment_status', 'paid')
-                ->whereYear('sipay_payment_date_paid', $year);
-        })
-            ->where('is_paid', true)
-            ->get();
-
-        $totalPbbkb = $totalPbbkb->map(function ($pelaporan) {
-            return $pelaporan->invoices->sum('amount');
-        })->sum();
+        // Get total PBBKB from paid invoices based on pelaporan year
+        $totalPbbkb = Pelaporan::query()
+            ->join('invoices', 'pelaporans.id', '=', 'invoices.pelaporan_id')
+            ->where('pelaporans.tahun', $year)
+            ->where('invoices.payment_status', 'paid')
+            ->sum('invoices.amount');
 
         // Format total PBBKB in Indonesian "juta/miliar" format
         $formattedPbbkb = number_format($totalPbbkb);
@@ -104,36 +89,27 @@ class DashboardController extends Controller
         $months = array_values($monthNames);
         $values = array_fill(0, 12, 0);
 
-        // Get monthly PBBKB totals from paid invoices for the specified year
-        // $monthlyData = Sptpd::select(
-        //     DB::raw('MONTH(sptpds.tanggal) as month'),
-        //     DB::raw('SUM(sptpds.total_pbbkb) as total')
-        // )
-        //     ->join('pelaporans', 'sptpds.pelaporan_id', '=', 'pelaporans.id')
-        //     ->where('pelaporans.is_paid', true)
-        //     ->whereYear('sptpds.tanggal', $year)
-        //     ->groupBy(DB::raw('MONTH(sptpds.tanggal)'))
-        //     ->orderBy('month')
-        //     ->get();
-
-        $monthlyData = Pelaporan::withWhereHas('invoices', function ($invoiceQuery) use ($year) {
-            $invoiceQuery->where('payment_status', 'paid')
-                ->whereYear('sipay_payment_date_paid', $year);
-        })
-            ->where('is_paid', true)
+        // Get monthly PBBKB totals from paid invoices for the specified pelaporan year
+        $monthlyData = Pelaporan::query()
             ->select(
-                DB::raw('MONTH(pelaporans.tanggal) as month'),
+                'pelaporans.bulan as month',
                 DB::raw('SUM(invoices.amount) as total')
             )
-            ->groupBy(DB::raw('MONTH(pelaporans.tanggal)'))
-            ->orderBy('month')
+            ->join('invoices', 'pelaporans.id', '=', 'invoices.pelaporan_id')
+            ->where('pelaporans.tahun', $year)
+            ->where('invoices.payment_status', 'paid')
+            ->groupBy('pelaporans.bulan')
             ->get();
 
         // Fill in the data for months that have values
         foreach ($monthlyData as $data) {
             // Adjust for zero-based array (months are 1-based)
-            $index = $data->month - 1;
-            $values[$index] = (float) $data->total;
+            $month = (int) $data->month;
+            $index = $month - 1;
+
+            if ($month >= 1 && $month <= 12) {
+                $values[$index] = (float) $data->total;
+            }
         }
 
         return [
