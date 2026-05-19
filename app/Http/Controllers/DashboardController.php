@@ -95,9 +95,9 @@ class DashboardController extends Controller
                 $query->where('year', $year)
                     ->where('payment_status', 'paid');
             })
-            ->selectRaw('MONTH(pelaporans.month) as month, SUM(invoices.amount) as total')
+            ->selectRaw('MONTH(invoices.created_at) as month, SUM(invoices.amount) as total')
             ->join('invoices', 'pelaporans.id', '=', 'invoices.pelaporan_id')
-            ->groupBy(DB::raw('MONTH(pelaporans.month)'))
+            ->groupBy(DB::raw('MONTH(invoices.created_at)'))
             ->get();
 
         // Fill in the data for months that have values
