@@ -192,7 +192,7 @@ class SipayService
                 'secret_key' => $this->getSecretKey(),
                 'no_invoice' => $invoice->sipay_invoice,
                 'record_id' => $invoice->sipay_record_id,
-                'unit_id' => 25,
+                'unit_id' => config('services.sipay.unit_id'),
                 'keterangan' => 'Pembatalan invoice',
             ];
             $response = Http::withHeaders($this->getAuthHeaders())
