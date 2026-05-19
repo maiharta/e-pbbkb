@@ -26,7 +26,7 @@ class DashboardController extends Controller
         // Get total PBBKB from paid invoices based on pelaporan year
         $totalPbbkb = Pelaporan::query()
             ->join('invoices', 'pelaporans.id', '=', 'invoices.pelaporan_id')
-            ->where('pelaporans.tahun', $year)
+            ->where('invoices.year', $year)
             ->where('invoices.payment_status', 'paid')
             ->sum('invoices.amount');
 
@@ -89,24 +89,19 @@ class DashboardController extends Controller
         $months = array_values($monthNames);
         $values = array_fill(0, 12, 0);
 
-        // Get monthly PBBKB totals from paid invoices for the specified pelaporan year
-        $monthlyData = Pelaporan::with('invoices')
+        // Get monthly PBBKB totals from paid invoices based on invoice month/year
+        $monthlyData = Pelaporan::query()
             ->select(
-                'pelaporans.bulan as month',
+                'invoices.month as month',
                 DB::raw('SUM(invoices.amount) as total')
             )
-            ->where('pelaporans.tahun', $year)
-            ->whereHas('invoices', function ($query) {
-                $query->where('payment_status', 'paid');
-            })
-            ->groupBy('pelaporans.bulan')
-            ->get()
-            ->map(function ($item) {
-                return [
-                    'month' => $item->month,
-                    'total' => $item->sum('invoices.amount')
-                ];
-            });
+            ->join('invoices', 'pelaporans.id', '=', 'invoices.pelaporan_id')
+            ->where('invoices.year', $year)
+            ->where('invoices.payment_status', 'paid')
+            ->whereNotNull('invoices.month')
+            ->groupBy('invoices.month')
+            ->orderBy('invoices.month')
+            ->get();
 
         // Fill in the data for months that have values
         foreach ($monthlyData as $data) {
