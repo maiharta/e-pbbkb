@@ -26,14 +26,20 @@ class DashboardController extends Controller
         $year = $request->input('year', date('Y'));
 
         // Get total PBBKB from paid invoices for the selected year (filtered by pelaporan->tahun)
-        $totalPbbkb = Sptpd::whereHas('pelaporan', function ($query) use ($year) {
-            $query->where('is_paid', true)
-                  ->whereHas('invoices', function ($invoiceQuery) use ($year) {
-                      $invoiceQuery->where('payment_status', 'paid')
-                                   ->whereYear('sipay_payment_date_paid', $year);
-                  });
-        })
-            ->sum('total_pbbkb');
+        // $totalPbbkb = Sptpd::whereHas('pelaporan', function ($query) use ($year) {
+        //     $query->where('is_paid', true)
+        //           ->whereHas('invoices', function ($invoiceQuery) use ($year) {
+        //               $invoiceQuery->where('payment_status', 'paid')
+        //                            ->whereYear('sipay_payment_date_paid', $year);
+        //           });
+        // })
+        //     ->sum('total_pbbkb');
+            $totalPbbkb = Pelaporan::withWhereHas('invoices', function ($invoiceQuery) use ($year) {
+                $invoiceQuery->where('payment_status', 'paid')
+                             ->whereYear('sipay_payment_date_paid', $year);
+            })
+            ->where('is_paid', true)
+            ->sum('invoices.amount');
 
         // Format total PBBKB in Indonesian "juta/miliar" format
         $formattedPbbkb = number_format($totalPbbkb);
@@ -95,14 +101,25 @@ class DashboardController extends Controller
         $values = array_fill(0, 12, 0);
 
         // Get monthly PBBKB totals from paid invoices for the specified year
-        $monthlyData = Sptpd::select(
-            DB::raw('MONTH(sptpds.tanggal) as month'),
-            DB::raw('SUM(sptpds.total_pbbkb) as total')
+        // $monthlyData = Sptpd::select(
+        //     DB::raw('MONTH(sptpds.tanggal) as month'),
+        //     DB::raw('SUM(sptpds.total_pbbkb) as total')
+        // )
+        //     ->join('pelaporans', 'sptpds.pelaporan_id', '=', 'pelaporans.id')
+        //     ->where('pelaporans.is_paid', true)
+        //     ->whereYear('sptpds.tanggal', $year)
+        //     ->groupBy(DB::raw('MONTH(sptpds.tanggal)'))
+        //     ->orderBy('month')
+        //     ->get();
+
+        $monthlyData = Pelaporan::select(
+            DB::raw('MONTH(pelaporans.tahun) as month'),
+            DB::raw('SUM(invoices.amount) as total')
         )
-            ->join('pelaporans', 'sptpds.pelaporan_id', '=', 'pelaporans.id')
+            ->join('invoices', 'pelaporans.id', '=', 'invoices.pelaporan_id')
             ->where('pelaporans.is_paid', true)
-            ->whereYear('sptpds.tanggal', $year)
-            ->groupBy(DB::raw('MONTH(sptpds.tanggal)'))
+            ->whereYear('invoices.sipay_payment_date_paid', $year)
+            ->groupBy(DB::raw('MONTH(pelaporans.tahun)'))
             ->orderBy('month')
             ->get();
 
@@ -117,25 +134,5 @@ class DashboardController extends Controller
             'months' => $months,
             'values' => $values
         ];
-    }
-
-    private function formatToIndonesianScale($number)
-    {
-        if ($number >= 1000000000) {
-            // Format to miliar (billion)
-            $value = number_format($number / 1000000000, 1, ',', '.');
-            return $value . ' miliar';
-        } elseif ($number >= 1000000) {
-            // Format to juta (million)
-            $value = number_format($number / 1000000, 1, ',', '.');
-            return $value . ' juta';
-        } elseif ($number >= 1000) {
-            // Format to ribu (thousand)
-            $value = number_format($number / 1000, 1, ',', '.');
-            return $value . ' ribu';
-        } else {
-            // Format smaller numbers
-            return number_format($number, 0, ',', '.');
-        }
     }
 }
