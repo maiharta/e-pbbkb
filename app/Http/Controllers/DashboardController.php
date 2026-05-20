@@ -93,6 +93,7 @@ class DashboardController extends Controller
         $monthlyData = Pelaporan::withWhereHas('invoices', function ($query) use ($year) {
             $query->where('payment_status', 'paid');
         })
+            ->selectRaw('bulan, SUM(invoices.amount) as total_amount')
             ->where('tahun', $year)
             ->groupBy('bulan')
             ->get();
@@ -102,7 +103,7 @@ class DashboardController extends Controller
             $month = (int) $data->bulan;
 
             if ($month >= 1 && $month <= 12) {
-                $values[$month] = (float) $data->invoices->sum('amount');
+                $values[$month] = (float) $data->total_amount;
             }
         }
 
