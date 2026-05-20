@@ -90,9 +90,9 @@ class DashboardController extends Controller
         $values = array_fill(0, 12, 0);
 
         // Get monthly PBBKB totals from paid invoices based on invoice month/year
-        $monthlyData = Invoice::where('year', $year)
+        $monthlyData = Invoice::whereYear('sipay_payment_date_paid', $year)
             ->where('payment_status', 'paid')
-            ->selectRaw('month, SUM(amount) as total')
+            ->selectRaw('MONTH(sipay_payment_date_paid) as month, SUM(amount) as total')
             ->groupBy('month')
             ->get();
 
