@@ -93,7 +93,7 @@ class DashboardController extends Controller
         $monthlyData = Invoice::whereYear('sipay_payment_date_paid', $year)
             ->where('payment_status', 'paid')
             ->selectRaw('MONTH(sipay_payment_date_paid) as month, SUM(amount) as total')
-            ->groupBy('month')
+            ->groupByRaw('MONTH(sipay_payment_date_paid)')
             ->get();
 
         // Fill in the data for months that have values
