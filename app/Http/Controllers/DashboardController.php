@@ -93,10 +93,11 @@ class DashboardController extends Controller
         $monthlyData = Pelaporan::withWhereHas('invoices', function ($query) use ($year) {
             $query->where('payment_status', 'paid');
         })
-            ->selectRaw('bulan, SUM(invoices.amount) as total_amount')
+            ->selectRaw('bulan')
             ->where('tahun', $year)
             ->groupBy('bulan')
-            ->get();
+            ->get()
+            ->dd();
 
         // Fill in the data for months that have values
         foreach ($monthlyData as $data) {
