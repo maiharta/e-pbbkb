@@ -94,12 +94,12 @@ class DashboardController extends Controller
             $query->where('payment_status', 'paid');
         })
             ->where('tahun', $year)
-            ->groupBy('month')
+            ->groupBy('bulan')
             ->get();
 
         // Fill in the data for months that have values
         foreach ($monthlyData as $data) {
-            $month = (int) $data->month;
+            $month = (int) $data->bulan;
 
             if ($month >= 1 && $month <= 12) {
                 $values[$month] = (float) $data->invoices->sum('amount');
