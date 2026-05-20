@@ -91,8 +91,7 @@ class DashboardController extends Controller
 
         // Get monthly PBBKB totals from paid invoices based on invoice month/year
         $monthlyData = Pelaporan::withWhereHas('invoices', function ($query) use ($year) {
-            $query->where('payment_status', 'paid')
-                ->selectRaw('SUM(amount) as total');
+            $query->where('payment_status', 'paid');
         })
             ->where('tahun', $year)
             ->groupBy('month')
@@ -101,10 +100,9 @@ class DashboardController extends Controller
         // Fill in the data for months that have values
         foreach ($monthlyData as $data) {
             $month = (int) $data->month;
-            // $index = $month - 1;
 
             if ($month >= 1 && $month <= 12) {
-                $values[$month] = (float) $data->invoices->first()->total;
+                $values[$month] = (float) $data->invoices->sum('amount');
             }
         }
 
