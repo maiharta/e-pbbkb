@@ -24,11 +24,16 @@ class DashboardController extends Controller
         $year = $request->input('year', date('Y'));
 
         // Get total PBBKB from paid invoices based on pelaporan year
-        $totalPbbkb = Pelaporan::query()
-            ->join('invoices', 'pelaporans.id', '=', 'invoices.pelaporan_id')
-            ->where('invoices.year', $year)
-            ->where('invoices.payment_status', 'paid')
-            ->sum('invoices.amount');
+        // $totalPbbkb = Pelaporan::query()
+        //     ->join('invoices', 'pelaporans.id', '=', 'invoices.pelaporan_id')
+        //     ->where('invoices.year', $year)
+        //     ->where('invoices.payment_status', 'paid')
+        //     ->sum('invoices.amount');
+
+        $totalPbbkb = Invoice::whereYear('sipay_payment_date_paid', $year)
+            ->where('payment_status', 'paid')
+            ->get()
+            ->sum('amount');
 
         // Format total PBBKB in Indonesian "juta/miliar" format
         $formattedPbbkb = number_format($totalPbbkb);
