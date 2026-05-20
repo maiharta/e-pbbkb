@@ -99,10 +99,10 @@ class DashboardController extends Controller
         // Fill in the data for months that have values
         foreach ($monthlyData as $data) {
             $month = (int) $data->month;
-            $index = $month - 1;
+            // $index = $month - 1;
 
             if ($month >= 1 && $month <= 12) {
-                $values[$index] = (float) $data->total;
+                $values[$month] = (float) $data->total;
             }
         }
 
